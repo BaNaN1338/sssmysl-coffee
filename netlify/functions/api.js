@@ -88,7 +88,7 @@ exports.handler = async (event) => {
           await fetch(YTIMES_ORDER_URL, {
             method: 'POST',
             headers: {
-              'Authorization': Bearer ${YTIMES_KEY},
+              'Authorization': `Bearer ${YTIMES_KEY}`,
               'X-API-KEY': YTIMES_KEY,
               'Content-Type': 'application/json'
             },
