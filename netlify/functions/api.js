@@ -38,10 +38,10 @@ exports.handler = async (event) => {
       // Если ключ SAMOSALE подключен — запрашиваем реальный баланс по API
       if (SAMOSALE_KEY) {
         try {
-          const response = await fetch(${SAMOSALE_API_URL}?phone=${cleanPhone}, {
+          const response = await fetch(`${SAMOSALE_API_URL}?phone=${cleanPhone}`, {
             method: 'GET',
             headers: {
-              'Authorization': Bearer ${SAMOSALE_KEY},
+              'Authorization': `Bearer ${SAMOSALE_KEY}`,
               'X-API-KEY': SAMOSALE_KEY,
               'Accept': 'application/json'
             }
