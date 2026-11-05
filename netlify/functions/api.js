@@ -97,7 +97,7 @@ exports.handler = async (event) => {
               client_name: guestName,
               client_phone: guestPhone,
               shop_address: location,
-              comment: Приготовить: ${pickupTime},
+              comment: `Приготовить: ${pickupTime}`,
               total_price: total,
               items: items
             })
@@ -110,22 +110,22 @@ exports.handler = async (event) => {
       // Б) Мгновенное уведомление бариста в рабочий Telegram-чат (если задан бот)
       if (TG_BOT_TOKEN && TG_CHAT_ID) {
         const itemsList = (items || [])
-          .map(i => • ${i.title} (${i.volumeLabel}) x${i.qty} — молоко: ${i.milkLabel}, ${i.syrupLabel})
+          .map(i => `• ${i.title} (${i.volumeLabel}) x${i.qty} — молоко: ${i.milkLabel}, ${i.syrupLabel}`)
           .join('\n');
 
         const text = [
-          ☕ *НОВЫЙ ПРЕДЗАКАЗ №${orderNum}*,
-          📍 *Точка:* ${location},
-          ⏰ *Готовность:* ${pickupTime},
-          👤 *Гость:* ${guestName} (${guestPhone}),
+          `☕ *НОВЫЙ ПРЕДЗАКАЗ №${orderNum}*`,
+          `📍 *Точка:* ${location}`,
+          `⏰ *Готовность:* ${pickupTime}`,
+          `👤 *Гость:* ${guestName} (${guestPhone})`,
           ``,
-          *Состав заказа:*,
+          `*Состав заказа:*`,
           itemsList,
           ``,
-          💰 *Итого:* ${total} ₽
+          `💰 *Итого:* ${total} ₽`
         ].join('\n');
 
-        await fetch(https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage, {
+        await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
