@@ -1,0 +1,2225 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Смысл — Кофейня | Сайт и мобильное приложение</title>
+    <meta name="theme-color" content="#7B9244">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Смысл">
+    <link id="pwaManifestLink" rel="manifest" href="">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Manrope, Unbounded, and Caveat/Marck Script -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Manrope:wght@400;500;600;700;800&family=Marck+Script&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        smysl: {
+                            green: '#7B9244',
+                            greenDark: '#5E7131',
+                            greenDeep: '#252E13',
+                            greenSoft: '#E9EFE0',
+                            cream: '#F6F4E8',
+                            creamLight: '#FAF9F3',
+                            caramel: '#D48C46',
+                            espresso: '#2C221E'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        display: ['Unbounded', 'sans-serif'],
+                        script: ['Marck Script', 'Caveat', 'cursive']
+                    },
+                    boxShadow: {
+                        'soft': '0 12px 32px -8px rgba(37, 46, 19, 0.08)',
+                        'card': '0 16px 40px -12px rgba(123, 146, 68, 0.18)',
+                        'phone': '0 25px 70px -15px rgba(25, 32, 12, 0.35)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FAF9F3;
+            color: #252E13;
+            font-family: 'Manrope', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #F6F4E8; }
+        ::-webkit-scrollbar-thumb { background: #7B9244; border-radius: 9999px; }
+
+        .phone-frame-active {
+            max-width: 430px;
+            margin: 1.5rem auto 2.5rem auto;
+            border: 10px solid #252E13;
+            border-radius: 46px;
+            box-shadow: 0 25px 70px -15px rgba(25, 32, 12, 0.4);
+            overflow-x: hidden;
+            background-color: #FAF9F3;
+            position: relative;
+        }
+
+        @keyframes pulseSlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.25); opacity: 0.65; }
+        }
+        .pulse-dot { animation: pulseSlow 2.2s infinite ease-in-out; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.35s ease-out forwards; }
+
+        .bg-craft-pattern {
+            background-image: radial-gradient(rgba(246, 244, 232, 0.14) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Выделение блоков в режиме визуального конструктора */
+        .admin-section-wrapper {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .admin-mode-active .admin-section-wrapper:hover {
+            outline: 2px dashed #7B9244;
+            outline-offset: -4px;
+            border-radius: 24px;
+        }
+        .admin-mode-active [contenteditable="true"] {
+            outline: 1px dashed rgba(123, 146, 68, 0.6);
+            border-radius: 8px;
+            padding: 2px 6px;
+            cursor: text;
+        }
+        .admin-mode-active [contenteditable="true"]:focus {
+            outline: 2px solid #D48C46;
+            background: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-smysl-green selection:text-smysl-cream">
+
+    <!-- ================= ПАНЕЛЬ УПРАВЛЕНИЯ ВЛАДЕЛЬЦА (ТОЛЬКО ДЛЯ АДМИНА) ================= -->
+    <div id="ownerTopBar" class="hidden bg-smysl-greenDeep text-smysl-cream border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-smysl-green text-smysl-cream font-semibold text-xs">
+                    <i class="ph-fill ph-sparkle"></i> Конструктор «Смысл» (Админ)
+                </span>
+                <span id="cloudSyncBadge" class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 text-[11px] text-smysl-cream/80">
+                    <i class="ph-fill ph-cloud-check text-green-400"></i> Облако Supabase подключено
+                </span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <!-- Переключатель Сайт / Мобильное приложение -->
+                <div class="bg-white/10 p-0.5 rounded-xl flex items-center">
+                    <button id="btnViewWeb" onclick="setPreviewMode('web')" class="px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm">
+                        <i class="ph-bold ph-desktop"></i>
+                        <span class="hidden sm:inline">Сайт</span>
+                    </button>
+                    <button id="btnViewApp" onclick="setPreviewMode('app')" class="px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white">
+                        <i class="ph-bold ph-device-mobile"></i>
+                        <span class="hidden sm:inline">Приложение</span>
+                    </button>
+                </div>
+
+                <!-- Быстрый тест акции -20% -->
+                <button id="topHappyHourBtn" onclick="toggleHappyHourDemo()" class="px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-smysl-caramel text-white hover:opacity-95 shadow-sm">
+                    <i class="ph-fill ph-clock-countdown"></i>
+                    <span id="topHappyHourText">Акция -20%: ВКЛ</span>
+                </button>
+
+                <!-- Настройки конструктора, SAMOSALE и Ytimes -->
+                <button onclick="openModal('adminModal')" class="px-3 py-1.5 rounded-xl font-semibold bg-white/15 hover:bg-white/25 text-smysl-cream transition flex items-center gap-1.5">
+                    <i class="ph-bold ph-sliders-horizontal"></i>
+                    <span>Настройки и интеграции</span>
+                </button>
+
+                <!-- Быстрое сохранение -->
+                <button onclick="saveStateToStorageAndCloud()" class="px-3 py-1.5 rounded-xl font-bold bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream transition flex items-center gap-1 shadow-sm">
+                    <i class="ph-bold ph-floppy-disk"></i>
+                    <span>Сохранить</span>
+                </button>
+
+                <!-- Выход из админки -->
+                <button onclick="logoutAdmin()" class="p-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-200 transition" title="Выйти из режима конструктора">
+                    <i class="ph-bold ph-sign-out text-base"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ОСНОВНОЙ КОНТЕЙНЕР (САЙТ ИЛИ ЭКРАН ТЕЛЕФОНА) ================= -->
+    <div id="appViewport" class="w-full flex-1 flex flex-col transition-all duration-300">
+
+        <!-- ШАПКА САЙТА / ПРИЛОЖЕНИЯ -->
+        <header id="mainSiteHeader" class="sticky top-0 z-40 bg-smysl-creamLight/95 backdrop-blur-md border-b border-smysl-green/15">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+                
+                <!-- Логотип "Смысл" + Часы работы -->
+                <div class="flex items-center gap-3">
+                    <a href="#" class="group flex items-center gap-3 focus:outline-none">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-smysl-green flex items-center justify-center shadow-md overflow-hidden border border-smysl-greenDark/20 group-hover:scale-105 transition-transform shrink-0">
+                            <img id="customLogoHeader" src="" alt="Смысл" class="hidden w-full h-full object-cover" />
+                            <svg id="svgLogoHeader" viewBox="0 0 240 120" class="w-11/12 h-auto select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <text x="50%" y="64%" dominant-baseline="middle" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="68" font-weight="400" letter-spacing="-1">Смысл</text>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span id="headerBrandTitle" class="font-display font-bold text-lg sm:text-xl tracking-tight text-smysl-greenDeep">Смысл</span>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-smysl-green/15 text-smysl-greenDark">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-smysl-green pulse-dot"></span>
+                                    <span id="openStatusBadge">Открыто</span>
+                                </span>
+                            </div>
+                            <p class="text-xs text-smysl-greenDeep/70 font-medium flex items-center gap-1 mt-0.5">
+                                <i class="ph-bold ph-clock text-smysl-green"></i>
+                                <span id="headerWorkingHours">Ежедневно 08:00 – 22:00</span>
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Выбор кофейни и действия -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Переключатель точки -->
+                    <button onclick="openModal('locationModal')" class="px-3 py-2 rounded-2xl bg-smysl-cream border border-smysl-green/25 hover:border-smysl-green text-left transition flex items-center gap-2 shadow-sm">
+                        <div class="w-7 h-7 rounded-xl bg-smysl-green/15 text-smysl-greenDark flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-map-pin text-base"></i>
+                        </div>
+                        <div class="hidden sm:block leading-tight">
+                            <span class="text-[10px] uppercase tracking-wider font-bold text-smysl-greenDark block">Кофейня</span>
+                            <span id="currentShopLabel" class="text-xs font-bold text-smysl-greenDeep">Ул. Центральная, 12</span>
+                        </div>
+                        <i class="ph-bold ph-caret-down text-xs text-smysl-greenDeep/60"></i>
+                    </button>
+
+                    <!-- Кнопка "Карта гостя SAMOSALE" -->
+                    <button onclick="openModal('loyaltyModal')" class="px-3.5 py-2.5 rounded-2xl bg-smysl-cream hover:bg-smysl-greenSoft text-smysl-greenDeep border border-smysl-green/25 font-semibold text-xs sm:text-sm transition flex items-center gap-2 shadow-sm">
+                        <i class="ph-fill ph-qr-code text-lg text-smysl-green"></i>
+                        <span class="hidden md:inline">Карта гостя</span>
+                        <span id="headerBonusBadge" class="px-1.5 py-0.5 rounded-md bg-smysl-green text-smysl-cream text-[11px] font-bold">Бонусы</span>
+                    </button>
+
+                    <!-- Кнопка Корзины / Предзаказа -->
+                    <button onclick="openModal('cartModal')" class="relative px-3.5 py-2.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-semibold text-xs sm:text-sm transition flex items-center gap-2 shadow-md">
+                        <i class="ph-bold ph-coffee text-lg"></i>
+                        <span class="hidden sm:inline">Предзаказ</span>
+                        <span id="headerCartBadge" class="px-1.5 py-0.5 rounded-full bg-smysl-cream text-smysl-greenDeep text-xs font-extrabold">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- КОНТЕЙНЕР ДИНАМИЧЕСКИХ СЕКЦИЙ (УПРАВЛЯЕТСЯ КОНСТРУКТОРОМ) -->
+        <main id="sectionsContainer" class="flex-1 flex flex-col">
+
+            <!-- СЕКЦИЯ 1: ГЛАВНЫЙ ЭКРАН (HERO) -->
+            <section id="sec-hero" data-section-id="hero" class="admin-section-wrapper relative px-4 sm:px-6 pt-5 pb-6">
+                <div class="admin-section-controls hidden absolute top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1.5 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
+                    <span class="font-bold text-smysl-cream/70">Блок: Главный экран</span>
+                    <button onclick="moveSection('hero', -1)" class="hover:text-smysl-caramel px-1" title="Переместить выше">↑</button>
+                    <button onclick="moveSection('hero', 1)" class="hover:text-smysl-caramel px-1" title="Переместить ниже">↓</button>
+                    <button onclick="toggleSectionVisibility('hero')" class="hover:text-red-300 px-1" title="Скрыть/Показать">👁</button>
+                </div>
+
+                <div class="max-w-6xl mx-auto">
+                    <div class="relative rounded-[32px] bg-smysl-green text-smysl-cream bg-craft-pattern overflow-hidden shadow-card border border-smysl-greenDark/30">
+                        <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-smysl-cream/10 blur-2xl pointer-events-none"></div>
+                        <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-smysl-greenDeep/20 blur-2xl pointer-events-none"></div>
+
+                        <div class="relative z-10 p-6 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                            <!-- Левая колонка -->
+                            <div class="lg:col-span-7 space-y-5">
+                                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-smysl-cream/15 backdrop-blur-sm border border-smysl-cream/25 text-xs sm:text-sm font-medium text-smysl-cream">
+                                    <i class="ph-fill ph-coffee-bean text-smysl-cream"></i>
+                                    <span id="editableHeroTag" onblur="saveInlineText('heroTag', this.innerText)">Спешелти зерно • Уютная атмосфера • С 08:00 до 22:00</span>
+                                </div>
+
+                                <div class="py-1">
+                                    <img id="customLogoHero" src="" alt="Кофейня Смысл" class="hidden max-h-28 sm:max-h-36 w-auto rounded-2xl mb-2 object-contain" />
+                                    <div id="svgLogoHero" class="inline-block">
+                                        <svg viewBox="0 0 420 145" class="w-64 sm:w-80 md:w-96 h-auto select-none -ml-2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <text x="5" y="108" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="132" letter-spacing="-2">Смысл</text>
+                                        </svg>
+                                    </div>
+                                    <h1 id="editableHeroTitle" onblur="saveInlineText('heroTitle', this.innerText)" class="font-display font-bold text-xl sm:text-2xl lg:text-3xl text-smysl-cream leading-snug mt-1">
+                                        Кофе, в котором есть тепло и смысл каждого утра
+                                    </h1>
+                                </div>
+
+                                <p id="editableHeroSubtitle" onblur="saveInlineText('heroSubtitle', this.innerText)" class="text-sm sm:text-base text-smysl-cream/90 max-w-xl leading-relaxed">
+                                    Заказывайте любимый капучино, латте или американо заранее без очереди, копите бонусы на карту гостя SAMOSALE и забирайте готовый напиток к вашему приходу.
+                                </p>
+
+                                <div class="pt-2 flex flex-wrap items-center gap-3">
+                                    <a href="#sec-menu" class="px-6 py-3.5 rounded-2xl bg-smysl-cream text-smysl-greenDeep hover:bg-white font-display font-semibold text-sm transition shadow-lg flex items-center gap-2">
+                                        <i class="ph-bold ph-cup-hot text-lg text-smysl-greenDark"></i>
+                                        <span>Выбрать напиток</span>
+                                    </a>
+
+                                    <button onclick="openModal('loyaltyModal')" class="px-5 py-3.5 rounded-2xl bg-smysl-greenDeep/40 hover:bg-smysl-greenDeep/60 text-smysl-cream border border-smysl-cream/30 font-semibold text-sm transition flex items-center gap-2">
+                                        <i class="ph-bold ph-qr-code text-lg"></i>
+                                        <span>Карта бонусов SAMOSALE</span>
+                                    </button>
+
+                                    <button onclick="triggerPwaInstall()" class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-smysl-cream text-xs sm:text-sm font-medium transition flex items-center gap-1.5" title="Установить иконку на телефон">
+                                        <i class="ph-bold ph-download-simple text-base"></i>
+                                        <span>Скачать приложение</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Правая колонка: Карточка АКЦИИ Скидка 20% -->
+                            <div class="lg:col-span-5">
+                                <div class="rounded-3xl bg-smysl-cream text-smysl-greenDeep p-6 sm:p-7 shadow-xl border-2 border-smysl-cream relative overflow-hidden">
+                                    <div class="flex items-center justify-between gap-2 mb-4">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-smysl-green text-smysl-cream text-xs font-bold uppercase tracking-wider">
+                                            <i class="ph-fill ph-percent"></i> Счастливые часы
+                                        </span>
+                                        <span id="promoLiveStatusBadge" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-smysl-caramel/15 text-smysl-caramel">
+                                            <i class="ph-fill ph-sparkle"></i> Акция активна
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-baseline gap-3 mb-2">
+                                        <span id="heroDiscountPercentText" class="font-display font-extrabold text-4xl sm:text-5xl text-smysl-greenDark">-20%</span>
+                                        <span class="font-display font-bold text-lg sm:text-xl text-smysl-greenDeep">по будням</span>
+                                    </div>
+
+                                    <div class="p-3.5 rounded-2xl bg-smysl-greenSoft/70 border border-smysl-green/20 mb-4">
+                                        <div class="flex items-center gap-2.5 text-smysl-greenDeep font-bold text-base sm:text-lg">
+                                            <i class="ph-fill ph-clock-afternoon text-2xl text-smysl-greenDark"></i>
+                                            <span id="editableHappyHoursTime" onblur="saveInlineText('happyHoursTime', this.innerText)">С 12:00 до 16:00 (Пн – Пт)</span>
+                                        </div>
+                                        <p class="text-xs text-smysl-greenDeep/75 mt-1">
+                                            Скидка на любимые напитки при заказе в кофейне или через онлайн-предзаказ.
+                                        </p>
+                                    </div>
+
+                                    <div class="flex items-center justify-between gap-3 pt-2 border-t border-smysl-green/15">
+                                        <div class="text-xs text-smysl-greenDeep/80">
+                                            <span class="font-bold block text-smysl-greenDeep">Цены в меню ниже:</span>
+                                            <span id="promoCardSubtext">Сейчас показаны с учётом скидки -20%</span>
+                                        </div>
+                                        <button onclick="toggleHappyHourDemo()" id="promoBannerToggleBtn" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-smysl-green text-smysl-cream hover:bg-smysl-greenDark transition shrink-0 shadow-sm">
+                                            Переключить цены
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- СЕКЦИЯ 2: БЫСТРЫЕ ПРЕИМУЩЕСТВА -->
+            <section id="sec-features" data-section-id="features" class="admin-section-wrapper relative px-4 sm:px-6 pb-6">
+                <div class="admin-section-controls hidden absolute -top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
+                    <span class="font-bold text-smysl-cream/70">Блок: Преимущества</span>
+                    <button onclick="moveSection('features', -1)" class="hover:text-smysl-caramel px-1">↑</button>
+                    <button onclick="moveSection('features', 1)" class="hover:text-smysl-caramel px-1">↓</button>
+                    <button onclick="toggleSectionVisibility('features')" class="hover:text-red-300 px-1">👁</button>
+                </div>
+
+                <div class="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-smysl-cream rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-clock text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Часы работы</div>
+                            <div id="featureHoursText" class="font-bold text-sm sm:text-base text-smysl-greenDeep">08:00 – 22:00</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-smysl-cream rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-smysl-caramel text-white flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-percent text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Будни 12:00–16:00</div>
+                            <div id="featureDiscountText" class="font-bold text-sm sm:text-base text-smysl-greenDeep">Скидка 20%</div>
+                        </div>
+                    </div>
+
+                    <div onclick="openModal('loyaltyModal')" class="cursor-pointer bg-smysl-cream hover:bg-smysl-greenSoft/60 transition rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-smysl-green/20 text-smysl-greenDark flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-gift text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Бонусы SAMOSALE</div>
+                            <div class="font-bold text-sm sm:text-base text-smysl-greenDeep">Кэшбэк до 10%</div>
+                        </div>
+                    </div>
+
+                    <div onclick="redirectToYtimesPreorder()" class="cursor-pointer bg-smysl-cream hover:bg-smysl-greenSoft/60 transition rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-smysl-green/20 text-smysl-greenDark flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-lightning text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Касса Ytimes</div>
+                            <div class="font-bold text-sm sm:text-base text-smysl-greenDeep">Готово за 7–10 мин</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- СЕКЦИЯ 3: ВИТРИНА МЕНЮ КОФЕЙНИ «СМЫСЛ» -->
+            <section id="sec-menu" data-section-id="menu" class="admin-section-wrapper relative px-4 sm:px-6 py-6">
+                <div class="admin-section-controls hidden absolute top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
+                    <span class="font-bold text-smysl-cream/70">Блок: Витрина меню</span>
+                    <button onclick="moveSection('menu', -1)" class="hover:text-smysl-caramel px-1">↑</button>
+                    <button onclick="moveSection('menu', 1)" class="hover:text-smysl-caramel px-1">↓</button>
+                    <button onclick="toggleSectionVisibility('menu')" class="hover:text-red-300 px-1">👁</button>
+                </div>
+
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+                        <div>
+                            <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-smysl-greenDark mb-1">
+                                <i class="ph-fill ph-coffee"></i> Кофейная карта «Смысл» • Синхронизация Ytimes
+                            </div>
+                            <h2 id="editableMenuHeading" onblur="saveInlineText('menuHeading', this.innerText)" class="font-display font-bold text-2xl sm:text-3xl text-smysl-greenDeep">
+                                Классика в каждом глотке
+                            </h2>
+                        </div>
+
+                        <div id="menuDiscountNotice" class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-smysl-greenSoft border border-smysl-green/30 text-xs sm:text-sm font-semibold text-smysl-greenDeep">
+                            <span class="w-2.5 h-2.5 rounded-full bg-smysl-green pulse-dot"></span>
+                            <span id="menuDiscountNoticeText">Действует будничная скидка <strong>-20% (12:00–16:00)</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Сетка напитков -->
+                    <div id="drinksGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+
+                    <!-- Плашка о прямом переходе в полное кассовое меню Ytimes -->
+                    <div class="mt-8 rounded-3xl bg-smysl-cream border border-smysl-green/25 p-5 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-5 shadow-soft">
+                        <div class="flex items-start sm:items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0 shadow-md">
+                                <i class="ph-fill ph-storefront text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-display font-bold text-base sm:text-lg text-smysl-greenDeep">
+                                    Полная витрина Ytimes и списание бонусов SAMOSALE
+                                </h3>
+                                <p class="text-xs sm:text-sm text-smysl-greenDeep/75 mt-0.5 max-w-2xl">
+                                    Соберите напиток прямо здесь на сайте или откройте полную кассовую витрину <strong>Ytimes</strong> со всеми десертами, сезонными напитками и автоматическим начислением баллов <strong>SAMOSALE</strong>.
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="redirectToYtimesPreorder()" class="w-full md:w-auto px-6 py-3.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2 shrink-0 shadow-md">
+                            <span>Открыть витрину Ytimes</span>
+                            <i class="ph-bold ph-arrow-up-right text-base"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- СЕКЦИЯ 4: БОНУСНАЯ КАРТА SAMOSALE И АДРЕСА -->
+            <section id="sec-loyalty" data-section-id="loyalty" class="admin-section-wrapper relative px-4 sm:px-6 py-8">
+                <div class="admin-section-controls hidden absolute top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
+                    <span class="font-bold text-smysl-cream/70">Блок: Лояльность и адреса</span>
+                    <button onclick="moveSection('loyalty', -1)" class="hover:text-smysl-caramel px-1">↑</button>
+                    <button onclick="moveSection('loyalty', 1)" class="hover:text-smysl-caramel px-1">↓</button>
+                    <button onclick="toggleSectionVisibility('loyalty')" class="hover:text-red-300 px-1">👁</button>
+                </div>
+
+                <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Карточка программы лояльности SAMOSALE -->
+                    <div class="lg:col-span-6 rounded-3xl bg-smysl-green text-smysl-cream p-6 sm:p-8 shadow-card relative overflow-hidden flex flex-col justify-between">
+                        <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-smysl-cream/10 pointer-events-none"></div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <span class="px-3 py-1 rounded-full bg-smysl-cream/20 text-smysl-cream text-xs font-bold">
+                                    Система лояльности SAMOSALE + Ytimes
+                                </span>
+                                <span class="font-script text-3xl text-smysl-cream">Смысл</span>
+                            </div>
+                            <h3 class="font-display font-bold text-xl sm:text-2xl mb-2">
+                                Электронная карта гостя в вашем телефоне
+                            </h3>
+                            <p class="text-sm text-smysl-cream/85 leading-relaxed mb-6">
+                                Авторизуйтесь по номеру телефона за 10 секунд. Показывайте QR-код из приложения бариста на кассе <strong>Ytimes</strong> — копите кэшбэк в <strong>SAMOSALE</strong> с каждой чашки и списывайте бонусы на любимый кофе.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                            <button onclick="openModal('loyaltyModal')" class="px-5 py-3 rounded-2xl bg-smysl-cream text-smysl-greenDeep hover:bg-white font-bold text-sm transition flex items-center gap-2 shadow-md">
+                                <i class="ph-bold ph-qr-code text-lg text-smysl-greenDark"></i>
+                                <span>Открыть QR-карту SAMOSALE</span>
+                            </button>
+                            <button onclick="redirectToSamosaleBot()" class="px-4 py-3 rounded-2xl bg-smysl-greenDeep/35 hover:bg-smysl-greenDeep/55 text-smysl-cream border border-smysl-cream/25 font-semibold text-sm transition flex items-center gap-2">
+                                <i class="ph-fill ph-telegram-logo text-lg"></i>
+                                <span>Telegram-бот SAMOSALE</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Карточка локаций -->
+                    <div class="lg:col-span-6 rounded-3xl bg-smysl-cream border border-smysl-green/20 p-6 sm:p-8 shadow-soft flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-4">
+                                <span class="px-3 py-1 rounded-full bg-smysl-green/15 text-smysl-greenDark text-xs font-bold">
+                                    Ждём вас каждый день
+                                </span>
+                                <span class="text-xs font-bold text-smysl-greenDeep flex items-center gap-1">
+                                    <i class="ph-fill ph-clock text-smysl-green"></i>
+                                    <span id="locationsHoursBadge">08:00 – 22:00</span>
+                                </span>
+                            </div>
+
+                            <h3 class="font-display font-bold text-xl sm:text-2xl text-smysl-greenDeep mb-4">
+                                Адреса и часы работы «Смысл»
+                            </h3>
+
+                            <div id="locationsListSection" class="space-y-3 mb-5"></div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-smysl-green/15 text-xs text-smysl-greenDeep/75">
+                            <span>🎉 Будни 12:00–16:00: скидка <strong id="locationsDiscountFooter">20%</strong> во всех точках</span>
+                            <button id="editLocationsBtn" onclick="openAdminTab('locations')" class="hidden font-bold text-smysl-greenDark hover:underline items-center gap-1">
+                                <i class="ph-bold ph-pencil-simple"></i> Управление точками
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ================= ПОДВАЛ (FOOTER) ================= -->
+        <footer class="mt-auto bg-smysl-greenDeep text-smysl-cream/85 px-4 sm:px-6 py-8 pb-24 sm:pb-10">
+            <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl bg-smysl-green flex items-center justify-center shrink-0">
+                        <span class="font-script text-2xl text-smysl-cream">Смысл</span>
+                    </div>
+                    <div>
+                        <div class="font-display font-bold text-smysl-cream text-base">Кофейня «Смысл»</div>
+                        <div class="text-xs text-smysl-cream/65">Синхронизировано с кассой Ytimes и системой лояльности SAMOSALE</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2.5 text-xs">
+                    <button onclick="openModal('loyaltyModal')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition">Карта SAMOSALE</button>
+                    <button onclick="triggerPwaInstall()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition">Установить приложение</button>
+                    <!-- Скрытая кнопка входа в визуальный конструктор для администратора -->
+                    <button onclick="promptAdminLogin()" id="footerAdminBtn" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-smysl-cream/60 hover:text-smysl-cream transition flex items-center gap-1.5">
+                        <i class="ph-bold ph-lock-key"></i>
+                        <span>Вход для владельца</span>
+                    </button>
+                </div>
+            </div>
+        </footer>
+
+        <!-- ================= НИЖНЯЯ НАВИГАЦИЯ (ДЛЯ МОБИЛЬНЫХ И PWA) ================= -->
+        <nav id="mobileBottomNav" class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-smysl-creamLight/95 backdrop-blur-md border-t border-smysl-green/20 px-3 py-2 flex items-center justify-around shadow-lg">
+            <a href="#sec-menu" class="flex flex-col items-center gap-0.5 text-smysl-greenDark font-bold text-[11px] py-1 px-3 rounded-xl">
+                <i class="ph-fill ph-coffee text-xl"></i>
+                <span>Меню</span>
+            </a>
+            <button onclick="toggleHappyHourDemo()" class="flex flex-col items-center gap-0.5 text-smysl-greenDeep/75 hover:text-smysl-greenDark font-medium text-[11px] py-1 px-3 rounded-xl">
+                <i class="ph-fill ph-percent text-xl text-smysl-caramel"></i>
+                <span>Акция -20%</span>
+            </button>
+            <button onclick="openModal('loyaltyModal')" class="flex flex-col items-center gap-0.5 text-smysl-greenDeep/75 hover:text-smysl-greenDark font-medium text-[11px] py-1 px-3 rounded-xl">
+                <i class="ph-fill ph-qr-code text-xl text-smysl-green"></i>
+                <span>Бонусы</span>
+            </button>
+            <button onclick="openModal('cartModal')" class="relative flex flex-col items-center gap-0.5 text-smysl-greenDeep/75 hover:text-smysl-greenDark font-medium text-[11px] py-1 px-3 rounded-xl">
+                <i class="ph-fill ph-shopping-bag text-xl"></i>
+                <span>Заказ</span>
+                <span id="mobileCartBadge" class="absolute top-0.5 right-2 w-4 h-4 rounded-full bg-smysl-green text-smysl-cream text-[10px] font-bold flex items-center justify-center">0</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- МОДАЛЬНОЕ ОКНО 1: КАСТОМИЗАТОР НАПИТКА                                     -->
+    <!-- ========================================================================= -->
+    <div id="drinkModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-lg rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up max-h-[92vh] flex flex-col">
+            <div class="relative bg-smysl-green text-smysl-cream p-6 flex items-center gap-4">
+                <button onclick="closeModal('drinkModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/20 hover:bg-black/30 text-smysl-cream flex items-center justify-center transition">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+                <div id="customizerDrinkArt" class="w-20 h-20 rounded-2xl bg-smysl-cream/15 border border-smysl-cream/25 flex items-center justify-center shrink-0"></div>
+                <div class="pr-8">
+                    <span id="customizerDiscountTag" class="inline-block px-2.5 py-0.5 rounded-full bg-smysl-cream text-smysl-greenDeep text-[11px] font-extrabold mb-1">
+                        Скидка -20% (12:00–16:00)
+                    </span>
+                    <h3 id="customizerTitle" class="font-display font-bold text-xl sm:text-2xl">Капучино</h3>
+                    <p id="customizerDesc" class="text-xs text-smysl-cream/85 mt-0.5"></p>
+                </div>
+            </div>
+
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDeep/70 mb-2.5">1. Выберите объём чашки</label>
+                    <div id="customizerVolumes" class="grid grid-cols-3 gap-2.5"></div>
+                </div>
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDeep/70 mb-2.5">2. На каком молоке приготовить?</label>
+                    <div id="customizerMilks" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+                </div>
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDeep/70 mb-2.5">3. Добавить сироп по вкусу</label>
+                    <div id="customizerSyrups" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-smysl-cream border border-smysl-green/15 flex items-center justify-between text-xs text-smysl-greenDeep/80">
+                    <span>Пищевая ценность (на порцию):</span>
+                    <span id="customizerKbzhu" class="font-bold text-smysl-greenDeep"></span>
+                </div>
+            </div>
+
+            <div class="p-4 sm:p-5 bg-smysl-cream border-t border-smysl-green/15 flex flex-col sm:flex-row items-center gap-3">
+                <div class="w-full sm:w-auto flex items-baseline justify-between sm:block px-1">
+                    <span class="text-xs text-smysl-greenDeep/70 block">Итого за напиток:</span>
+                    <div class="flex items-baseline gap-2">
+                        <span id="customizerFinalPrice" class="font-display font-extrabold text-2xl text-smysl-greenDeep">176 ₽</span>
+                        <span id="customizerOldPrice" class="text-sm text-smysl-greenDeep/45 line-through font-semibold">220 ₽</span>
+                    </div>
+                </div>
+
+                <div class="w-full sm:flex-1 flex items-center gap-2">
+                    <button onclick="confirmAddToCart()" class="flex-1 py-3.5 px-5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-sm transition flex items-center justify-center gap-2 shadow-md">
+                        <i class="ph-bold ph-plus-circle text-lg"></i>
+                        <span>В предзаказ</span>
+                    </button>
+                    <button onclick="redirectToYtimesPreorder()" class="py-3.5 px-4 rounded-2xl bg-smysl-greenSoft hover:bg-smysl-green/20 text-smysl-greenDeep font-semibold text-xs transition shrink-0" title="Заказать сразу в витрине Ytimes">
+                        В Ytimes ↗
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- МОДАЛЬНОЕ ОКНО 2: КАРТА ЛОЯЛЬНОСТИ SAMOSALE + СКАНЕР КАССЫ YTIMES          -->
+    <!-- ========================================================================= -->
+    <div id="loyaltyModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-md rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up">
+            <div class="p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-smysl-green"></span>
+                        <span class="font-display font-bold text-base text-smysl-greenDeep">Бонусная карта SAMOSALE</span>
+                    </div>
+                    <button onclick="closeModal('loyaltyModal')" class="w-8 h-8 rounded-full bg-smysl-green/10 hover:bg-smysl-green/20 text-smysl-greenDeep flex items-center justify-center">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+
+                <!-- Блок авторизации гостя по телефону -->
+                <div id="samosaleAuthBox" class="mb-4 p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25">
+                    <label class="block text-xs font-bold text-smysl-greenDeep mb-1">
+                        Введите номер телефона для привязки карты SAMOSALE:
+                    </label>
+                    <div class="flex gap-2">
+                        <input id="samosalePhoneInput" type="tel" placeholder="+7 (999) 123-45-67" class="flex-1 px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
+                        <button onclick="loginSamosaleGuest()" class="px-4 py-2 rounded-xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-bold text-xs transition shrink-0">
+                            Обновить QR
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Сама карта в фирменном цвете -->
+                <div class="rounded-3xl bg-smysl-green text-smysl-cream p-6 shadow-card relative overflow-hidden mb-5">
+                    <div class="flex items-start justify-between gap-2 mb-5">
+                        <div>
+                            <div class="font-script text-4xl text-smysl-cream leading-none">Смысл</div>
+                            <span id="samosaleCardHolder" class="text-[11px] text-smysl-cream/85 uppercase tracking-wider font-semibold block mt-1">Гость клуба • SAMOSALE</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-smysl-cream/80 block">Баланс бонусов</span>
+                            <span id="samosalePointsDisplay" class="font-display font-bold text-2xl text-smysl-cream">250 Б</span>
+                            <span id="samosaleCashbackDisplay" class="block text-[11px] text-smysl-cream/90 font-semibold">Кэшбэк 7% • 1 Б = 1 ₽</span>
+                        </div>
+                    </div>
+
+                    <!-- Динамический QR-код для сканирования бариста в Ytimes -->
+                    <div class="bg-smysl-cream rounded-2xl p-4 flex items-center justify-between gap-4 text-smysl-greenDeep">
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-smysl-greenDark block">Покажите бариста на кассе</span>
+                            <div class="font-display font-bold text-sm sm:text-base mt-0.5">Сканирование в Ytimes</div>
+                            <p id="samosaleCardNumberText" class="text-xs text-smysl-greenDeep/70 mt-1 font-mono">Карта: #SMYSL-8842</p>
+                        </div>
+                        <div class="w-24 h-24 bg-white p-2 rounded-xl border border-smysl-green/20 shrink-0 flex items-center justify-center overflow-hidden">
+                            <img id="samosaleQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=SMYSL-SAMOSALE-8842" alt="QR код карты SAMOSALE" class="w-full h-full object-contain" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопки перехода в SAMOSALE / Wallet -->
+                <div class="space-y-2.5">
+                    <button onclick="redirectToSamosaleBot()" class="w-full py-3.5 px-5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-sm transition flex items-center justify-center gap-2 shadow-md">
+                        <i class="ph-fill ph-telegram-logo text-lg"></i>
+                        <span>Открыть карту в Telegram-боте SAMOSALE</span>
+                    </button>
+                    <button onclick="redirectToSamosaleWallet()" class="w-full py-3 px-5 rounded-2xl bg-smysl-cream hover:bg-smysl-greenSoft text-smysl-greenDeep border border-smysl-green/25 font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-wallet text-lg text-smysl-greenDark"></i>
+                        <span>Добавить карту в Apple Wallet / Google Pay</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- МОДАЛЬНОЕ ОКНО 3: КОРЗИНА И ПРЕДЗАКАЗ (СВЯЗКА YTIMES + SAMOSALE)          -->
+    <!-- ========================================================================= -->
+    <div id="cartModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-lg rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up max-h-[92vh] flex flex-col">
+            <div class="p-5 sm:p-6 bg-smysl-cream border-b border-smysl-green/15 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center">
+                        <i class="ph-fill ph-coffee text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-lg text-smysl-greenDeep">Ваш предзаказ в «Смысл»</h3>
+                        <p id="cartLocationSubtitle" class="text-xs text-smysl-greenDeep/70"></p>
+                    </div>
+                </div>
+                <button onclick="closeModal('cartModal')" class="w-9 h-9 rounded-full bg-smysl-green/10 hover:bg-smysl-green/20 text-smysl-greenDeep flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-4">
+                <div id="cartItemsContainer" class="space-y-3"></div>
+
+                <div id="cartCheckoutOptions" class="space-y-4 pt-3 border-t border-smysl-green/15">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-smysl-greenDeep/70 mb-2">
+                            К какому времени приготовить?
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" onclick="selectPickupTime('Через 7–10 мин', this)" class="pickup-time-btn py-2.5 px-3 rounded-xl text-xs font-bold bg-smysl-green text-smysl-cream">Через 7–10 мин</button>
+                            <button type="button" onclick="selectPickupTime('Через 15 мин', this)" class="pickup-time-btn py-2.5 px-3 rounded-xl text-xs font-semibold bg-smysl-cream border border-smysl-green/20 text-smysl-greenDeep">Через 15 мин</button>
+                            <button type="button" onclick="selectPickupTime('Через 30 мин', this)" class="pickup-time-btn py-2.5 px-3 rounded-xl text-xs font-semibold bg-smysl-cream border border-smysl-green/20 text-smysl-greenDeep">Через 30 мин</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-smysl-greenDeep/75 mb-1">Ваше имя</label>
+                            <input id="guestNameInput" type="text" placeholder="Например, Анна" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-smysl-greenDeep/75 mb-1">Телефон (для бонусов SAMOSALE)</label>
+                            <input id="guestPhoneInput" type="tel" placeholder="+7 (999) 000-00-00" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 bg-smysl-cream border-t border-smysl-green/15 space-y-3">
+                <div class="flex items-center justify-between text-sm">
+                    <div>
+                        <span class="text-smysl-greenDeep/75 font-medium block">Сумма заказа:</span>
+                        <span id="cartSamosaleEarnText" class="text-[11px] font-bold text-smysl-greenDark">+0 бонусов на карту SAMOSALE</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span id="cartTotalAmount" class="font-display font-extrabold text-xl text-smysl-greenDeep">0 ₽</span>
+                        <span id="cartSavedBadge" class="hidden px-2 py-0.5 rounded-full bg-smysl-caramel/15 text-smysl-caramel text-xs font-bold">Скидка -20%</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <button onclick="submitQuickOrder()" class="py-3.5 px-4 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md">
+                        <i class="ph-bold ph-check-circle text-lg"></i>
+                        <span>Отправить на кассу</span>
+                    </button>
+                    <button onclick="redirectToYtimesPreorder()" class="py-3.5 px-4 rounded-2xl bg-smysl-greenDeep hover:bg-black text-smysl-cream font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                        <span>Оплатить в витрине Ytimes</span>
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- МОДАЛЬНОЕ ОКНО 4: ВЫБОР КОФЕЙНИ                                           -->
+    <!-- ========================================================================= -->
+    <div id="locationModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-md rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 p-6 animate-fade-up">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display font-bold text-lg text-smysl-greenDeep">Выберите кофейню «Смысл»</h3>
+                <button onclick="closeModal('locationModal')" class="w-8 h-8 rounded-full bg-smysl-green/10 text-smysl-greenDeep flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <p class="text-xs text-smysl-greenDeep/70 mb-4">
+                Во всех наших кофейнях действует единая бонусная карта <strong>SAMOSALE</strong> и касса <strong>Ytimes</strong>.
+            </p>
+            <div id="modalLocationsContainer" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- МОДАЛЬНОЕ ОКНО 5: УСТАНОВКА ПРИЛОЖЕНИЯ (PWA)                              -->
+    <!-- ========================================================================= -->
+    <div id="pwaModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-md rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 p-6 animate-fade-up">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-smysl-green flex items-center justify-center text-smysl-cream font-script text-xl">Смысл</div>
+                    <h3 class="font-display font-bold text-base sm:text-lg text-smysl-greenDeep">Установка приложения</h3>
+                </div>
+                <button onclick="closeModal('pwaModal')" class="w-8 h-8 rounded-full bg-smysl-green/10 text-smysl-greenDeep flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs sm:text-sm text-smysl-greenDeep/85">
+                <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/20">
+                    <div class="font-bold text-smysl-greenDeep flex items-center gap-2 mb-1">
+                        <i class="ph-fill ph-apple-logo text-lg text-smysl-greenDark"></i> На iPhone (Safari):
+                    </div>
+                    <p>Нажмите иконку <strong>«Поделиться»</strong> внизу браузера и выберите пункт <strong>«На экран „Домой“»</strong>. На экране появится зелёная иконка «Смысл».</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/20">
+                    <div class="font-bold text-smysl-greenDeep flex items-center gap-2 mb-1">
+                        <i class="ph-fill ph-android-logo text-lg text-smysl-greenDark"></i> На Android (Chrome):
+                    </div>
+                    <p>Нажмите на меню браузера (три точки в углу) и выберите <strong>«Установить приложение»</strong> или <strong>«Добавить на главный экран»</strong>.</p>
+                </div>
+            </div>
+
+            <button onclick="closeModal('pwaModal')" class="mt-5 w-full py-3 rounded-2xl bg-smysl-green text-smysl-cream font-bold text-sm">
+                Понятно, спасибо!
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- МОДАЛЬНОЕ ОКНО 6: ВИЗУАЛЬНЫЙ КОНСТРУКТОР И ИНТЕГРАЦИИ (ТОЛЬКО АДМИН)      -->
+    <!-- ========================================================================= -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-3xl rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up max-h-[92vh] flex flex-col">
+            
+            <div class="p-5 sm:p-6 bg-smysl-greenDeep text-smysl-cream flex items-center justify-between">
+                <div>
+                    <span class="text-[11px] uppercase tracking-wider text-smysl-cream/70 font-bold block">Внутренний конструктор администратора</span>
+                    <h3 class="font-display font-bold text-lg sm:text-xl">Управление сайтом «Смысл», SAMOSALE и Ytimes</h3>
+                </div>
+                <button onclick="closeModal('adminModal')" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-smysl-cream flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <!-- Вкладки админки -->
+            <div class="bg-smysl-cream border-b border-smysl-green/15 px-5 pt-3 flex gap-2 overflow-x-auto text-xs font-bold">
+                <button onclick="switchAdminTab('drinks')" id="tabBtn-drinks" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-smysl-green text-smysl-greenDeep whitespace-nowrap">
+                    ☕ Напитки и цены
+                </button>
+                <button onclick="switchAdminTab('locations')" id="tabBtn-locations" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 hover:text-smysl-greenDeep whitespace-nowrap">
+                    📍 Точки и Акция -20%
+                </button>
+                <button onclick="switchAdminTab('integrations')" id="tabBtn-integrations" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 hover:text-smysl-greenDeep whitespace-nowrap">
+                    🔗 SAMOSALE + Ytimes
+                </button>
+                <button onclick="switchAdminTab('cloud')" id="tabBtn-cloud" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 hover:text-smysl-greenDeep whitespace-nowrap">
+                    ☁️ База Supabase и Лого
+                </button>
+            </div>
+
+            <!-- Содержимое вкладок -->
+            <div class="p-5 sm:p-6 overflow-y-auto flex-1 text-sm space-y-5">
+
+                <!-- ВКЛАДКА 1: НАПИТКИ И МЕНЮ -->
+                <div id="adminTab-drinks" class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="font-bold text-smysl-greenDeep">Позиции в меню (редактирование и добавление)</div>
+                        <button onclick="addNewDrinkAdmin()" class="px-3.5 py-2 rounded-xl bg-smysl-green text-smysl-cream text-xs font-bold hover:bg-smysl-greenDark transition flex items-center gap-1">
+                            <i class="ph-bold ph-plus"></i> Добавить напиток
+                        </button>
+                    </div>
+                    <div id="adminDrinksList" class="space-y-3"></div>
+                </div>
+
+                <!-- ВКЛАДКА 2: ТОЧКИ КОФЕЙНИ И СКИДКА -->
+                <div id="adminTab-locations" class="hidden space-y-4">
+                    <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-3">
+                        <div class="font-bold text-smysl-greenDeep">График работы и размер скидки в счастливые часы</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Часы работы (в шапке и карточках):</label>
+                                <input id="adminWorkingHoursInput" type="text" class="w-full px-3.5 py-2 rounded-xl bg-white border border-smysl-green/25 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Процент скидки в будни (%):</label>
+                                <input id="adminDiscountPercentInput" type="number" class="w-full px-3.5 py-2 rounded-xl bg-white border border-smysl-green/25 text-sm font-bold">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="font-bold text-smysl-greenDeep">Адреса кофеен «Смысл»</div>
+                        <button onclick="addNewLocationAdmin()" class="px-3.5 py-2 rounded-xl bg-smysl-green text-smysl-cream text-xs font-bold hover:bg-smysl-greenDark transition flex items-center gap-1">
+                            <i class="ph-bold ph-plus"></i> Добавить точку
+                        </button>
+                    </div>
+                    <div id="adminLocationsList" class="space-y-3"></div>
+                </div>
+
+                <!-- ВКЛАДКА 3: SAMOSALE + YTIMES -->
+                <div id="adminTab-integrations" class="hidden space-y-4">
+                    <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-3">
+                        <div class="font-bold text-smysl-greenDeep flex items-center gap-2">
+                            <i class="ph-fill ph-gift text-smysl-green text-lg"></i>
+                            <span>Настройки системы лояльности SAMOSALE</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Ссылка на Telegram-бот SAMOSALE:</label>
+                                <input id="adminSamosaleBotUrl" type="url" placeholder="https://t.me/..." class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Ссылка на выпуск электронной карты Wallet:</label>
+                                <input id="adminSamosaleWalletUrl" type="url" placeholder="https://samosale.ru/..." class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">API-ключ SAMOSALE (опционально):</label>
+                                <input id="adminSamosaleApiKey" type="password" placeholder="Вставьте токен из ЛК SAMOSALE" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Базовый кэшбэк гостя (%):</label>
+                                <input id="adminSamosaleCashback" type="number" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-3">
+                        <div class="font-bold text-smysl-greenDeep flex items-center gap-2">
+                            <i class="ph-fill ph-storefront text-smysl-green text-lg"></i>
+                            <span>Настройки кассы и витрины Ytimes</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Ссылка на онлайн-витрину предзаказа Ytimes:</label>
+                                <input id="adminYtimesPreorderUrl" type="url" placeholder="https://ytimes.ru/..." class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">API-токен кассы Ytimes (для синхронизации):</label>
+                                <input id="adminYtimesApiKey" type="password" placeholder="Токен из панели Ytimes" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Webhook / Telegram Bot URL для мгновенного дублирования предзаказов бариста:</label>
+                            <input id="adminOrderWebhookUrl" type="url" placeholder="Необязательно: URL вебхука для уведомлений о заказах" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ВКЛАДКА 4: ОБЛАКО SUPABASE, ПАРОЛЬ И ЛОГОТИП -->
+                <div id="adminTab-cloud" class="hidden space-y-4">
+                    <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-3">
+                        <div class="font-bold text-smysl-greenDeep">1. Подключение облачной базы Supabase</div>
+                        <p class="text-xs text-smysl-greenDeep/70">
+                            Ваши ключи Supabase уже встроены в код! Все изменения в конструкторе сохраняются в таблицу <code>site_settings</code>:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Supabase Project URL:</label>
+                                <input id="adminSupabaseUrl" type="url" placeholder="https://xxxx.supabase.co" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Supabase Anon Public Key:</label>
+                                <input id="adminSupabaseKey" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR..." class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-3">
+                        <div class="font-bold text-smysl-greenDeep">2. Ваш логотип «Смысл» и пароль конструктора</div>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <label class="cursor-pointer px-4 py-2.5 rounded-xl bg-smysl-green text-smysl-cream font-semibold text-xs hover:bg-smysl-greenDark transition inline-flex items-center gap-2">
+                                <i class="ph-bold ph-upload-simple"></i>
+                                <span>Загрузить файл логотипа</span>
+                                <input type="file" accept="image/*" onchange="handleCustomLogoUpload(event)" class="hidden">
+                            </label>
+                            <button onclick="resetToSvgLogo()" class="px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-xs font-semibold text-smysl-greenDeep hover:bg-smysl-greenSoft transition">
+                                Вернуть векторный логотип
+                            </button>
+                        </div>
+                        <div class="pt-2">
+                            <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Пароль входа в конструктор (по умолчанию 1234):</label>
+                            <input id="adminNewPassword" type="text" placeholder="1234" class="w-48 px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="p-4 sm:p-5 bg-smysl-cream border-t border-smysl-green/15 flex items-center justify-between gap-3">
+                <button onclick="resetToFactoryDefaults()" class="px-3 py-2 rounded-xl text-xs font-semibold text-red-700 hover:bg-red-50 transition">
+                    Сбросить всё по умолчанию
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="closeModal('adminModal')" class="px-4 py-2.5 rounded-xl text-xs font-bold text-smysl-greenDeep/70 hover:text-smysl-greenDeep">
+                        Закрыть
+                    </button>
+                    <button onclick="saveAdminSettings()" class="px-6 py-2.5 rounded-xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-xs sm:text-sm transition shadow-md">
+                        Сохранить и опубликовать
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- УВЕДОМЛЕНИЕ (TOAST) -->
+    <div id="toastNotification" class="fixed bottom-20 sm:bottom-6 right-4 left-4 sm:left-auto sm:max-w-sm z-50 pointer-events-none opacity-0 translate-y-4 transition-all duration-300">
+        <div class="bg-smysl-greenDeep text-smysl-cream px-4 py-3.5 rounded-2xl shadow-2xl border border-smysl-green/40 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0">
+                <i id="toastIcon" class="ph-bold ph-check text-lg"></i>
+            </div>
+            <div class="text-xs sm:text-sm font-medium leading-snug" id="toastMessage">Готово!</div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ЯДРО ПЛАТФОРМЫ «СМЫСЛ» ================= -->
+    <script>
+        const STORAGE_KEY = 'smysl_platform_state_v2';
+
+        // Твои встроенные ключи Supabase
+        const DEFAULT_SUPABASE_URL = 'https://jbsjtvpkgofiwiazqczz.supabase.co';
+        const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2p0dnBrZ29maXdpYXpxY3p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MzY3OTUsImV4cCI6MjEwOTMxMjc5NX0.6rjCKrYI5r7zY8stG5CAA0L9Vrpz68IQ_XFM_RBSpSs';
+
+        // Базовое состояние платформы
+        const defaultAppState = {
+            adminPassword: '1234',
+            happyHourActive: true,
+            discountPercent: 20,
+            workingHours: '08:00 – 22:00',
+            customLogoDataUrl: '',
+            sectionOrder: ['hero', 'features', 'menu', 'loyalty'],
+            hiddenSections: [],
+            texts: {
+                heroTag: 'Спешелти зерно • Уютная атмосфера • С 08:00 до 22:00',
+                heroTitle: 'Кофе, в котором есть тепло и смысл каждого утра',
+                heroSubtitle: 'Заказывайте любимый капучино, латте или американо заранее без очереди, копите бонусы на карту гостя SAMOSALE и забирайте готовый напиток к вашему приходу.',
+                happyHoursTime: 'С 12:00 до 16:00 (Пн – Пт)',
+                menuHeading: 'Классика в каждом глотке'
+            },
+            samosale: {
+                botUrl: 'https://t.me/',
+                walletUrl: 'https://samosale.ru/',
+                apiKey: '',
+                cashbackPercent: 7,
+                guestPhone: '',
+                guestPoints: 250,
+                guestCardCode: 'SMYSL-8842'
+            },
+            ytimes: {
+                preorderUrl: 'https://ytimes.ru/',
+                apiKey: '',
+                orderWebhookUrl: ''
+            },
+            supabase: {
+                url: DEFAULT_SUPABASE_URL,
+                anonKey: DEFAULT_SUPABASE_KEY
+            },
+            selectedLocationId: 1,
+            pickupTime: 'Через 7–10 мин',
+            locations: [
+                {
+                    id: 1,
+                    name: 'Кофейня «Смысл» (Центр)',
+                    address: 'Ул. Центральная, 12',
+                    hours: 'Ежедневно 08:00 – 22:00'
+                },
+                {
+                    id: 2,
+                    name: 'Кофейня «Смысл» (Парк)',
+                    address: 'Пр-т Мира, 45',
+                    hours: 'Ежедневно 08:00 – 22:00'
+                }
+            ],
+            drinks: [
+                {
+                    id: 'cappuccino',
+                    title: 'Капучино',
+                    subtitle: 'Классика с бархатной пеной',
+                    description: 'Идеальный баланс насыщенного эспрессо из 100% арабики и шелковистого взбитого молока.',
+                    basePrice: 220,
+                    kbzhu: '140 ккал • Б 7г • Ж 7г • У 11г',
+                    badge: 'Хит «Смысла»',
+                    selectedVolIndex: 1,
+                    cupType: 'cappuccino'
+                },
+                {
+                    id: 'americano',
+                    title: 'Американо',
+                    subtitle: 'Чистый вкус спешелти зерна',
+                    description: 'Ароматный чёрный кофе на двойном шоте эспрессо с нотами тёмного шоколада, карамели и лесного ореха.',
+                    basePrice: 180,
+                    kbzhu: '15 ккал • Б 1г • Ж 0г • У 2г',
+                    badge: 'Бодрость 100%',
+                    selectedVolIndex: 0,
+                    cupType: 'americano'
+                },
+                {
+                    id: 'latte',
+                    title: 'Латте',
+                    subtitle: 'Нежный и сливочный',
+                    description: 'Мягкий кофейно-молочный напиток с преобладанием тёплого взбитого молока и лёгкой воздушной шапкой.',
+                    basePrice: 240,
+                    kbzhu: '175 ккал • Б 8г • Ж 8г • У 14г',
+                    badge: 'Нежный вкус',
+                    selectedVolIndex: 1,
+                    cupType: 'latte'
+                }
+            ],
+            volumes: [
+                { label: '250 мл', code: 'S', addPrice: 0 },
+                { label: '350 мл', code: 'M', addPrice: 50 },
+                { label: '450 мл', code: 'L', addPrice: 90 }
+            ],
+            milks: [
+                { label: 'Классическое', addPrice: 0 },
+                { label: 'Кокосовое', addPrice: 70 },
+                { label: 'Банановое', addPrice: 70 },
+                { label: 'Миндальное', addPrice: 70 },
+                { label: 'Овсяное', addPrice: 60 }
+            ],
+            syrups: [
+                { label: 'Без сиропа', addPrice: 0 },
+                { label: 'Солёная карамель', addPrice: 40 },
+                { label: 'Ваниль', addPrice: 40 },
+                { label: 'Лесной орех', addPrice: 40 },
+                { label: 'Лаванда', addPrice: 40 }
+            ],
+            cart: [],
+            activeCustomizer: {
+                drinkId: 'cappuccino',
+                volIndex: 1,
+                milkIndex: 0,
+                syrupIndex: 0
+            }
+        };
+
+        let appState = loadLocalState();
+        let isAdminMode = false;
+        let deferredPwaPrompt = null;
+
+        // Нормализация URL Supabase (если вставили с /rest/v1/, автоматически очищаем хвост)
+        function normalizeSupabaseBaseUrl(rawUrl) {
+            if (!rawUrl) return DEFAULT_SUPABASE_URL;
+            return rawUrl.trim().replace(/\/rest\/v1\/?$/i, '').replace(/\/$/, '');
+        }
+
+        function loadLocalState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return JSON.parse(JSON.stringify(defaultAppState));
+                const parsed = JSON.parse(raw);
+                const merged = Object.assign(JSON.parse(JSON.stringify(defaultAppState)), parsed);
+                if (!merged.supabase || !merged.supabase.url) {
+                    merged.supabase = { url: DEFAULT_SUPABASE_URL, anonKey: DEFAULT_SUPABASE_KEY };
+                } else {
+                    merged.supabase.url = normalizeSupabaseBaseUrl(merged.supabase.url);
+                    if (!merged.supabase.anonKey) merged.supabase.anonKey = DEFAULT_SUPABASE_KEY;
+                }
+                return merged;
+            } catch (e) {
+                return JSON.parse(JSON.stringify(defaultAppState));
+            }
+        }
+
+        // Иллюстрации стаканчиков
+        function getDrinkSvgIllustration(cupType) {
+            if (cupType === 'americano') {
+                return `
+                <svg viewBox="0 0 120 120" class="w-24 h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="60" cy="60" r="52" fill="#E9EFE0"/>
+                    <path d="M48 26 C45 20, 52 16, 49 10" stroke="#7B9244" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M60 24 C57 18, 64 14, 61 8" stroke="#7B9244" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M72 26 C69 20, 76 16, 73 10" stroke="#7B9244" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M35 38 H85 L79 96 C78.5 101 74 105 69 105 H51 C46 105 41.5 101 41 96 L35 38Z" fill="#2C221E"/>
+                    <path d="M37 56 H83 L80.5 80 H39.5 L37 56Z" fill="#7B9244"/>
+                    <text x="60" y="72" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="16">Смысл</text>
+                    <ellipse cx="60" cy="38" rx="25" ry="5" fill="#D48C46"/>
+                    <ellipse cx="60" cy="38" rx="21" ry="3.5" fill="#3B2820"/>
+                </svg>`;
+            } else if (cupType === 'latte') {
+                return `
+                <svg viewBox="0 0 120 120" class="w-24 h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="60" cy="60" r="52" fill="#E9EFE0"/>
+                    <path d="M36 32 H84 L78 98 C77.5 102 74 105 69 105 H51 C46 105 42.5 102 42 98 L36 32Z" fill="#F6F4E8" stroke="#7B9244" stroke-width="2"/>
+                    <path d="M38 50 H82 L80 74 H40 L38 50Z" fill="#D48C46" opacity="0.85"/>
+                    <path d="M37 60 H83 L80 82 H40 L37 60Z" fill="#7B9244"/>
+                    <text x="60" y="75" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="16">Смысл</text>
+                    <path d="M36 32 C36 23, 84 23, 84 32 Z" fill="#FFFFFF"/>
+                    <ellipse cx="60" cy="32" rx="24" ry="5" fill="#FAF9F3" stroke="#D48C46" stroke-width="1.5"/>
+                </svg>`;
+            }
+            return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="52" fill="#E9EFE0"/>
+                <path d="M82 50 H90 C96 50 99 55 99 61 C99 67 96 72 90 72 H80" stroke="#7B9244" stroke-width="5" stroke-linecap="round"/>
+                <path d="M28 42 H86 L81 84 C79.5 96 70 102 57 102 C44 102 34.5 96 33 84 L28 42Z" fill="#7B9244"/>
+                <text x="57" y="76" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="21">Смысл</text>
+                <ellipse cx="57" cy="42" rx="29" ry="8" fill="#D48C46"/>
+                <ellipse cx="57" cy="42" rx="25" ry="6" fill="#F6F4E8"/>
+                <path d="M57 45 C54 42 51 39 53 37 C55 36 57 38 57 39 C57 38 59 36 61 37 C63 39 60 42 57 45Z" fill="#D48C46"/>
+            </svg>`;
+        }
+
+        function calculatePrice(basePrice, volAddPrice = 0, modifiersAddPrice = 0) {
+            const regularTotal = basePrice + volAddPrice + modifiersAddPrice;
+            if (appState.happyHourActive) {
+                const discounted = Math.round(regularTotal * (1 - appState.discountPercent / 100));
+                return { finalPrice: discounted, regularPrice: regularTotal, isDiscounted: true };
+            }
+            return { finalPrice: regularTotal, regularPrice: regularTotal, isDiscounted: false };
+        }
+
+        // ================= ВХОД В РЕЖИМ КОНСТРУКТОРА (ТОЛЬКО АДМИН) =================
+        function promptAdminLogin() {
+            if (isAdminMode) {
+                openModal('adminModal');
+                return;
+            }
+            const pass = prompt('Введите пароль владельца кофейни «Смысл» (по умолчанию: 1234):');
+            if (pass === null) return;
+            if (pass === appState.adminPassword) {
+                enableAdminMode();
+                showToast('Режим визуального конструктора активирован! Теперь вы можете редактировать тексты и блоки.');
+            } else {
+                showToast('Неверный пароль администратора');
+            }
+        }
+
+        function enableAdminMode() {
+            isAdminMode = true;
+            document.body.classList.add('admin-mode-active');
+            document.getElementById('ownerTopBar').classList.remove('hidden');
+            document.getElementById('mainSiteHeader').classList.replace('top-0', 'top-[45px]');
+            document.getElementById('editLocationsBtn').classList.replace('hidden', 'inline-flex');
+            document.getElementById('footerAdminBtn').innerHTML = '<i class="ph-bold ph-sliders-horizontal"></i><span>Открыть конструктор</span>';
+
+            ['editableHeroTag', 'editableHeroTitle', 'editableHeroSubtitle', 'editableHappyHoursTime', 'editableMenuHeading'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.setAttribute('contenteditable', 'true');
+            });
+
+            document.querySelectorAll('.admin-section-controls').forEach(el => {
+                el.classList.remove('hidden');
+                el.classList.add('flex');
+            });
+
+            applySectionOrderAndVisibility();
+            renderDrinksGrid();
+        }
+
+        function logoutAdmin() {
+            isAdminMode = false;
+            document.body.classList.remove('admin-mode-active');
+            document.getElementById('ownerTopBar').classList.add('hidden');
+            document.getElementById('mainSiteHeader').classList.replace('top-[45px]', 'top-0');
+            document.getElementById('editLocationsBtn').classList.replace('inline-flex', 'hidden');
+            document.getElementById('footerAdminBtn').innerHTML = '<i class="ph-bold ph-lock-key"></i><span>Вход для владельца</span>';
+
+            ['editableHeroTag', 'editableHeroTitle', 'editableHeroSubtitle', 'editableHappyHoursTime', 'editableMenuHeading'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.removeAttribute('contenteditable');
+            });
+
+            document.querySelectorAll('.admin-section-controls').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+
+            applySectionOrderAndVisibility();
+            renderDrinksGrid();
+            showToast('Вы вышли из режима администратора. Сайт показан глазами гостя.');
+        }
+
+        function saveInlineText(key, value) {
+            if (!isAdminMode) return;
+            appState.texts[key] = value.trim();
+            saveStateToStorageAndCloud(true);
+        }
+
+        function applySectionOrderAndVisibility() {
+            const container = document.getElementById('sectionsContainer');
+            appState.sectionOrder.forEach(secKey => {
+                const secEl = document.getElementById(`sec-${secKey}`);
+                if (!secEl) return;
+                container.appendChild(secEl);
+                const isHidden = appState.hiddenSections.includes(secKey);
+                if (isHidden && !isAdminMode) {
+                    secEl.classList.add('hidden');
+                } else {
+                    secEl.classList.remove('hidden');
+                    secEl.style.opacity = isHidden && isAdminMode ? '0.45' : '1';
+                }
+            });
+        }
+
+        function moveSection(secKey, delta) {
+            const idx = appState.sectionOrder.indexOf(secKey);
+            if (idx === -1) return;
+            const targetIdx = idx + delta;
+            if (targetIdx < 0 || targetIdx >= appState.sectionOrder.length) return;
+            const temp = appState.sectionOrder[idx];
+            appState.sectionOrder[idx] = appState.sectionOrder[targetIdx];
+            appState.sectionOrder[targetIdx] = temp;
+            applySectionOrderAndVisibility();
+            saveStateToStorageAndCloud(true);
+        }
+
+        function toggleSectionVisibility(secKey) {
+            const idx = appState.hiddenSections.indexOf(secKey);
+            if (idx === -1) {
+                appState.hiddenSections.push(secKey);
+                showToast('Секция скрыта для гостей (в режиме админа она полупрозрачная)');
+            } else {
+                appState.hiddenSections.splice(idx, 1);
+                showToast('Секция снова видна всем гостям');
+            }
+            applySectionOrderAndVisibility();
+            saveStateToStorageAndCloud(true);
+        }
+
+        // ================= РЕНДЕР МЕНЮ НАПИТКОВ =================
+        function renderDrinksGrid() {
+            const grid = document.getElementById('drinksGrid');
+            const cardsHtml = appState.drinks.map((drink) => {
+                const vol = appState.volumes[drink.selectedVolIndex] || appState.volumes[0];
+                const priceObj = calculatePrice(drink.basePrice, vol.addPrice, 0);
+
+                const volumeButtonsHtml = appState.volumes.map((v, vIdx) => {
+                    const isSelected = vIdx === drink.selectedVolIndex;
+                    return `
+                        <button type="button" onclick="selectCardVolume('${drink.id}', ${vIdx})"
+                            class="py-1.5 px-2.5 rounded-xl text-xs font-bold transition ${
+                                isSelected
+                                    ? 'bg-smysl-green text-smysl-cream shadow-sm'
+                                    : 'bg-smysl-creamLight text-smysl-greenDeep/75 hover:bg-smysl-greenSoft border border-smysl-green/15'
+                            }">
+                            ${v.label}
+                        </button>
+                    `;
+                }).join('');
+
+                return `
+                <div class="rounded-[28px] bg-smysl-cream border border-smysl-green/20 p-5 sm:p-6 shadow-soft hover:shadow-card transition-all flex flex-col justify-between relative overflow-hidden group">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-4">
+                            <span class="px-3 py-1 rounded-full bg-smysl-green/15 text-smysl-greenDark text-xs font-bold">
+                                ${drink.badge}
+                            </span>
+                            <div class="flex items-center gap-1">
+                                ${priceObj.isDiscounted ? `
+                                    <span class="px-2.5 py-1 rounded-full bg-smysl-caramel text-white text-xs font-extrabold flex items-center gap-1 shadow-sm">
+                                        <i class="ph-fill ph-clock"></i> -${appState.discountPercent}%
+                                    </span>
+                                ` : ''}
+                                ${isAdminMode ? `
+                                    <button onclick="openAdminTab('drinks')" class="w-7 h-7 rounded-lg bg-smysl-greenDeep text-smysl-cream flex items-center justify-center text-xs hover:bg-smysl-green" title="Редактировать напиток">
+                                        <i class="ph-bold ph-pencil-simple"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                ${getDrinkSvgIllustration(drink.cupType)}
+                            </div>
+                            <div>
+                                <h3 class="font-display font-bold text-xl text-smysl-greenDeep">${drink.title}</h3>
+                                <p class="text-xs font-semibold text-smysl-greenDark mt-0.5">${drink.subtitle}</p>
+                                <span class="inline-block text-[11px] text-smysl-greenDeep/60 mt-1.5">${drink.kbzhu}</span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs sm:text-sm text-smysl-greenDeep/80 leading-relaxed mb-5">
+                            ${drink.description}
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-smysl-green/15 space-y-4">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-bold text-smysl-greenDeep/70">Объём:</span>
+                            <div class="grid grid-cols-3 gap-1.5">
+                                ${volumeButtonsHtml}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-3 pt-1">
+                            <div>
+                                <span class="text-[11px] text-smysl-greenDeep/60 block">Цена сейчас:</span>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-display font-extrabold text-2xl text-smysl-greenDeep">${priceObj.finalPrice} ₽</span>
+                                    ${priceObj.isDiscounted ? `
+                                        <span class="text-sm text-smysl-greenDeep/45 line-through font-bold">${priceObj.regularPrice} ₽</span>
+                                    ` : ''}
+                                </div>
+                            </div>
+
+                            <button onclick="openDrinkCustomizer('${drink.id}')" class="px-4 py-3 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-md">
+                                <i class="ph-bold ph-plus"></i>
+                                <span>Выбрать</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            const addCardHtml = isAdminMode ? `
+                <div onclick="addNewDrinkAdmin(); openAdminTab('drinks');" class="cursor-pointer rounded-[28px] border-2 border-dashed border-smysl-green/40 hover:border-smysl-green bg-smysl-cream/50 hover:bg-smysl-cream p-6 flex flex-col items-center justify-center text-center min-h-[280px] transition group">
+                    <div class="w-16 h-16 rounded-2xl bg-smysl-green/15 group-hover:bg-smysl-green text-smysl-greenDark group-hover:text-smysl-cream flex items-center justify-center transition mb-3">
+                        <i class="ph-bold ph-plus text-2xl"></i>
+                    </div>
+                    <div class="font-display font-bold text-base text-smysl-greenDeep">Добавить напиток в меню</div>
+                    <p class="text-xs text-smysl-greenDeep/65 mt-1 max-w-xs">Нажмите, чтобы добавить новую позицию в кофейную карту «Смысл»</p>
+                </div>
+            ` : '';
+
+            grid.innerHTML = cardsHtml + addCardHtml;
+        }
+
+        function selectCardVolume(drinkId, volIdx) {
+            const drink = appState.drinks.find(d => d.id === drinkId);
+            if (drink) {
+                drink.selectedVolIndex = volIdx;
+                renderDrinksGrid();
+            }
+        }
+
+        // ================= КАСТОМИЗАТОР НАПИТКА =================
+        function openDrinkCustomizer(drinkId) {
+            const drink = appState.drinks.find(d => d.id === drinkId);
+            if (!drink) return;
+            appState.activeCustomizer = {
+                drinkId: drink.id,
+                volIndex: drink.selectedVolIndex || 0,
+                milkIndex: 0,
+                syrupIndex: 0
+            };
+            updateCustomizerView();
+            openModal('drinkModal');
+        }
+
+        function updateCustomizerView() {
+            const { drinkId, volIndex, milkIndex, syrupIndex } = appState.activeCustomizer;
+            const drink = appState.drinks.find(d => d.id === drinkId);
+            if (!drink) return;
+
+            document.getElementById('customizerTitle').textContent = drink.title;
+            document.getElementById('customizerDesc').textContent = drink.description;
+            document.getElementById('customizerKbzhu').textContent = drink.kbzhu;
+            document.getElementById('customizerDrinkArt').innerHTML = getDrinkSvgIllustration(drink.cupType);
+
+            const discountTag = document.getElementById('customizerDiscountTag');
+            discountTag.textContent = `Скидка -${appState.discountPercent}% (12:00–16:00)`;
+            discountTag.style.display = appState.happyHourActive ? 'inline-block' : 'none';
+
+            document.getElementById('customizerVolumes').innerHTML = appState.volumes.map((v, idx) => `
+                <button type="button" onclick="setCustomizerOption('volIndex', ${idx})"
+                    class="p-3 rounded-2xl border text-left transition ${
+                        idx === volIndex
+                            ? 'bg-smysl-green text-smysl-cream border-smysl-green shadow-sm'
+                            : 'bg-white text-smysl-greenDeep border-smysl-green/20 hover:bg-smysl-greenSoft/50'
+                    }">
+                    <div class="font-display font-bold text-sm">${v.label}</div>
+                    <div class="text-[11px] opacity-80">${v.addPrice === 0 ? 'Стандарт' : '+' + v.addPrice + ' ₽'}</div>
+                </button>
+            `).join('');
+
+            document.getElementById('customizerMilks').innerHTML = appState.milks.map((m, idx) => `
+                <button type="button" onclick="setCustomizerOption('milkIndex', ${idx})"
+                    class="p-2.5 rounded-xl border text-left transition ${
+                        idx === milkIndex
+                            ? 'bg-smysl-green text-smysl-cream border-smysl-green shadow-sm'
+                            : 'bg-white text-smysl-greenDeep border-smysl-green/20 hover:bg-smysl-greenSoft/50'
+                    }">
+                    <div class="font-bold text-xs">${m.label}</div>
+                    <div class="text-[10px] opacity-75">${m.addPrice === 0 ? '+0 ₽' : '+' + m.addPrice + ' ₽'}</div>
+                </button>
+            `).join('');
+
+            document.getElementById('customizerSyrups').innerHTML = appState.syrups.map((s, idx) => `
+                <button type="button" onclick="setCustomizerOption('syrupIndex', ${idx})"
+                    class="p-2.5 rounded-xl border text-left transition ${
+                        idx === syrupIndex
+                            ? 'bg-smysl-green text-smysl-cream border-smysl-green shadow-sm'
+                            : 'bg-white text-smysl-greenDeep border-smysl-green/20 hover:bg-smysl-greenSoft/50'
+                    }">
+                    <div class="font-bold text-xs">${s.label}</div>
+                    <div class="text-[10px] opacity-75">${s.addPrice === 0 ? '+0 ₽' : '+' + s.addPrice + ' ₽'}</div>
+                </button>
+            `).join('');
+
+            const vol = appState.volumes[volIndex];
+            const milk = appState.milks[milkIndex];
+            const syrup = appState.syrups[syrupIndex];
+            const priceObj = calculatePrice(drink.basePrice, vol.addPrice, milk.addPrice + syrup.addPrice);
+
+            document.getElementById('customizerFinalPrice').textContent = `${priceObj.finalPrice} ₽`;
+            const oldPriceEl = document.getElementById('customizerOldPrice');
+            if (priceObj.isDiscounted) {
+                oldPriceEl.textContent = `${priceObj.regularPrice} ₽`;
+                oldPriceEl.classList.remove('hidden');
+            } else {
+                oldPriceEl.classList.add('hidden');
+            }
+        }
+
+        function setCustomizerOption(key, idx) {
+            appState.activeCustomizer[key] = idx;
+            updateCustomizerView();
+        }
+
+        function confirmAddToCart() {
+            const { drinkId, volIndex, milkIndex, syrupIndex } = appState.activeCustomizer;
+            const drink = appState.drinks.find(d => d.id === drinkId);
+            const vol = appState.volumes[volIndex];
+            const milk = appState.milks[milkIndex];
+            const syrup = appState.syrups[syrupIndex];
+
+            appState.cart.push({
+                uid: Date.now() + Math.random(),
+                title: drink.title,
+                volumeLabel: vol.label,
+                milkLabel: milk.label,
+                syrupLabel: syrup.label,
+                basePrice: drink.basePrice,
+                volAdd: vol.addPrice,
+                modAdd: milk.addPrice + syrup.addPrice,
+                qty: 1
+            });
+
+            closeModal('drinkModal');
+            updateCartUI();
+            showToast(`«${drink.title}» (${vol.label}) добавлен в предзаказ!`);
+        }
+
+        // ================= КОРЗИНА И НАЧИСЛЕНИЕ БОНУСОВ SAMOSALE =================
+        function updateCartUI() {
+            const totalCount = appState.cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('headerCartBadge').textContent = totalCount;
+            document.getElementById('mobileCartBadge').textContent = totalCount;
+
+            const container = document.getElementById('cartItemsContainer');
+            if (appState.cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 px-4 rounded-2xl bg-smysl-cream border border-smysl-green/15">
+                        <i class="ph-duotone ph-coffee text-4xl text-smysl-green mb-2"></i>
+                        <div class="font-display font-bold text-sm text-smysl-greenDeep">В предзаказе пока пусто</div>
+                        <p class="text-xs text-smysl-greenDeep/70 mt-1">Выберите напиток в меню или откройте полную витрину Ytimes.</p>
+                    </div>
+                `;
+                document.getElementById('cartTotalAmount').textContent = '0 ₽';
+                document.getElementById('cartSamosaleEarnText').textContent = '+0 бонусов на карту SAMOSALE';
+                document.getElementById('cartSavedBadge').classList.add('hidden');
+                return;
+            }
+
+            let totalFinal = 0;
+            container.innerHTML = appState.cart.map((item, idx) => {
+                const priceObj = calculatePrice(item.basePrice, item.volAdd, item.modAdd);
+                const lineTotal = priceObj.finalPrice * item.qty;
+                totalFinal += lineTotal;
+
+                return `
+                    <div class="p-3.5 rounded-2xl bg-white border border-smysl-green/20 flex items-center justify-between gap-3">
+                        <div>
+                            <div class="font-display font-bold text-sm text-smysl-greenDeep">
+                                ${item.title} <span class="text-xs font-sans font-bold text-smysl-greenDark">(${item.volumeLabel})</span>
+                            </div>
+                            <div class="text-xs text-smysl-greenDeep/70 mt-0.5">
+                                Молоко: ${item.milkLabel} • ${item.syrupLabel}
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="font-extrabold text-sm text-smysl-greenDeep">${lineTotal} ₽</span>
+                                ${priceObj.isDiscounted ? `<span class="text-xs text-smysl-greenDeep/45 line-through">${priceObj.regularPrice * item.qty} ₽</span>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeCartQty(${idx}, -1)" class="w-7 h-7 rounded-lg bg-smysl-cream hover:bg-smysl-greenSoft text-smysl-greenDeep font-bold flex items-center justify-center">-</button>
+                            <span class="text-xs font-extrabold w-4 text-center">${item.qty}</span>
+                            <button onclick="changeCartQty(${idx}, 1)" class="w-7 h-7 rounded-lg bg-smysl-green text-smysl-cream font-bold flex items-center justify-center">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const earnPoints = Math.round(totalFinal * ((appState.samosale.cashbackPercent || 7) / 100));
+            document.getElementById('cartTotalAmount').textContent = `${totalFinal} ₽`;
+            document.getElementById('cartSamosaleEarnText').textContent = `+${earnPoints} бонусов на карту SAMOSALE (${appState.samosale.cashbackPercent || 7}%)`;
+
+            const savedBadge = document.getElementById('cartSavedBadge');
+            if (appState.happyHourActive) {
+                savedBadge.textContent = `Скидка -${appState.discountPercent}%`;
+                savedBadge.classList.remove('hidden');
+            } else {
+                savedBadge.classList.add('hidden');
+            }
+        }
+
+        function changeCartQty(idx, delta) {
+            if (!appState.cart[idx]) return;
+            appState.cart[idx].qty += delta;
+            if (appState.cart[idx].qty <= 0) appState.cart.splice(idx, 1);
+            updateCartUI();
+        }
+
+        function selectPickupTime(timeStr, btnEl) {
+            appState.pickupTime = timeStr;
+            document.querySelectorAll('.pickup-time-btn').forEach(btn => {
+                btn.className = 'pickup-time-btn py-2.5 px-3 rounded-xl text-xs font-semibold bg-smysl-cream border border-smysl-green/20 text-smysl-greenDeep';
+            });
+            btnEl.className = 'pickup-time-btn py-2.5 px-3 rounded-xl text-xs font-bold bg-smysl-green text-smysl-cream';
+        }
+
+        // ================= АВТОРИЗАЦИЯ И КАРТА ЛОЯЛЬНОСТИ SAMOSALE =================
+        function renderSamosaleCard() {
+            const s = appState.samosale;
+            document.getElementById('samosalePointsDisplay').textContent = `${s.guestPoints} Б`;
+            document.getElementById('samosaleCashbackDisplay').textContent = `Кэшбэк ${s.cashbackPercent}% • 1 Б = 1 ₽`;
+            document.getElementById('headerBonusBadge').textContent = `${s.guestPoints} Б`;
+            document.getElementById('samosaleCardNumberText').textContent = `Карта: #${s.guestCardCode}`;
+            document.getElementById('samosalePhoneInput').value = s.guestPhone || '';
+
+            if (s.guestPhone) {
+                document.getElementById('samosaleCardHolder').textContent = `Карта привязана: ${s.guestPhone}`;
+                document.getElementById('guestPhoneInput').value = s.guestPhone;
+            }
+
+            const qrPayload = encodeURIComponent(s.guestCardCode || s.guestPhone || 'SMYSL-8842');
+            document.getElementById('samosaleQrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrPayload}`;
+        }
+
+        async function loginSamosaleGuest() {
+            const phone = document.getElementById('samosalePhoneInput').value.trim();
+            if (!phone || phone.length < 6) {
+                showToast('Введите корректный номер телефона');
+                return;
+            }
+            showToast('Проверяем карту в базе SAMOSALE...');
+            try {
+                const res = await fetch('/.netlify/functions/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_loyalty', phone })
+                });
+                const data = await res.json();
+                if (data && data.success) {
+                    appState.samosale.guestPhone = phone;
+                    appState.samosale.guestPoints = data.points;
+                    appState.samosale.cashbackPercent = data.cashback;
+                    appState.samosale.guestCardCode = data.cardCode;
+                    saveStateToStorageAndCloud(true);
+                    renderSamosaleCard();
+                    showToast('Карта SAMOSALE синхронизирована! Покажите QR бариста на кассе.');
+                    return;
+                }
+            } catch (e) {}
+
+            // Резервный режим, если сайт открыт локально с компьютера
+            const digits = phone.replace(/\D/g, '') || '8842';
+            appState.samosale.guestPhone = phone;
+            appState.samosale.guestCardCode = digits;
+            saveStateToStorageAndCloud(true);
+            renderSamosaleCard();
+            showToast('Карта привязана к номеру телефона!');
+        }
+
+        // ================= СЧАСТЛИВЫЕ ЧАСЫ (-20%) =================
+        function toggleHappyHourDemo() {
+            appState.happyHourActive = !appState.happyHourActive;
+            updateHappyHourUI();
+            renderDrinksGrid();
+            updateCartUI();
+            showToast(appState.happyHourActive
+                ? `Включены счастливые часы: цены снижены на ${appState.discountPercent}%!`
+                : 'Показаны стандартные цены меню.');
+        }
+
+        function updateHappyHourUI() {
+            const topBtn = document.getElementById('topHappyHourBtn');
+            const topText = document.getElementById('topHappyHourText');
+            const promoBadge = document.getElementById('promoLiveStatusBadge');
+            const promoSubtext = document.getElementById('promoCardSubtext');
+            const menuNotice = document.getElementById('menuDiscountNoticeText');
+            const pct = appState.discountPercent;
+
+            document.getElementById('heroDiscountPercentText').textContent = `-${pct}%`;
+            document.getElementById('featureDiscountText').textContent = `Скидка ${pct}%`;
+            document.getElementById('locationsDiscountFooter').textContent = `${pct}%`;
+
+            if (appState.happyHourActive) {
+                topText.textContent = `Акция -${pct}%: ВКЛ`;
+                topBtn.className = 'px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-smysl-caramel text-white hover:opacity-95 shadow-sm';
+                promoBadge.innerHTML = `<i class="ph-fill ph-sparkle"></i> Акция активна (-${pct}%)`;
+                promoBadge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-smysl-caramel/15 text-smysl-caramel';
+                promoSubtext.textContent = `Сейчас показаны с учётом скидки -${pct}%`;
+                menuNotice.innerHTML = `Действует будничная скидка <strong>-${pct}% (12:00–16:00)</strong>`;
+            } else {
+                topText.textContent = `Акция -${pct}%: ВЫКЛ`;
+                topBtn.className = 'px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-white/15 text-smysl-cream hover:bg-white/25';
+                promoBadge.innerHTML = 'Будни 12:00–16:00';
+                promoBadge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-smysl-green/15 text-smysl-greenDark';
+                promoSubtext.textContent = `Сейчас показаны стандартные цены (нажмите, чтобы проверить -${pct}%)`;
+                menuNotice.innerHTML = `В будни с 12:00 до 16:00 действует <strong>скидка -${pct}%</strong> на меню`;
+            }
+        }
+
+        // ================= ЛОКАЦИИ КОФЕЙНИ =================
+        function renderLocations() {
+            if (appState.locations.length === 0) return;
+            const currentShop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
+            document.getElementById('currentShopLabel').textContent = currentShop.address;
+            document.getElementById('cartLocationSubtitle').textContent = `Кофейня: ${currentShop.address} (${appState.workingHours})`;
+            document.getElementById('headerWorkingHours').textContent = `Ежедневно ${appState.workingHours}`;
+            document.getElementById('featureHoursText').textContent = appState.workingHours;
+            document.getElementById('locationsHoursBadge').textContent = appState.workingHours;
+
+            const sectionHtml = appState.locations.map(loc => {
+                const isSelected = loc.id === currentShop.id;
+                return `
+                    <div onclick="selectLocation(${loc.id})" class="cursor-pointer p-4 rounded-2xl border transition flex items-center justify-between gap-3 ${
+                        isSelected
+                            ? 'bg-white border-smysl-green shadow-sm'
+                            : 'bg-smysl-creamLight/70 border-smysl-green/15 hover:border-smysl-green/40'
+                    }">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl ${isSelected ? 'bg-smysl-green text-smysl-cream' : 'bg-smysl-green/15 text-smysl-greenDark'} flex items-center justify-center shrink-0">
+                                <i class="ph-fill ph-map-pin text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-smysl-greenDeep flex items-center gap-2">
+                                    <span>${loc.address}</span>
+                                    ${isSelected ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-smysl-green/15 text-smysl-greenDark font-extrabold">Выбрана</span>' : ''}
+                                </div>
+                                <div class="text-xs text-smysl-greenDeep/70">${loc.hours} • Скидка ${appState.discountPercent}% Пн–Пт 12:00–16:00</div>
+                            </div>
+                        </div>
+                        <a href="https://yandex.ru/maps/?text=${encodeURIComponent(loc.address)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-xl bg-smysl-greenSoft hover:bg-smysl-green text-smysl-greenDeep hover:text-smysl-cream text-xs font-bold transition shrink-0">
+                            Маршрут ↗
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('locationsListSection').innerHTML = sectionHtml;
+            document.getElementById('modalLocationsContainer').innerHTML = sectionHtml;
+        }
+
+        function selectLocation(id) {
+            appState.selectedLocationId = id;
+            renderLocations();
+            closeModal('locationModal');
+            const loc = appState.locations.find(l => l.id === id);
+            if (loc) showToast(`Выбрана кофейня «Смысл»: ${loc.address}`);
+        }
+
+        // ================= ВНЕШНИЕ МОДУЛИ YTIMES И SAMOSALE =================
+        function redirectToYtimesPreorder() {
+            const url = appState.ytimes.preorderUrl || 'https://ytimes.ru/';
+            showToast('Переход к кассовой онлайн-витрине Ytimes...');
+            setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 350);
+        }
+
+        function redirectToSamosaleBot() {
+            const url = appState.samosale.botUrl || 'https://t.me/';
+            showToast('Открываем Telegram-бот лояльности SAMOSALE...');
+            setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 350);
+        }
+
+        function redirectToSamosaleWallet() {
+            const url = appState.samosale.walletUrl || 'https://samosale.ru/';
+            showToast('Переход к выпуску электронной карты SAMOSALE...');
+            setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 350);
+        }
+
+        async function submitQuickOrder() {
+            if (appState.cart.length === 0) {
+                showToast('Сначала добавьте хотя бы один напиток в заказ!');
+                return;
+            }
+            const name = document.getElementById('guestNameInput').value.trim() || 'Гость';
+            const phone = document.getElementById('guestPhoneInput').value.trim() || appState.samosale.guestPhone || 'Без телефона';
+            const shop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
+            const orderNum = Math.floor(100 + Math.random() * 900);
+
+            let totalFinal = 0;
+            appState.cart.forEach(item => {
+                const p = calculatePrice(item.basePrice, item.volAdd, item.modAdd);
+                totalFinal += p.finalPrice * item.qty;
+            });
+            const earnedBonus = Math.round(totalFinal * ((appState.samosale.cashbackPercent || 7) / 100));
+
+            // Начисляем демо-бонусы в карту гостя SAMOSALE
+            appState.samosale.guestPoints += earnedBonus;
+            if (phone !== 'Без телефона') appState.samosale.guestPhone = phone;
+
+            // 1. Отправляем заказ через серверный мост Netlify в Ytimes и Telegram
+            try {
+                await fetch('/.netlify/functions/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'create_order',
+                        orderNum,
+                        guestName: name,
+                        guestPhone: phone,
+                        location: shop.address,
+                        pickupTime: appState.pickupTime,
+                        total: totalFinal,
+                        items: appState.cart
+                    })
+                });
+            } catch (e) {}
+
+            // 2. Если указан дополнительный Webhook в админке, отправляем туда заказ
+            if (appState.ytimes.orderWebhookUrl) {
+                try {
+                    await fetch(appState.ytimes.orderWebhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            orderNum,
+                            guestName: name,
+                            guestPhone: phone,
+                            location: shop.address,
+                            pickupTime: appState.pickupTime,
+                            total: totalFinal,
+                            earnedSamosaleBonus: earnedBonus,
+                            items: appState.cart
+                        })
+                    });
+                } catch (e) {}
+            }
+
+            appState.cart = [];
+            saveStateToStorageAndCloud(true);
+            renderSamosaleCard();
+            updateCartUI();
+            closeModal('cartModal');
+            showToast(`Заказ №${orderNum} принят! Начислено +${earnedBonus} Б SAMOSALE. Ждём вас в «Смысл» (${shop.address}).`);
+        }
+
+        // ================= АДМИН-МОДАЛКА И РЕДАКТИРОВАНИЕ =================
+        function openAdminTab(tabName) {
+            openModal('adminModal');
+            switchAdminTab(tabName);
+        }
+
+        function switchAdminTab(tabName) {
+            ['drinks', 'locations', 'integrations', 'cloud'].forEach(t => {
+                document.getElementById(`adminTab-${t}`).classList.toggle('hidden', t !== tabName);
+                const btn = document.getElementById(`tabBtn-${t}`);
+                if (t === tabName) {
+                    btn.className = 'admin-tab-btn pb-2.5 px-3 border-b-2 border-smysl-green text-smysl-greenDeep whitespace-nowrap';
+                } else {
+                    btn.className = 'admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 hover:text-smysl-greenDeep whitespace-nowrap';
+                }
+            });
+        }
+
+        function renderAdminModalInputs() {
+            const drinksContainer = document.getElementById('adminDrinksList');
+            drinksContainer.innerHTML = appState.drinks.map((d, idx) => `
+                <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="font-display font-bold text-sm text-smysl-greenDeep">#${idx + 1}. ${d.title}</span>
+                        <button onclick="removeDrinkAdmin(${idx})" class="text-xs text-red-600 hover:underline font-bold">Удалить</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                        <div>
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Название</label>
+                            <input type="text" value="${d.title}" oninput="appState.drinks[${idx}].title = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Цена 250 мл (₽)</label>
+                            <input type="number" value="${d.basePrice}" oninput="appState.drinks[${idx}].basePrice = parseInt(this.value)||0" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Бейдж</label>
+                            <input type="text" value="${d.badge}" oninput="appState.drinks[${idx}].badge = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Иконка стакана</label>
+                            <select onchange="appState.drinks[${idx}].cupType = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                                <option value="cappuccino" ${d.cupType === 'cappuccino' ? 'selected' : ''}>Чашка Капучино</option>
+                                <option value="americano" ${d.cupType === 'americano' ? 'selected' : ''}>Стакан Американо</option>
+                                <option value="latte" ${d.cupType === 'latte' ? 'selected' : ''}>Бокал Латте</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Подзаголовок</label>
+                            <input type="text" value="${d.subtitle}" oninput="appState.drinks[${idx}].subtitle = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">КБЖУ</label>
+                            <input type="text" value="${d.kbzhu}" oninput="appState.drinks[${idx}].kbzhu = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-smysl-greenDeep/70">Описание вкуса</label>
+                        <input type="text" value="${d.description}" oninput="appState.drinks[${idx}].description = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('adminWorkingHoursInput').value = appState.workingHours;
+            document.getElementById('adminDiscountPercentInput').value = appState.discountPercent;
+            const locsContainer = document.getElementById('adminLocationsList');
+            locsContainer.innerHTML = appState.locations.map((loc, idx) => `
+                <div class="p-3.5 rounded-2xl bg-smysl-cream border border-smysl-green/25 flex flex-col sm:flex-row items-center gap-2.5">
+                    <input type="text" value="${loc.address}" oninput="appState.locations[${idx}].address = this.value" placeholder="Адрес кофейни" class="flex-1 w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
+                    <input type="text" value="${loc.hours}" oninput="appState.locations[${idx}].hours = this.value" placeholder="Режим работы" class="sm:w-52 w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                    <button onclick="removeLocationAdmin(${idx})" class="px-3 py-2 rounded-xl bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100">Удалить</button>
+                </div>
+            `).join('');
+
+            document.getElementById('adminSamosaleBotUrl').value = appState.samosale.botUrl || '';
+            document.getElementById('adminSamosaleWalletUrl').value = appState.samosale.walletUrl || '';
+            document.getElementById('adminSamosaleApiKey').value = appState.samosale.apiKey || '';
+            document.getElementById('adminSamosaleCashback').value = appState.samosale.cashbackPercent || 7;
+
+            document.getElementById('adminYtimesPreorderUrl').value = appState.ytimes.preorderUrl || '';
+            document.getElementById('adminYtimesApiKey').value = appState.ytimes.apiKey || '';
+            document.getElementById('adminOrderWebhookUrl').value = appState.ytimes.orderWebhookUrl || '';
+
+            document.getElementById('adminSupabaseUrl').value = appState.supabase.url || DEFAULT_SUPABASE_URL;
+            document.getElementById('adminSupabaseKey').value = appState.supabase.anonKey || DEFAULT_SUPABASE_KEY;
+            document.getElementById('adminNewPassword').value = appState.adminPassword || '1234';
+        }
+
+        function addNewDrinkAdmin() {
+            appState.drinks.push({
+                id: 'drink_' + Date.now(),
+                title: 'Раф Авторский',
+                subtitle: 'Нежный сливочно-ванильный кофе',
+                description: 'Готовится путем взбивания эспрессо со сливками и фирменным ванильным сахаром.',
+                basePrice: 260,
+                kbzhu: '210 ккал • Б 6г • Ж 12г • У 18г',
+                badge: 'Новинка',
+                selectedVolIndex: 1,
+                cupType: 'latte'
+            });
+            renderAdminModalInputs();
+            renderDrinksGrid();
+            showToast('Новый напиток добавлен! Отредактируйте его название и цену.');
+        }
+
+        function removeDrinkAdmin(idx) {
+            if (appState.drinks.length <= 1) {
+                showToast('В меню должен остаться хотя бы один напиток');
+                return;
+            }
+            appState.drinks.splice(idx, 1);
+            renderAdminModalInputs();
+            renderDrinksGrid();
+        }
+
+        function addNewLocationAdmin() {
+            appState.locations.push({
+                id: Date.now(),
+                name: 'Кофейня «Смысл»',
+                address: 'Новая точка, ул. Примерная, 1',
+                hours: `Ежедневно ${appState.workingHours}`
+            });
+            renderAdminModalInputs();
+            renderLocations();
+        }
+
+        function removeLocationAdmin(idx) {
+            if (appState.locations.length <= 1) {
+                showToast('Должна остаться хотя бы одна точка кофейни');
+                return;
+            }
+            appState.locations.splice(idx, 1);
+            renderAdminModalInputs();
+            renderLocations();
+        }
+
+        async function saveAdminSettings() {
+            appState.workingHours = document.getElementById('adminWorkingHoursInput').value.trim() || '08:00 – 22:00';
+            appState.discountPercent = parseInt(document.getElementById('adminDiscountPercentInput').value, 10) || 20;
+
+            appState.samosale.botUrl = document.getElementById('adminSamosaleBotUrl').value.trim();
+            appState.samosale.walletUrl = document.getElementById('adminSamosaleWalletUrl').value.trim();
+            appState.samosale.apiKey = document.getElementById('adminSamosaleApiKey').value.trim();
+            appState.samosale.cashbackPercent = parseInt(document.getElementById('adminSamosaleCashback').value, 10) || 7;
+
+            appState.ytimes.preorderUrl = document.getElementById('adminYtimesPreorderUrl').value.trim();
+            appState.ytimes.apiKey = document.getElementById('adminYtimesApiKey').value.trim();
+            appState.ytimes.orderWebhookUrl = document.getElementById('adminOrderWebhookUrl').value.trim();
+
+            appState.supabase.url = normalizeSupabaseBaseUrl(document.getElementById('adminSupabaseUrl').value);
+            appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim() || DEFAULT_SUPABASE_KEY;
+            appState.adminPassword = document.getElementById('adminNewPassword').value.trim() || '1234';
+
+            updateHappyHourUI();
+            renderDrinksGrid();
+            renderLocations();
+            renderSamosaleCard();
+            updateCartUI();
+            await saveStateToStorageAndCloud();
+            closeModal('adminModal');
+        }
+
+        // ================= СОХРАНЕНИЕ В LOCALSTORAGE И ОБЛАКО SUPABASE =================
+        async function saveStateToStorageAndCloud(silent = false) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+
+            const badge = document.getElementById('cloudSyncBadge');
+            const cleanUrl = normalizeSupabaseBaseUrl(appState.supabase.url);
+            const anonKey = appState.supabase.anonKey || DEFAULT_SUPABASE_KEY;
+
+            if (cleanUrl && anonKey) {
+                try {
+                    const res = await fetch(`${cleanUrl}/rest/v1/site_settings?on_conflict=id`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': anonKey,
+                            'Authorization': `Bearer ${anonKey}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify({ id: 1, config: appState, updated_at: new Date().toISOString() })
+                    });
+                    if (res.ok) {
+                        badge.innerHTML = '<i class="ph-fill ph-cloud-check text-green-400"></i> Синхронизировано с Supabase';
+                        if (!silent) showToast('Все изменения сохранены и опубликованы в облако Supabase!');
+                    } else {
+                        if (!silent) showToast('Сохранено локально (проверьте, создана ли таблица site_settings в Supabase)');
+                    }
+                } catch (e) {
+                    if (!silent) showToast('Сохранено в браузере (ошибка соединения с Supabase)');
+                }
+            } else {
+                badge.innerHTML = '<i class="ph-fill ph-hard-drives"></i> Сохранено локально';
+                if (!silent) showToast('Изменения конструктора сохранены!');
+            }
+        }
+
+        async function fetchCloudStateIfConfigured() {
+            const cleanUrl = normalizeSupabaseBaseUrl(appState.supabase.url);
+            const anonKey = appState.supabase.anonKey || DEFAULT_SUPABASE_KEY;
+            if (!cleanUrl || !anonKey) return;
+
+            try {
+                const res = await fetch(`${cleanUrl}/rest/v1/site_settings?id=eq.1&select=config`, {
+                    headers: {
+                        'apikey': anonKey,
+                        'Authorization': `Bearer ${anonKey}`
+                    }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data[0] && data[0].config) {
+                        const cloudCfg = data[0].config;
+                        cloudCfg.supabase = { url: cleanUrl, anonKey: anonKey };
+                        appState = Object.assign(JSON.parse(JSON.stringify(defaultAppState)), cloudCfg);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                        applyAllStateToDOM();
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function resetToFactoryDefaults() {
+            if (!confirm('Сбросить все настройки меню, текстов и точек к начальному виду?')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            appState = JSON.parse(JSON.stringify(defaultAppState));
+            applyAllStateToDOM();
+            saveStateToStorageAndCloud(true);
+            closeModal('adminModal');
+            showToast('Настройки сброшены к заводским');
+        }
+
+        // ================= ПРЕДПРОСМОТР САЙТ / ПРИЛОЖЕНИЕ И PWA =================
+        function setPreviewMode(mode) {
+            const viewport = document.getElementById('appViewport');
+            const btnWeb = document.getElementById('btnViewWeb');
+            const btnApp = document.getElementById('btnViewApp');
+            const bottomNav = document.getElementById('mobileBottomNav');
+
+            if (mode === 'app') {
+                viewport.classList.add('phone-frame-active');
+                bottomNav.classList.remove('sm:hidden');
+                bottomNav.classList.add('sticky');
+                btnApp.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm';
+                btnWeb.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white';
+                showToast('Режим предпросмотра: Мобильное приложение (iPhone / Android)');
+            } else {
+                viewport.classList.remove('phone-frame-active');
+                bottomNav.classList.add('sm:hidden');
+                bottomNav.classList.remove('sticky');
+                btnWeb.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm';
+                btnApp.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white';
+                showToast('Режим предпросмотра: Полноэкранный адаптивный сайт');
+            }
+        }
+
+        function initDynamicPwaManifest() {
+            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#7B9244"/><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#F6F4E8" font-family="serif" font-style="italic" font-size="148">Смысл</text></svg>`;
+            const iconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgIcon);
+            const manifest = {
+                name: 'Кофейня «Смысл»',
+                short_name: 'Смысл',
+                start_url: '.',
+                display: 'standalone',
+                background_color: '#FAF9F3',
+                theme_color: '#7B9244',
+                icons: [{ src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }]
+            };
+            const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+            document.getElementById('pwaManifestLink').href = URL.createObjectURL(blob);
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPwaPrompt = e;
+        });
+
+        async function triggerPwaInstall() {
+            if (deferredPwaPrompt) {
+                deferredPwaPrompt.prompt();
+                await deferredPwaPrompt.userChoice;
+                deferredPwaPrompt = null;
+            } else {
+                openModal('pwaModal');
+            }
+        }
+
+        // ================= ЛОГОТИП, МОДАЛКИ И TOAST =================
+        function handleCustomLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                appState.customLogoDataUrl = e.target.result;
+                applyLogoState();
+                saveStateToStorageAndCloud(true);
+                showToast('Оригинальный файл логотипа успешно установлен!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetToSvgLogo() {
+            appState.customLogoDataUrl = '';
+            applyLogoState();
+            saveStateToStorageAndCloud(true);
+            showToast('Включен встроенный векторный логотип «Смысл»');
+        }
+
+        function applyLogoState() {
+            const headerImg = document.getElementById('customLogoHeader');
+            const headerSvg = document.getElementById('svgLogoHeader');
+            const heroImg = document.getElementById('customLogoHero');
+            const heroSvg = document.getElementById('svgLogoHero');
+
+            if (appState.customLogoDataUrl) {
+                headerImg.src = appState.customLogoDataUrl;
+                headerImg.classList.remove('hidden');
+                headerSvg.classList.add('hidden');
+                heroImg.src = appState.customLogoDataUrl;
+                heroImg.classList.remove('hidden');
+                heroSvg.classList.add('hidden');
+            } else {
+                headerImg.classList.add('hidden');
+                headerSvg.classList.remove('hidden');
+                heroImg.classList.add('hidden');
+                heroSvg.classList.remove('hidden');
+            }
+        }
+
+        function openModal(id) {
+            if (id === 'adminModal') renderAdminModalInputs();
+            if (id === 'loyaltyModal') renderSamosaleCard();
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3400);
+        }
+
+        function checkWorkingHoursStatus() {
+            const now = new Date();
+            const hour = now.getHours();
+            const badge = document.getElementById('openStatusBadge');
+            badge.textContent = (hour >= 8 && hour < 22) ? 'Открыто до 22:00' : 'Откроемся в 08:00';
+        }
+
+        function applyAllStateToDOM() {
+            document.getElementById('editableHeroTag').innerText = appState.texts.heroTag;
+            document.getElementById('editableHeroTitle').innerText = appState.texts.heroTitle;
+            document.getElementById('editableHeroSubtitle').innerText = appState.texts.heroSubtitle;
+            document.getElementById('editableHappyHoursTime').innerText = appState.texts.happyHoursTime;
+            document.getElementById('editableMenuHeading').innerText = appState.texts.menuHeading;
+
+            applyLogoState();
+            applySectionOrderAndVisibility();
+            updateHappyHourUI();
+            renderDrinksGrid();
+            renderLocations();
+            renderSamosaleCard();
+            updateCartUI();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initDynamicPwaManifest();
+            checkWorkingHoursStatus();
+            applyAllStateToDOM();
+            fetchCloudStateIfConfigured();
+
+            if (window.location.hash === '#admin') {
+                setTimeout(promptAdminLogin, 400);
+            }
+        });
+    </script>
+</body>
+</html>
