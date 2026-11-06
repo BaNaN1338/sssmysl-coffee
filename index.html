@@ -1790,7 +1790,7 @@
 
             // 1. Отправляем заказ через серверный мост Netlify в Ytimes и Telegram
             try {
-                await fetch('/.netlify/functions/api', {
+                await fetch('/api', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
