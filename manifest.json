@@ -1,0 +1,19 @@
+{
+  "name": "Кофейня «Смысл»",
+  "short_name": "Смысл",
+  "description": "Кофейня Смысл — предзаказ кофе и бонусная карта SAMOSALE",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF9F3",
+  "theme_color": "#7B9244",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
