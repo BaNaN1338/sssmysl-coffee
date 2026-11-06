@@ -1632,7 +1632,7 @@
             }
             showToast('Проверяем карту в базе SAMOSALE...');
             try {
-                const res = await fetch('/.netlify/functions/api', {
+                const res = await fetch('/api', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'get_loyalty', phone })
