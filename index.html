@@ -58,11 +58,16 @@
             color: #252E13;
             font-family: 'Manrope', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #F6F4E8; }
         ::-webkit-scrollbar-thumb { background: #7B9244; border-radius: 9999px; }
+
+        /* Скрытие скроллбара для горизонтальных табов на мобильных */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .phone-frame-active {
             max-width: 430px;
@@ -92,7 +97,6 @@
             background-size: 20px 20px;
         }
 
-        /* Выделение блоков в режиме визуального конструктора */
         .admin-section-wrapper {
             position: relative;
             transition: all 0.2s ease;
@@ -118,181 +122,181 @@
 
     <!-- ================= ПАНЕЛЬ УПРАВЛЕНИЯ ВЛАДЕЛЬЦА (ТОЛЬКО ДЛЯ АДМИНА) ================= -->
     <div id="ownerTopBar" class="hidden bg-smysl-greenDeep text-smysl-cream border-b border-white/10 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-smysl-green text-smysl-cream font-semibold text-xs">
-                    <i class="ph-fill ph-sparkle"></i> Конструктор «Смысл» (Админ)
+        <div class="max-w-7xl mx-auto px-2.5 sm:px-6 py-2 flex items-center justify-between gap-2 text-xs overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-1.5 shrink-0">
+                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-smysl-green text-smysl-cream font-semibold text-[11px]">
+                    <i class="ph-fill ph-sparkle"></i> Админ
                 </span>
-                <span id="cloudSyncBadge" class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 text-[11px] text-smysl-cream/80">
-                    <i class="ph-fill ph-cloud-check text-green-400"></i> Облако Supabase подключено
+                <span id="cloudSyncBadge" class="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 text-[11px] text-smysl-cream/80">
+                    <i class="ph-fill ph-hard-drives"></i> Локально
                 </span>
             </div>
 
-            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <!-- Переключатель Сайт / Мобильное приложение -->
-                <div class="bg-white/10 p-0.5 rounded-xl flex items-center">
-                    <button id="btnViewWeb" onclick="setPreviewMode('web')" class="px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm">
+            <div class="flex items-center gap-1.5 shrink-0">
+                <!-- Переключатель Сайт / Приложение -->
+                <div class="hidden sm:flex bg-white/10 p-0.5 rounded-xl items-center">
+                    <button id="btnViewWeb" onclick="setPreviewMode('web')" class="px-2 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm">
                         <i class="ph-bold ph-desktop"></i>
-                        <span class="hidden sm:inline">Сайт</span>
+                        <span class="hidden lg:inline">Сайт</span>
                     </button>
-                    <button id="btnViewApp" onclick="setPreviewMode('app')" class="px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white">
+                    <button id="btnViewApp" onclick="setPreviewMode('app')" class="px-2 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white">
                         <i class="ph-bold ph-device-mobile"></i>
-                        <span class="hidden sm:inline">Приложение</span>
+                        <span class="hidden lg:inline">Приложение</span>
                     </button>
                 </div>
 
-                <!-- Быстрый тест акции -20% -->
-                <button id="topHappyHourBtn" onclick="toggleHappyHourDemo()" class="px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-smysl-caramel text-white hover:opacity-95 shadow-sm">
+                <!-- Управление акцией -20% (ТОЛЬКО ДЛЯ АДМИНА) -->
+                <button id="topHappyHourBtn" onclick="toggleHappyHourAdmin()" class="px-2.5 py-1.5 rounded-xl font-semibold transition flex items-center gap-1 bg-smysl-caramel text-white hover:opacity-95 shadow-sm whitespace-nowrap">
                     <i class="ph-fill ph-clock-countdown"></i>
-                    <span id="topHappyHourText">Акция -20%: ВКЛ</span>
+                    <span id="topHappyHourText">-20%: ВКЛ</span>
                 </button>
 
-                <!-- Настройки конструктора, SAMOSALE и Ytimes -->
-                <button onclick="openModal('adminModal')" class="px-3 py-1.5 rounded-xl font-semibold bg-white/15 hover:bg-white/25 text-smysl-cream transition flex items-center gap-1.5">
+                <!-- Настройки конструктора -->
+                <button onclick="openModal('adminModal')" class="px-2.5 py-1.5 rounded-xl font-semibold bg-white/15 hover:bg-white/25 text-smysl-cream transition flex items-center gap-1 whitespace-nowrap">
                     <i class="ph-bold ph-sliders-horizontal"></i>
-                    <span>Настройки и интеграции</span>
+                    <span>Настройки</span>
                 </button>
 
-                <!-- Быстрое сохранение -->
-                <button onclick="saveStateToStorageAndCloud()" class="px-3 py-1.5 rounded-xl font-bold bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream transition flex items-center gap-1 shadow-sm">
+                <!-- Сохранение в облако -->
+                <button onclick="saveStateToStorageAndCloud()" class="px-2.5 py-1.5 rounded-xl font-bold bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream transition flex items-center gap-1 shadow-sm whitespace-nowrap">
                     <i class="ph-bold ph-floppy-disk"></i>
-                    <span>Сохранить</span>
+                    <span class="hidden sm:inline">Сохранить</span>
                 </button>
 
-                <!-- Выход из админки -->
-                <button onclick="logoutAdmin()" class="p-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-200 transition" title="Выйти из режима конструктора">
-                    <i class="ph-bold ph-sign-out text-base"></i>
+                <!-- Выход -->
+                <button onclick="logoutAdmin()" class="p-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-200 transition shrink-0" title="Выйти из режима конструктора">
+                    <i class="ph-bold ph-sign-out text-sm"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ================= ОСНОВНОЙ КОНТЕЙНЕР (САЙТ ИЛИ ЭКРАН ТЕЛЕФОНА) ================= -->
+    <!-- ================= ОСНОВНОЙ КОНТЕЙНЕР ================= -->
     <div id="appViewport" class="w-full flex-1 flex flex-col transition-all duration-300">
 
-        <!-- ШАПКА САЙТА / ПРИЛОЖЕНИЯ -->
+        <!-- ИСПРАВЛЕННАЯ АДАПТИВНАЯ ШАПКА САЙТА (КОМПАКТНАЯ НА МОБИЛЬНЫХ) -->
         <header id="mainSiteHeader" class="sticky top-0 z-40 bg-smysl-creamLight/95 backdrop-blur-md border-b border-smysl-green/15">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+            <div class="max-w-6xl mx-auto px-2.5 sm:px-6 py-2 sm:py-3 flex items-center justify-between gap-1.5 sm:gap-3">
                 
-                <!-- Логотип "Смысл" + Часы работы -->
-                <div class="flex items-center gap-3">
-                    <a href="#" class="group flex items-center gap-3 focus:outline-none">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-smysl-green flex items-center justify-center shadow-md overflow-hidden border border-smysl-greenDark/20 group-hover:scale-105 transition-transform shrink-0">
+                <!-- Логотип "Смысл" + Статус -->
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <a href="#" class="group flex items-center gap-2 sm:gap-3 focus:outline-none min-w-0">
+                        <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-smysl-green flex items-center justify-center shadow-md overflow-hidden border border-smysl-greenDark/20 group-hover:scale-105 transition-transform shrink-0">
                             <img id="customLogoHeader" src="" alt="Смысл" class="hidden w-full h-full object-cover" />
                             <svg id="svgLogoHeader" viewBox="0 0 240 120" class="w-11/12 h-auto select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <text x="50%" y="64%" dominant-baseline="middle" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="68" font-weight="400" letter-spacing="-1">Смысл</text>
                             </svg>
                         </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span id="headerBrandTitle" class="font-display font-bold text-lg sm:text-xl tracking-tight text-smysl-greenDeep">Смысл</span>
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-smysl-green/15 text-smysl-greenDark">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span id="headerBrandTitle" class="font-display font-bold text-base sm:text-xl tracking-tight text-smysl-greenDeep truncate">Смысл</span>
+                                <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-smysl-green/15 text-smysl-greenDark whitespace-nowrap">
                                     <span class="w-1.5 h-1.5 rounded-full bg-smysl-green pulse-dot"></span>
                                     <span id="openStatusBadge">Открыто</span>
                                 </span>
                             </div>
-                            <p class="text-xs text-smysl-greenDeep/70 font-medium flex items-center gap-1 mt-0.5">
-                                <i class="ph-bold ph-clock text-smysl-green"></i>
-                                <span id="headerWorkingHours">Ежедневно 08:00 – 22:00</span>
+                            <p class="text-[11px] sm:text-xs text-smysl-greenDeep/70 font-medium flex items-center gap-1 mt-0.5 truncate">
+                                <i class="ph-bold ph-clock text-smysl-green shrink-0"></i>
+                                <span id="headerWorkingHours" class="truncate">08:00 – 22:00</span>
                             </p>
                         </div>
                     </a>
                 </div>
 
-                <!-- Выбор кофейни и действия -->
-                <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Кнопки действий (компактные на телефоне, полные на ПК) -->
+                <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                     <!-- Переключатель точки -->
-                    <button onclick="openModal('locationModal')" class="px-3 py-2 rounded-2xl bg-smysl-cream border border-smysl-green/25 hover:border-smysl-green text-left transition flex items-center gap-2 shadow-sm">
-                        <div class="w-7 h-7 rounded-xl bg-smysl-green/15 text-smysl-greenDark flex items-center justify-center shrink-0">
-                            <i class="ph-fill ph-map-pin text-base"></i>
+                    <button onclick="openModal('locationModal')" class="px-2.5 py-2 sm:px-3 sm:py-2 rounded-xl sm:rounded-2xl bg-smysl-cream border border-smysl-green/25 hover:border-smysl-green text-left transition flex items-center gap-1.5 sm:gap-2 shadow-sm" title="Выбрать кофейню">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-smysl-green/15 text-smysl-greenDark flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-map-pin text-sm sm:text-base"></i>
                         </div>
-                        <div class="hidden sm:block leading-tight">
+                        <div class="hidden md:block leading-tight">
                             <span class="text-[10px] uppercase tracking-wider font-bold text-smysl-greenDark block">Кофейня</span>
                             <span id="currentShopLabel" class="text-xs font-bold text-smysl-greenDeep">Ул. Центральная, 12</span>
                         </div>
-                        <i class="ph-bold ph-caret-down text-xs text-smysl-greenDeep/60"></i>
+                        <i class="ph-bold ph-caret-down text-[10px] sm:text-xs text-smysl-greenDeep/60"></i>
                     </button>
 
                     <!-- Кнопка "Карта гостя SAMOSALE" -->
-                    <button onclick="openModal('loyaltyModal')" class="px-3.5 py-2.5 rounded-2xl bg-smysl-cream hover:bg-smysl-greenSoft text-smysl-greenDeep border border-smysl-green/25 font-semibold text-xs sm:text-sm transition flex items-center gap-2 shadow-sm">
-                        <i class="ph-fill ph-qr-code text-lg text-smysl-green"></i>
-                        <span class="hidden md:inline">Карта гостя</span>
-                        <span id="headerBonusBadge" class="px-1.5 py-0.5 rounded-md bg-smysl-green text-smysl-cream text-[11px] font-bold">Бонусы</span>
+                    <button onclick="openModal('loyaltyModal')" class="px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-smysl-cream hover:bg-smysl-greenSoft text-smysl-greenDeep border border-smysl-green/25 font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 sm:gap-2 shadow-sm" title="Бонусная карта SAMOSALE">
+                        <i class="ph-fill ph-qr-code text-base sm:text-lg text-smysl-green"></i>
+                        <span class="hidden lg:inline">Карта гостя</span>
+                        <span id="headerBonusBadge" class="px-1.5 py-0.5 rounded-md bg-smysl-green text-smysl-cream text-[10px] sm:text-[11px] font-bold whitespace-nowrap">250 Б</span>
                     </button>
 
                     <!-- Кнопка Корзины / Предзаказа -->
-                    <button onclick="openModal('cartModal')" class="relative px-3.5 py-2.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-semibold text-xs sm:text-sm transition flex items-center gap-2 shadow-md">
-                        <i class="ph-bold ph-coffee text-lg"></i>
+                    <button onclick="openModal('cartModal')" class="relative px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 sm:gap-2 shadow-md" title="Ваш предзаказ">
+                        <i class="ph-bold ph-coffee text-base sm:text-lg"></i>
                         <span class="hidden sm:inline">Предзаказ</span>
-                        <span id="headerCartBadge" class="px-1.5 py-0.5 rounded-full bg-smysl-cream text-smysl-greenDeep text-xs font-extrabold">0</span>
+                        <span id="headerCartBadge" class="px-1.5 py-0.5 rounded-full bg-smysl-cream text-smysl-greenDeep text-[10px] sm:text-xs font-extrabold">0</span>
                     </button>
                 </div>
             </div>
         </header>
 
-        <!-- КОНТЕЙНЕР ДИНАМИЧЕСКИХ СЕКЦИЙ (УПРАВЛЯЕТСЯ КОНСТРУКТОРОМ) -->
+        <!-- КОНТЕЙНЕР ДИНАМИЧЕСКИХ СЕКЦИЙ -->
         <main id="sectionsContainer" class="flex-1 flex flex-col">
 
             <!-- СЕКЦИЯ 1: ГЛАВНЫЙ ЭКРАН (HERO) -->
-            <section id="sec-hero" data-section-id="hero" class="admin-section-wrapper relative px-4 sm:px-6 pt-5 pb-6">
+            <section id="sec-hero" data-section-id="hero" class="admin-section-wrapper relative px-3 sm:px-6 pt-4 sm:pt-5 pb-6">
                 <div class="admin-section-controls hidden absolute top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1.5 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
                     <span class="font-bold text-smysl-cream/70">Блок: Главный экран</span>
-                    <button onclick="moveSection('hero', -1)" class="hover:text-smysl-caramel px-1" title="Переместить выше">↑</button>
-                    <button onclick="moveSection('hero', 1)" class="hover:text-smysl-caramel px-1" title="Переместить ниже">↓</button>
-                    <button onclick="toggleSectionVisibility('hero')" class="hover:text-red-300 px-1" title="Скрыть/Показать">👁</button>
+                    <button onclick="moveSection('hero', -1)" class="hover:text-smysl-caramel px-1">↑</button>
+                    <button onclick="moveSection('hero', 1)" class="hover:text-smysl-caramel px-1">↓</button>
+                    <button onclick="toggleSectionVisibility('hero')" class="hover:text-red-300 px-1">👁</button>
                 </div>
 
                 <div class="max-w-6xl mx-auto">
-                    <div class="relative rounded-[32px] bg-smysl-green text-smysl-cream bg-craft-pattern overflow-hidden shadow-card border border-smysl-greenDark/30">
+                    <div class="relative rounded-[28px] sm:rounded-[32px] bg-smysl-green text-smysl-cream bg-craft-pattern overflow-hidden shadow-card border border-smysl-greenDark/30">
                         <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-smysl-cream/10 blur-2xl pointer-events-none"></div>
                         <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-smysl-greenDeep/20 blur-2xl pointer-events-none"></div>
 
-                        <div class="relative z-10 p-6 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="relative z-10 p-5 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <!-- Левая колонка -->
-                            <div class="lg:col-span-7 space-y-5">
-                                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-smysl-cream/15 backdrop-blur-sm border border-smysl-cream/25 text-xs sm:text-sm font-medium text-smysl-cream">
+                            <div class="lg:col-span-7 space-y-4 sm:space-y-5">
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-smysl-cream/15 backdrop-blur-sm border border-smysl-cream/25 text-xs sm:text-sm font-medium text-smysl-cream">
                                     <i class="ph-fill ph-coffee-bean text-smysl-cream"></i>
                                     <span id="editableHeroTag" onblur="saveInlineText('heroTag', this.innerText)">Спешелти зерно • Уютная атмосфера • С 08:00 до 22:00</span>
                                 </div>
 
                                 <div class="py-1">
-                                    <img id="customLogoHero" src="" alt="Кофейня Смысл" class="hidden max-h-28 sm:max-h-36 w-auto rounded-2xl mb-2 object-contain" />
+                                    <img id="customLogoHero" src="" alt="Кофейня Смысл" class="hidden max-h-24 sm:max-h-36 w-auto rounded-2xl mb-2 object-contain" />
                                     <div id="svgLogoHero" class="inline-block">
-                                        <svg viewBox="0 0 420 145" class="w-64 sm:w-80 md:w-96 h-auto select-none -ml-2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg viewBox="0 0 420 145" class="w-56 sm:w-80 md:w-96 h-auto select-none -ml-2" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <text x="5" y="108" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="132" letter-spacing="-2">Смысл</text>
                                         </svg>
                                     </div>
-                                    <h1 id="editableHeroTitle" onblur="saveInlineText('heroTitle', this.innerText)" class="font-display font-bold text-xl sm:text-2xl lg:text-3xl text-smysl-cream leading-snug mt-1">
+                                    <h1 id="editableHeroTitle" onblur="saveInlineText('heroTitle', this.innerText)" class="font-display font-bold text-lg sm:text-2xl lg:text-3xl text-smysl-cream leading-snug mt-1">
                                         Кофе, в котором есть тепло и смысл каждого утра
                                     </h1>
                                 </div>
 
-                                <p id="editableHeroSubtitle" onblur="saveInlineText('heroSubtitle', this.innerText)" class="text-sm sm:text-base text-smysl-cream/90 max-w-xl leading-relaxed">
-                                    Заказывайте любимый капучино, латте или американо заранее без очереди, копите бонусы на карту гостя SAMOSALE и забирайте готовый напиток к вашему приходу.
+                                <p id="editableHeroSubtitle" onblur="saveInlineText('heroSubtitle', this.innerText)" class="text-xs sm:text-base text-smysl-cream/90 max-w-xl leading-relaxed">
+                                    Заказывайте любимый кофе, авторский раф, матчу или листовой чай заранее без очереди, копите бонусы на карту гостя SAMOSALE и забирайте готовый напиток к вашему приходу.
                                 </p>
 
-                                <div class="pt-2 flex flex-wrap items-center gap-3">
-                                    <a href="#sec-menu" class="px-6 py-3.5 rounded-2xl bg-smysl-cream text-smysl-greenDeep hover:bg-white font-display font-semibold text-sm transition shadow-lg flex items-center gap-2">
-                                        <i class="ph-bold ph-cup-hot text-lg text-smysl-greenDark"></i>
-                                        <span>Выбрать напиток</span>
+                                <div class="pt-1 flex flex-wrap items-center gap-2.5 sm:gap-3">
+                                    <a href="#sec-menu" class="px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl bg-smysl-cream text-smysl-greenDeep hover:bg-white font-display font-semibold text-xs sm:text-sm transition shadow-lg flex items-center gap-2">
+                                        <i class="ph-bold ph-cup-hot text-base sm:text-lg text-smysl-greenDark"></i>
+                                        <span>Открыть меню</span>
                                     </a>
 
-                                    <button onclick="openModal('loyaltyModal')" class="px-5 py-3.5 rounded-2xl bg-smysl-greenDeep/40 hover:bg-smysl-greenDeep/60 text-smysl-cream border border-smysl-cream/30 font-semibold text-sm transition flex items-center gap-2">
-                                        <i class="ph-bold ph-qr-code text-lg"></i>
+                                    <button onclick="openModal('loyaltyModal')" class="px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-smysl-greenDeep/40 hover:bg-smysl-greenDeep/60 text-smysl-cream border border-smysl-cream/30 font-semibold text-xs sm:text-sm transition flex items-center gap-2">
+                                        <i class="ph-bold ph-qr-code text-base sm:text-lg"></i>
                                         <span>Карта бонусов SAMOSALE</span>
                                     </button>
 
-                                    <button onclick="triggerPwaInstall()" class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-smysl-cream text-xs sm:text-sm font-medium transition flex items-center gap-1.5" title="Установить иконку на телефон">
+                                    <button onclick="triggerPwaInstall()" class="px-3.5 py-3 sm:px-4 sm:py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-smysl-cream text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
                                         <i class="ph-bold ph-download-simple text-base"></i>
                                         <span>Скачать приложение</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- Правая колонка: Карточка АКЦИИ Скидка 20% -->
+                            <!-- Правая колонка: Карточка АКЦИИ Скидка 20% (Без кнопки переключения для гостей) -->
                             <div class="lg:col-span-5">
-                                <div class="rounded-3xl bg-smysl-cream text-smysl-greenDeep p-6 sm:p-7 shadow-xl border-2 border-smysl-cream relative overflow-hidden">
-                                    <div class="flex items-center justify-between gap-2 mb-4">
+                                <div class="rounded-3xl bg-smysl-cream text-smysl-greenDeep p-5 sm:p-7 shadow-xl border-2 border-smysl-cream relative overflow-hidden">
+                                    <div class="flex items-center justify-between gap-2 mb-3 sm:mb-4">
                                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-smysl-green text-smysl-cream text-xs font-bold uppercase tracking-wider">
                                             <i class="ph-fill ph-percent"></i> Счастливые часы
                                         </span>
@@ -307,23 +311,23 @@
                                     </div>
 
                                     <div class="p-3.5 rounded-2xl bg-smysl-greenSoft/70 border border-smysl-green/20 mb-4">
-                                        <div class="flex items-center gap-2.5 text-smysl-greenDeep font-bold text-base sm:text-lg">
-                                            <i class="ph-fill ph-clock-afternoon text-2xl text-smysl-greenDark"></i>
+                                        <div class="flex items-center gap-2.5 text-smysl-greenDeep font-bold text-sm sm:text-lg">
+                                            <i class="ph-fill ph-clock-afternoon text-xl sm:text-2xl text-smysl-greenDark shrink-0"></i>
                                             <span id="editableHappyHoursTime" onblur="saveInlineText('happyHoursTime', this.innerText)">С 12:00 до 16:00 (Пн – Пт)</span>
                                         </div>
                                         <p class="text-xs text-smysl-greenDeep/75 mt-1">
-                                            Скидка на любимые напитки при заказе в кофейне или через онлайн-предзаказ.
+                                            Скидка на всё меню напитков при заказе в кофейне или через онлайн-предзаказ.
                                         </p>
                                     </div>
 
-                                    <div class="flex items-center justify-between gap-3 pt-2 border-t border-smysl-green/15">
+                                    <div class="flex items-center justify-between gap-3 pt-2.5 border-t border-smysl-green/15">
                                         <div class="text-xs text-smysl-greenDeep/80">
-                                            <span class="font-bold block text-smysl-greenDeep">Цены в меню ниже:</span>
-                                            <span id="promoCardSubtext">Сейчас показаны с учётом скидки -20%</span>
+                                            <span class="font-bold block text-smysl-greenDeep">Статус цен в меню:</span>
+                                            <span id="promoCardSubtext">Сейчас цены указаны с учётом скидки -20%</span>
                                         </div>
-                                        <button onclick="toggleHappyHourDemo()" id="promoBannerToggleBtn" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-smysl-green text-smysl-cream hover:bg-smysl-greenDark transition shrink-0 shadow-sm">
-                                            Переключить цены
-                                        </button>
+                                        <a href="#sec-menu" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-smysl-green text-smysl-cream hover:bg-smysl-greenDark transition shrink-0 shadow-sm">
+                                            К напиткам ↓
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -334,7 +338,7 @@
             </section>
 
             <!-- СЕКЦИЯ 2: БЫСТРЫЕ ПРЕИМУЩЕСТВА -->
-            <section id="sec-features" data-section-id="features" class="admin-section-wrapper relative px-4 sm:px-6 pb-6">
+            <section id="sec-features" data-section-id="features" class="admin-section-wrapper relative px-3 sm:px-6 pb-6">
                 <div class="admin-section-controls hidden absolute -top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
                     <span class="font-bold text-smysl-cream/70">Блок: Преимущества</span>
                     <button onclick="moveSection('features', -1)" class="hover:text-smysl-caramel px-1">↑</button>
@@ -342,51 +346,51 @@
                     <button onclick="toggleSectionVisibility('features')" class="hover:text-red-300 px-1">👁</button>
                 </div>
 
-                <div class="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    <div class="bg-smysl-cream rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
-                        <div class="w-11 h-11 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0">
-                            <i class="ph-fill ph-clock text-xl"></i>
+                <div class="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+                    <div class="bg-smysl-cream rounded-2xl p-3.5 sm:p-4 border border-smysl-green/15 flex items-center gap-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-clock text-lg sm:text-xl"></i>
                         </div>
-                        <div>
-                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Часы работы</div>
-                            <div id="featureHoursText" class="font-bold text-sm sm:text-base text-smysl-greenDeep">08:00 – 22:00</div>
-                        </div>
-                    </div>
-
-                    <div class="bg-smysl-cream rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
-                        <div class="w-11 h-11 rounded-2xl bg-smysl-caramel text-white flex items-center justify-center shrink-0">
-                            <i class="ph-fill ph-percent text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Будни 12:00–16:00</div>
-                            <div id="featureDiscountText" class="font-bold text-sm sm:text-base text-smysl-greenDeep">Скидка 20%</div>
+                        <div class="min-w-0">
+                            <div class="text-[11px] sm:text-xs text-smysl-greenDeep/65 font-medium truncate">Часы работы</div>
+                            <div id="featureHoursText" class="font-bold text-xs sm:text-base text-smysl-greenDeep truncate">08:00 – 22:00</div>
                         </div>
                     </div>
 
-                    <div onclick="openModal('loyaltyModal')" class="cursor-pointer bg-smysl-cream hover:bg-smysl-greenSoft/60 transition rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
-                        <div class="w-11 h-11 rounded-2xl bg-smysl-green/20 text-smysl-greenDark flex items-center justify-center shrink-0">
-                            <i class="ph-fill ph-gift text-xl"></i>
+                    <div class="bg-smysl-cream rounded-2xl p-3.5 sm:p-4 border border-smysl-green/15 flex items-center gap-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-smysl-caramel text-white flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-percent text-lg sm:text-xl"></i>
                         </div>
-                        <div>
-                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Бонусы SAMOSALE</div>
-                            <div class="font-bold text-sm sm:text-base text-smysl-greenDeep">Кэшбэк до 10%</div>
+                        <div class="min-w-0">
+                            <div class="text-[11px] sm:text-xs text-smysl-greenDeep/65 font-medium truncate">Будни 12:00–16:00</div>
+                            <div id="featureDiscountText" class="font-bold text-xs sm:text-base text-smysl-greenDeep truncate">Скидка 20%</div>
                         </div>
                     </div>
 
-                    <div onclick="redirectToYtimesPreorder()" class="cursor-pointer bg-smysl-cream hover:bg-smysl-greenSoft/60 transition rounded-2xl p-4 border border-smysl-green/15 flex items-center gap-3.5">
-                        <div class="w-11 h-11 rounded-2xl bg-smysl-green/20 text-smysl-greenDark flex items-center justify-center shrink-0">
-                            <i class="ph-fill ph-lightning text-xl"></i>
+                    <div onclick="openModal('loyaltyModal')" class="cursor-pointer bg-smysl-cream hover:bg-smysl-greenSoft/60 transition rounded-2xl p-3.5 sm:p-4 border border-smysl-green/15 flex items-center gap-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-smysl-green/20 text-smysl-greenDark flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-gift text-lg sm:text-xl"></i>
                         </div>
-                        <div>
-                            <div class="text-xs text-smysl-greenDeep/65 font-medium">Касса Ytimes</div>
-                            <div class="font-bold text-sm sm:text-base text-smysl-greenDeep">Готово за 7–10 мин</div>
+                        <div class="min-w-0">
+                            <div class="text-[11px] sm:text-xs text-smysl-greenDeep/65 font-medium truncate">Бонусы SAMOSALE</div>
+                            <div class="font-bold text-xs sm:text-base text-smysl-greenDeep truncate">Кэшбэк с заказа</div>
+                        </div>
+                    </div>
+
+                    <div onclick="redirectToYtimesPreorder()" class="cursor-pointer bg-smysl-cream hover:bg-smysl-greenSoft/60 transition rounded-2xl p-3.5 sm:p-4 border border-smysl-green/15 flex items-center gap-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-smysl-green/20 text-smysl-greenDark flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-lightning text-lg sm:text-xl"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-[11px] sm:text-xs text-smysl-greenDeep/65 font-medium truncate">Касса Ytimes</div>
+                            <div class="font-bold text-xs sm:text-base text-smysl-greenDeep truncate">Готово за 7–10 мин</div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- СЕКЦИЯ 3: ВИТРИНА МЕНЮ КОФЕЙНИ «СМЫСЛ» -->
-            <section id="sec-menu" data-section-id="menu" class="admin-section-wrapper relative px-4 sm:px-6 py-6">
+            <!-- СЕКЦИЯ 3: ВИТРИНА МЕНЮ С ИНТЕРАКТИВНЫМИ КАТЕГОРИЯМИ -->
+            <section id="sec-menu" data-section-id="menu" class="admin-section-wrapper relative px-3 sm:px-6 py-6">
                 <div class="admin-section-controls hidden absolute top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
                     <span class="font-bold text-smysl-cream/70">Блок: Витрина меню</span>
                     <button onclick="moveSection('menu', -1)" class="hover:text-smysl-caramel px-1">↑</button>
@@ -395,29 +399,34 @@
                 </div>
 
                 <div class="max-w-6xl mx-auto">
-                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
                         <div>
                             <div class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-smysl-greenDark mb-1">
-                                <i class="ph-fill ph-coffee"></i> Кофейная карта «Смысл» • Синхронизация Ytimes
+                                <i class="ph-fill ph-coffee"></i> Меню кофейни «Смысл» • Синхронизация Ytimes
                             </div>
                             <h2 id="editableMenuHeading" onblur="saveInlineText('menuHeading', this.innerText)" class="font-display font-bold text-2xl sm:text-3xl text-smysl-greenDeep">
-                                Классика в каждом глотке
+                                Выберите свой напиток
                             </h2>
                         </div>
 
-                        <div id="menuDiscountNotice" class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-smysl-greenSoft border border-smysl-green/30 text-xs sm:text-sm font-semibold text-smysl-greenDeep">
-                            <span class="w-2.5 h-2.5 rounded-full bg-smysl-green pulse-dot"></span>
+                        <div id="menuDiscountNotice" class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-smysl-greenSoft border border-smysl-green/30 text-xs sm:text-sm font-semibold text-smysl-greenDeep">
+                            <span class="w-2.5 h-2.5 rounded-full bg-smysl-green pulse-dot shrink-0"></span>
                             <span id="menuDiscountNoticeText">Действует будничная скидка <strong>-20% (12:00–16:00)</strong></span>
                         </div>
                     </div>
 
+                    <!-- ИНТЕРАКТИВНЫЕ КНОПКИ КАТЕГОРИЙ МЕНЮ -->
+                    <div id="categoryTabsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-3 mb-5">
+                        <!-- Генерируется динамически -->
+                    </div>
+
                     <!-- Сетка напитков -->
-                    <div id="drinksGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                    <div id="drinksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6"></div>
 
                     <!-- Плашка о прямом переходе в полное кассовое меню Ytimes -->
                     <div class="mt-8 rounded-3xl bg-smysl-cream border border-smysl-green/25 p-5 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-5 shadow-soft">
                         <div class="flex items-start sm:items-center gap-4">
-                            <div class="w-14 h-14 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0 shadow-md">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0 shadow-md">
                                 <i class="ph-fill ph-storefront text-2xl"></i>
                             </div>
                             <div>
@@ -425,7 +434,7 @@
                                     Полная витрина Ytimes и списание бонусов SAMOSALE
                                 </h3>
                                 <p class="text-xs sm:text-sm text-smysl-greenDeep/75 mt-0.5 max-w-2xl">
-                                    Соберите напиток прямо здесь на сайте или откройте полную кассовую витрину <strong>Ytimes</strong> со всеми десертами, сезонными напитками и автоматическим начислением баллов <strong>SAMOSALE</strong>.
+                                    Соберите напиток прямо здесь на сайте или откройте полную кассовую витрину <strong>Ytimes</strong> со всеми десертами, выпечкой и автоматическим списанием баллов <strong>SAMOSALE</strong>.
                                 </p>
                             </div>
                         </div>
@@ -438,7 +447,7 @@
             </section>
 
             <!-- СЕКЦИЯ 4: БОНУСНАЯ КАРТА SAMOSALE И АДРЕСА -->
-            <section id="sec-loyalty" data-section-id="loyalty" class="admin-section-wrapper relative px-4 sm:px-6 py-8">
+            <section id="sec-loyalty" data-section-id="loyalty" class="admin-section-wrapper relative px-3 sm:px-6 py-8">
                 <div class="admin-section-controls hidden absolute top-2 right-6 z-30 bg-smysl-greenDeep text-smysl-cream px-3 py-1 rounded-xl shadow-lg text-xs items-center gap-2 border border-white/15">
                     <span class="font-bold text-smysl-cream/70">Блок: Лояльность и адреса</span>
                     <button onclick="moveSection('loyalty', -1)" class="hover:text-smysl-caramel px-1">↑</button>
@@ -462,7 +471,7 @@
                                 Электронная карта гостя в вашем телефоне
                             </h3>
                             <p class="text-sm text-smysl-cream/85 leading-relaxed mb-6">
-                                Авторизуйтесь по номеру телефона за 10 секунд. Показывайте QR-код из приложения бариста на кассе <strong>Ytimes</strong> — копите кэшбэк в <strong>SAMOSALE</strong> с каждой чашки и списывайте бонусы на любимый кофе.
+                                Авторизуйтесь по номеру телефона за 10 секунд. Показывайте QR-код из приложения бариста на кассе <strong>Ytimes</strong> — копите кэшбэк в <strong>SAMOSALE</strong> с каждой чашки и списывайте бонусы на любимые напитки.
                             </p>
                         </div>
 
@@ -523,10 +532,9 @@
                     </div>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2.5 text-xs">
+                <div class="flex flex-wrap items-center justify-center gap-2.5 text-xs">
                     <button onclick="openModal('loyaltyModal')" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition">Карта SAMOSALE</button>
-                    <button onclick="triggerPwaInstall()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition">Установить приложение</button>
-                    <!-- Скрытая кнопка входа в визуальный конструктор для администратора -->
+                    <button onclick="triggerPwaInstall()" class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition">Скачать приложение</button>
                     <button onclick="promptAdminLogin()" id="footerAdminBtn" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/15 text-smysl-cream/60 hover:text-smysl-cream transition flex items-center gap-1.5">
                         <i class="ph-bold ph-lock-key"></i>
                         <span>Вход для владельца</span>
@@ -535,15 +543,15 @@
             </div>
         </footer>
 
-        <!-- ================= НИЖНЯЯ НАВИГАЦИЯ (ДЛЯ МОБИЛЬНЫХ И PWA) ================= -->
-        <nav id="mobileBottomNav" class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-smysl-creamLight/95 backdrop-blur-md border-t border-smysl-green/20 px-3 py-2 flex items-center justify-around shadow-lg">
+        <!-- ================= НИЖНЯЯ НАВИГАЦИЯ (ДЛЯ МОБИЛЬНЫХ И PWA — БЕЗ ПЕРЕКЛЮЧАТЕЛЯ СКИДКИ) ================= -->
+        <nav id="mobileBottomNav" class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-smysl-creamLight/95 backdrop-blur-md border-t border-smysl-green/20 px-2 py-2 flex items-center justify-around shadow-lg">
             <a href="#sec-menu" class="flex flex-col items-center gap-0.5 text-smysl-greenDark font-bold text-[11px] py-1 px-3 rounded-xl">
                 <i class="ph-fill ph-coffee text-xl"></i>
                 <span>Меню</span>
             </a>
-            <button onclick="toggleHappyHourDemo()" class="flex flex-col items-center gap-0.5 text-smysl-greenDeep/75 hover:text-smysl-greenDark font-medium text-[11px] py-1 px-3 rounded-xl">
-                <i class="ph-fill ph-percent text-xl text-smysl-caramel"></i>
-                <span>Акция -20%</span>
+            <button onclick="openModal('locationModal')" class="flex flex-col items-center gap-0.5 text-smysl-greenDeep/75 hover:text-smysl-greenDark font-medium text-[11px] py-1 px-3 rounded-xl">
+                <i class="ph-fill ph-map-pin text-xl text-smysl-caramel"></i>
+                <span>Точки</span>
             </button>
             <button onclick="openModal('loyaltyModal')" class="flex flex-col items-center gap-0.5 text-smysl-greenDeep/75 hover:text-smysl-greenDark font-medium text-[11px] py-1 px-3 rounded-xl">
                 <i class="ph-fill ph-qr-code text-xl text-smysl-green"></i>
@@ -559,11 +567,11 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- МОДАЛЬНОЕ ОКНО 1: КАСТОМИЗАТОР НАПИТКА                                     -->
+    <!-- МОДАЛЬНОЕ ОКНО 1: КАСТОМИЗАТОР НАПИТКА (С ВЫБОРОМ СОРТА ЛИСТОВОГО ЧАЯ)     -->
     <!-- ========================================================================= -->
     <div id="drinkModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-smysl-creamLight w-full max-w-lg rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up max-h-[92vh] flex flex-col">
-            <div class="relative bg-smysl-green text-smysl-cream p-6 flex items-center gap-4">
+            <div class="relative bg-smysl-green text-smysl-cream p-5 sm:p-6 flex items-center gap-4">
                 <button onclick="closeModal('drinkModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/20 hover:bg-black/30 text-smysl-cream flex items-center justify-center transition">
                     <i class="ph-bold ph-x text-lg"></i>
                 </button>
@@ -578,18 +586,32 @@
             </div>
 
             <div class="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
+                <!-- 1. Объём чашки -->
                 <div>
-                    <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDeep/70 mb-2.5">1. Выберите объём чашки</label>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDeep/70 mb-2.5">1. Выберите объём</label>
                     <div id="customizerVolumes" class="grid grid-cols-3 gap-2.5"></div>
                 </div>
-                <div>
+
+                <!-- БЛОК ВЫБОРА СОРТА ЧАЯ (ПОКАЗЫВАЕТСЯ ТОЛЬКО ДЛЯ ЛИСТОВОГО ЧАЯ) -->
+                <div id="customizerTeaVarietySection" class="hidden">
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDark mb-2.5">
+                        2. Выберите сорт листового чая
+                    </label>
+                    <div id="customizerTeaVarieties" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+                </div>
+
+                <!-- 2. Выбор молока -->
+                <div id="customizerMilkSection">
                     <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDeep/70 mb-2.5">2. На каком молоке приготовить?</label>
                     <div id="customizerMilks" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
                 </div>
+
+                <!-- 3. Сиропы -->
                 <div>
                     <label class="block text-xs font-extrabold uppercase tracking-wider text-smysl-greenDeep/70 mb-2.5">3. Добавить сироп по вкусу</label>
                     <div id="customizerSyrups" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
                 </div>
+
                 <div class="p-3.5 rounded-2xl bg-smysl-cream border border-smysl-green/15 flex items-center justify-between text-xs text-smysl-greenDeep/80">
                     <span>Пищевая ценность (на порцию):</span>
                     <span id="customizerKbzhu" class="font-bold text-smysl-greenDeep"></span>
@@ -634,7 +656,6 @@
                     </button>
                 </div>
 
-                <!-- Блок авторизации гостя по телефону -->
                 <div id="samosaleAuthBox" class="mb-4 p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25">
                     <label class="block text-xs font-bold text-smysl-greenDeep mb-1">
                         Введите номер телефона для привязки карты SAMOSALE:
@@ -647,7 +668,6 @@
                     </div>
                 </div>
 
-                <!-- Сама карта в фирменном цвете -->
                 <div class="rounded-3xl bg-smysl-green text-smysl-cream p-6 shadow-card relative overflow-hidden mb-5">
                     <div class="flex items-start justify-between gap-2 mb-5">
                         <div>
@@ -661,7 +681,6 @@
                         </div>
                     </div>
 
-                    <!-- Динамический QR-код для сканирования бариста в Ytimes -->
                     <div class="bg-smysl-cream rounded-2xl p-4 flex items-center justify-between gap-4 text-smysl-greenDeep">
                         <div>
                             <span class="text-[11px] font-bold uppercase tracking-wider text-smysl-greenDark block">Покажите бариста на кассе</span>
@@ -674,7 +693,6 @@
                     </div>
                 </div>
 
-                <!-- Кнопки перехода в SAMOSALE / Wallet -->
                 <div class="space-y-2.5">
                     <button onclick="redirectToSamosaleBot()" class="w-full py-3.5 px-5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-sm transition flex items-center justify-center gap-2 shadow-md">
                         <i class="ph-fill ph-telegram-logo text-lg"></i>
@@ -690,7 +708,7 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- МОДАЛЬНОЕ ОКНО 3: КОРЗИНА И ПРЕДЗАКАЗ (СВЯЗКА YTIMES + SAMOSALE)          -->
+    <!-- МОДАЛЬНОЕ ОКНО 3: КОРЗИНА И ПРЕДЗАКАЗ                                     -->
     <!-- ========================================================================= -->
     <div id="cartModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-smysl-creamLight w-full max-w-lg rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up max-h-[92vh] flex flex-col">
@@ -782,7 +800,7 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- МОДАЛЬНОЕ ОКНО 5: УСТАНОВКА ПРИЛОЖЕНИЯ (PWA)                              -->
+    <!-- МОДАЛЬНОЕ ОКНО 5: УСТАНОВКА ПРИЛОЖЕНИЯ (PWA + APK)                        -->
     <!-- ========================================================================= -->
     <div id="pwaModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-smysl-creamLight w-full max-w-md rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 p-6 animate-fade-up">
@@ -804,7 +822,7 @@
                     <p>Нажмите иконку <strong>«Поделиться»</strong> внизу браузера и выберите пункт <strong>«На экран „Домой“»</strong>. На экране появится зелёная иконка «Смысл».</p>
                 </div>
 
-               <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/20">
+                <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/20">
                     <div class="font-bold text-smysl-greenDeep flex items-center gap-2 mb-1">
                         <i class="ph-fill ph-android-logo text-lg text-smysl-greenDark"></i> На Android:
                     </div>
@@ -814,6 +832,8 @@
                         <span>Скачать APK на Android</span>
                     </a>
                 </div>
+            </div>
+
             <button onclick="closeModal('pwaModal')" class="mt-5 w-full py-3 rounded-2xl bg-smysl-green text-smysl-cream font-bold text-sm">
                 Понятно, спасибо!
             </button>
@@ -821,15 +841,15 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- МОДАЛЬНОЕ ОКНО 6: ВИЗУАЛЬНЫЙ КОНСТРУКТОР И ИНТЕГРАЦИИ (ТОЛЬКО АДМИН)      -->
+    <!-- МОДАЛЬНОЕ ОКНО 6: ВИЗУАЛЬНЫЙ КОНСТРУКТОР И СТОП-ЛИСТ (ТОЛЬКО АДМИН)       -->
     <!-- ========================================================================= -->
     <div id="adminModal" class="fixed inset-0 z-50 hidden bg-smysl-greenDeep/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-smysl-creamLight w-full max-w-3xl rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up max-h-[92vh] flex flex-col">
+        <div class="bg-smysl-creamLight w-full max-w-4xl rounded-t-[32px] sm:rounded-[32px] shadow-2xl border border-smysl-green/20 overflow-hidden animate-fade-up max-h-[92vh] flex flex-col">
             
             <div class="p-5 sm:p-6 bg-smysl-greenDeep text-smysl-cream flex items-center justify-between">
                 <div>
                     <span class="text-[11px] uppercase tracking-wider text-smysl-cream/70 font-bold block">Внутренний конструктор администратора</span>
-                    <h3 class="font-display font-bold text-lg sm:text-xl">Управление сайтом «Смысл», SAMOSALE и Ytimes</h3>
+                    <h3 class="font-display font-bold text-lg sm:text-xl">Управление меню, Стоп-листом и интеграциями</h3>
                 </div>
                 <button onclick="closeModal('adminModal')" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-smysl-cream flex items-center justify-center">
                     <i class="ph-bold ph-x"></i>
@@ -837,12 +857,12 @@
             </div>
 
             <!-- Вкладки админки -->
-            <div class="bg-smysl-cream border-b border-smysl-green/15 px-5 pt-3 flex gap-2 overflow-x-auto text-xs font-bold">
+            <div class="bg-smysl-cream border-b border-smysl-green/15 px-5 pt-3 flex gap-2 overflow-x-auto no-scrollbar text-xs font-bold">
                 <button onclick="switchAdminTab('drinks')" id="tabBtn-drinks" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-smysl-green text-smysl-greenDeep whitespace-nowrap">
-                    ☕ Напитки и цены
+                    ☕ Меню и Стоп-лист
                 </button>
                 <button onclick="switchAdminTab('locations')" id="tabBtn-locations" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 hover:text-smysl-greenDeep whitespace-nowrap">
-                    📍 Точки и Акция -20%
+                    📍 Точки и Счастливые часы (-20%)
                 </button>
                 <button onclick="switchAdminTab('integrations')" id="tabBtn-integrations" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 hover:text-smysl-greenDeep whitespace-nowrap">
                     🔗 SAMOSALE + Ytimes
@@ -855,28 +875,51 @@
             <!-- Содержимое вкладок -->
             <div class="p-5 sm:p-6 overflow-y-auto flex-1 text-sm space-y-5">
 
-                <!-- ВКЛАДКА 1: НАПИТКИ И МЕНЮ -->
+                <!-- ВКЛАДКА 1: НАПИТКИ, КАТЕГОРИИ И СТОП-ЛИСТ -->
                 <div id="adminTab-drinks" class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="font-bold text-smysl-greenDeep">Позиции в меню (редактирование и добавление)</div>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <div class="font-bold text-smysl-greenDeep">Управление напитками и Стоп-листом</div>
+                            <p class="text-xs text-smysl-greenDeep/70">Нажмите «На стоп ⛔», чтобы временно закрыть позицию для заказа</p>
+                        </div>
                         <button onclick="addNewDrinkAdmin()" class="px-3.5 py-2 rounded-xl bg-smysl-green text-smysl-cream text-xs font-bold hover:bg-smysl-greenDark transition flex items-center gap-1">
-                            <i class="ph-bold ph-plus"></i> Добавить напиток
+                            <i class="ph-bold ph-plus"></i> Добавить позицию
                         </button>
                     </div>
+
+                    <!-- Фильтр по разделам внутри админки -->
+                    <div id="adminCategoryFilter" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1"></div>
+
                     <div id="adminDrinksList" class="space-y-3"></div>
                 </div>
 
-                <!-- ВКЛАДКА 2: ТОЧКИ КОФЕЙНИ И СКИДКА -->
+                <!-- ВКЛАДКА 2: ТОЧКИ КОФЕЙНИ И ВКЛЮЧЕНИЕ СКИДКИ 20% -->
                 <div id="adminTab-locations" class="hidden space-y-4">
+                    <!-- Переключатель акции -20% (только для админа) -->
+                    <div class="p-4 rounded-2xl bg-smysl-cream border-2 border-smysl-caramel/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <div class="font-display font-bold text-sm text-smysl-greenDeep flex items-center gap-2">
+                                <i class="ph-fill ph-percent text-smysl-caramel text-lg"></i>
+                                <span>Скидка 20% в счастливые часы (12:00 – 16:00)</span>
+                            </div>
+                            <p class="text-xs text-smysl-greenDeep/75 mt-1">
+                                Только администратор может включать или выключать действие скидки на сайте и в приложении.
+                            </p>
+                        </div>
+                        <button type="button" id="adminModalHappyHourBtn" onclick="toggleHappyHourAdmin()" class="px-4 py-2.5 rounded-xl font-bold text-xs transition shrink-0 shadow-sm">
+                            Акция -20%: ВКЛЮЧЕНА
+                        </button>
+                    </div>
+
                     <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-3">
-                        <div class="font-bold text-smysl-greenDeep">График работы и размер скидки в счастливые часы</div>
+                        <div class="font-bold text-smysl-greenDeep">График работы и размер скидки</div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Часы работы (в шапке и карточках):</label>
                                 <input id="adminWorkingHoursInput" type="text" class="w-full px-3.5 py-2 rounded-xl bg-white border border-smysl-green/25 text-sm">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Процент скидки в будни (%):</label>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Процент скидки в счастливые часы (%):</label>
                                 <input id="adminDiscountPercentInput" type="number" class="w-full px-3.5 py-2 rounded-xl bg-white border border-smysl-green/25 text-sm font-bold">
                             </div>
                         </div>
@@ -908,7 +951,7 @@
                                 <input id="adminSamosaleWalletUrl" type="url" placeholder="https://samosale.ru/..." class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">API-ключ SAMOSALE (опционально):</label>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">API-ключ SAMOSALE:</label>
                                 <input id="adminSamosaleApiKey" type="password" placeholder="Вставьте токен из ЛК SAMOSALE" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
                             </div>
                             <div>
@@ -929,13 +972,13 @@
                                 <input id="adminYtimesPreorderUrl" type="url" placeholder="https://ytimes.ru/..." class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">API-токен кассы Ytimes (для синхронизации):</label>
+                                <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">API-токен кассы Ytimes:</label>
                                 <input id="adminYtimesApiKey" type="password" placeholder="Токен из панели Ytimes" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Webhook / Telegram Bot URL для мгновенного дублирования предзаказов бариста:</label>
-                            <input id="adminOrderWebhookUrl" type="url" placeholder="Необязательно: URL вебхука для уведомлений о заказах" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Webhook URL для дублирования предзаказов:</label>
+                            <input id="adminOrderWebhookUrl" type="url" placeholder="Необязательно: дополнительный URL вебхука" class="w-full px-3 py-2 rounded-xl bg-white border border-smysl-green/25 text-xs">
                         </div>
                     </div>
                 </div>
@@ -944,9 +987,6 @@
                 <div id="adminTab-cloud" class="hidden space-y-4">
                     <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-3">
                         <div class="font-bold text-smysl-greenDeep">1. Подключение облачной базы Supabase</div>
-                        <p class="text-xs text-smysl-greenDeep/70">
-                            Ваши ключи Supabase уже встроены в код! Все изменения в конструкторе сохраняются в таблицу <code>site_settings</code>:
-                        </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-smysl-greenDeep/75 mb-1">Supabase Project URL:</label>
@@ -1008,14 +1048,24 @@
 
     <!-- ================= JAVASCRIPT ЯДРО ПЛАТФОРМЫ «СМЫСЛ» ================= -->
     <script>
-        const STORAGE_KEY = 'smysl_platform_state_v2';
+        const STORAGE_KEY = 'smysl_platform_state_v3';
 
-        // Твои встроенные ключи Supabase
-        const DEFAULT_SUPABASE_URL = 'https://jbsjtvpkgofiwiazqczz.supabase.co';
-        const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2p0dnBrZ29maXdpYXpxY3p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MzY3OTUsImV4cCI6MjEwOTMxMjc5NX0.6rjCKrYI5r7zY8stG5CAA0L9Vrpz68IQ_XFM_RBSpSs';
+        // Категории меню
+        const MENU_CATEGORIES = [
+            { id: 'all', title: 'Все напитки', icon: 'ph-squares-four' },
+            { id: 'coffee', title: 'Кофе', icon: 'ph-coffee' },
+            { id: 'non_coffee', title: 'Не кофе', icon: 'ph-drop-half-bottom' },
+            { id: 'tea', title: 'Чай', icon: 'ph-leaf' },
+            { id: 'signature', title: 'Фирменные', icon: 'ph-sparkle' },
+            { id: 'seasonal', title: 'Сезонные напитки', icon: 'ph-fire' }
+        ];
 
-        // Базовое состояние платформы
+        // Сорта для Листового чая
+        const TEA_VARIETIES = ['Жасмин', 'Улун', 'Ромашка', 'Бергамот', 'Ассам'];
+
+        // Базовое состояние платформы со всеми 25 напитками
         const defaultAppState = {
+            menuVersion: 3,
             adminPassword: '1234',
             happyHourActive: true,
             discountPercent: 20,
@@ -1026,9 +1076,9 @@
             texts: {
                 heroTag: 'Спешелти зерно • Уютная атмосфера • С 08:00 до 22:00',
                 heroTitle: 'Кофе, в котором есть тепло и смысл каждого утра',
-                heroSubtitle: 'Заказывайте любимый капучино, латте или американо заранее без очереди, копите бонусы на карту гостя SAMOSALE и забирайте готовый напиток к вашему приходу.',
+                heroSubtitle: 'Заказывайте любимый кофе, авторский раф, матчу или листовой чай заранее без очереди, копите бонусы на карту гостя SAMOSALE и забирайте готовый напиток к вашему приходу.',
                 happyHoursTime: 'С 12:00 до 16:00 (Пн – Пт)',
-                menuHeading: 'Классика в каждом глотке'
+                menuHeading: 'Выберите свой напиток'
             },
             samosale: {
                 botUrl: 'https://t.me/',
@@ -1045,8 +1095,8 @@
                 orderWebhookUrl: ''
             },
             supabase: {
-                url: DEFAULT_SUPABASE_URL,
-                anonKey: DEFAULT_SUPABASE_KEY
+                url: '',
+                anonKey: ''
             },
             selectedLocationId: 1,
             pickupTime: 'Через 7–10 мин',
@@ -1065,39 +1115,42 @@
                 }
             ],
             drinks: [
-                {
-                    id: 'cappuccino',
-                    title: 'Капучино',
-                    subtitle: 'Классика с бархатной пеной',
-                    description: 'Идеальный баланс насыщенного эспрессо из 100% арабики и шелковистого взбитого молока.',
-                    basePrice: 220,
-                    kbzhu: '140 ккал • Б 7г • Ж 7г • У 11г',
-                    badge: 'Хит «Смысла»',
-                    selectedVolIndex: 1,
-                    cupType: 'cappuccino'
-                },
-                {
-                    id: 'americano',
-                    title: 'Американо',
-                    subtitle: 'Чистый вкус спешелти зерна',
-                    description: 'Ароматный чёрный кофе на двойном шоте эспрессо с нотами тёмного шоколада, карамели и лесного ореха.',
-                    basePrice: 180,
-                    kbzhu: '15 ккал • Б 1г • Ж 0г • У 2г',
-                    badge: 'Бодрость 100%',
-                    selectedVolIndex: 0,
-                    cupType: 'americano'
-                },
-                {
-                    id: 'latte',
-                    title: 'Латте',
-                    subtitle: 'Нежный и сливочный',
-                    description: 'Мягкий кофейно-молочный напиток с преобладанием тёплого взбитого молока и лёгкой воздушной шапкой.',
-                    basePrice: 240,
-                    kbzhu: '175 ккал • Б 8г • Ж 8г • У 14г',
-                    badge: 'Нежный вкус',
-                    selectedVolIndex: 1,
-                    cupType: 'latte'
-                }
+                // 1. КОФЕ
+                { id: 'espresso', category: 'coffee', title: 'Эспрессо', subtitle: 'Яркий двойной шот 100% арабики', description: 'Плотный и ароматный эспрессо с бархатистой пенкой крема и ягодно-шоколадным послевкусием.', basePrice: 150, kbzhu: '10 ккал • Б 0.5г • Ж 0г • У 1.5г', badge: 'Классика', selectedVolIndex: 0, cupType: 'americano', stopped: false },
+                { id: 'americano', category: 'coffee', title: 'Американо', subtitle: 'Чистый вкус спешелти зерна', description: 'Ароматный чёрный кофе на двойном шоте эспрессо с нотами тёмного шоколада, карамели и лесного ореха.', basePrice: 180, kbzhu: '15 ккал • Б 1г • Ж 0г • У 2г', badge: 'Бодрость', selectedVolIndex: 0, cupType: 'americano', stopped: false },
+                { id: 'cappuccino', category: 'coffee', title: 'Капучино', subtitle: 'Классика с бархатной пеной', description: 'Идеальный баланс насыщенного эспрессо и шелковистого взбитого молока.', basePrice: 220, kbzhu: '140 ккал • Б 7г • Ж 7г • У 11г', badge: 'Хит «Смысла»', selectedVolIndex: 1, cupType: 'cappuccino', stopped: false },
+                { id: 'flat_white', category: 'coffee', title: 'Флэт уайт', subtitle: 'Двойной эспрессо и тонкий слой молока', description: 'Насыщенный кофейный вкус на основе дабл-шота эспрессо с глянцевой микропеной.', basePrice: 240, kbzhu: '120 ккал • Б 6г • Ж 6г • У 9г', badge: 'Крепкий баланс', selectedVolIndex: 0, cupType: 'cappuccino', stopped: false },
+                { id: 'latte', category: 'coffee', title: 'Латте', subtitle: 'Нежный и сливочный', description: 'Мягкий кофейно-молочный напиток с преобладанием тёплого взбитого молока и воздушной шапкой.', basePrice: 240, kbzhu: '175 ккал • Б 8г • Ж 8г • У 14г', badge: 'Нежный вкус', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'raf', category: 'coffee', title: 'Раф', subtitle: 'Взбитые сливки, эспрессо и ваниль', description: 'Десертный бархатистый кофе, взбитый вместе с нежными сливками и ароматным ванильным сахаром.', basePrice: 260, kbzhu: '230 ккал • Б 6г • Ж 14г • У 20г', badge: 'Сливочный', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'filter', category: 'coffee', title: 'Фильтр', subtitle: 'Чистый чёрный кофе из моносортов', description: 'Свежезаваренный фильтр-кофе с сочной кислотностью, цветочным ароматом и чайной текстурой.', basePrice: 200, kbzhu: '12 ккал • Б 0.5г • Ж 0г • У 2г', badge: 'Быстро и ярко', selectedVolIndex: 1, cupType: 'americano', stopped: false },
+                { id: 'pourover', category: 'coffee', title: 'Пуровер', subtitle: 'Ручное заваривание через воронку V60', description: 'Воронка раскрывает тончайшие дескрипторы спешелти зерна: тропические фрукты, ягоды и цветы.', basePrice: 280, kbzhu: '12 ккал • Б 0.5г • Ж 0г • У 2г', badge: 'Альтернатива', selectedVolIndex: 1, cupType: 'americano', stopped: false },
+                { id: 'aeropress', category: 'coffee', title: 'Аэропресс', subtitle: 'Плотный и насыщенный фильтр', description: 'Заваривание под давлением воздуха даёт чистую, сладкую и бархатистую чашку без горечи.', basePrice: 270, kbzhu: '14 ккал • Б 0.5г • Ж 0г • У 2г', badge: 'Альтернатива', selectedVolIndex: 0, cupType: 'americano', stopped: false },
+
+                // 2. НЕ КОФЕ
+                { id: 'cocoa', category: 'non_coffee', title: 'Какао', subtitle: 'Натуральный тёмный шоколад и молоко', description: 'Густой согревающий какао с насыщенным шоколадным вкусом и нежной молочной пенкой.', basePrice: 240, kbzhu: '210 ккал • Б 7г • Ж 9г • У 25г', badge: 'Уют в чашке', selectedVolIndex: 1, cupType: 'cappuccino', stopped: false },
+                { id: 'matcha_latte', category: 'non_coffee', title: 'Матча латте', subtitle: 'Японский зелёный чай и шёлковое молоко', description: 'Церемониальная зелёная матча из Удзи, взбитая с тёплым молоком. Тонизирует мягко и надолго.', basePrice: 260, kbzhu: '150 ккал • Б 7г • Ж 7г • У 14г', badge: 'Суперфуд', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'chai_latte', category: 'non_coffee', title: 'Пряный чай латте', subtitle: 'Индийские специи масала и молоко', description: 'Согревающий напиток с кардамоном, корицей, имбирём, гвоздикой и нежной молочной пеной.', basePrice: 250, kbzhu: '180 ккал • Б 6г • Ж 6г • У 24г', badge: 'Пряный', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+
+                // 3. ЧАЙ
+                { id: 'sea_buckthorn_tea', category: 'tea', title: 'Облепиховый чай', subtitle: 'Ягоды облепихи, апельсин и пряности', description: 'Витаминный согревающий чай на основе спелой таёжной облепихи с цитрусовыми нотами и мёдом.', basePrice: 260, kbzhu: '145 ккал • Б 1г • Ж 1г • У 32г', badge: 'Витаминный хит', selectedVolIndex: 1, cupType: 'americano', stopped: false },
+                { id: 'leaf_tea', category: 'tea', title: 'Листовой чай', subtitle: 'Выберите сорт: Жасмин, Улун, Ромашка, Бергамот, Ассам', description: 'Отборный крупнолистовой чай правильной температуры заваривания. Сорт выбирается при добавлении в заказ.', basePrice: 220, kbzhu: '5 ккал • Б 0г • Ж 0г • У 1г', badge: '5 сортов на выбор', selectedVolIndex: 1, cupType: 'americano', hasTeaChoice: true, stopped: false },
+
+                // 4. ФИРМЕННЫЕ
+                { id: 'latte_halva', category: 'signature', title: 'Латте халва', subtitle: 'Восточная сладость и спешелти эспрессо', description: 'Авторский латте с натуральной кунжутно-подсолнечной халвой и густой сливочно-ореховой текстурой.', basePrice: 280, kbzhu: '245 ккал • Б 9г • Ж 13г • У 23г', badge: 'Фирменный', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'latte_elderberry', category: 'signature', title: 'Латте бузина-малина', subtitle: 'Цветочная бузина и сочная малина', description: 'Нежный сливочный латте с тонким ароматом цветов бузины и ярким ягодным акцентом малины.', basePrice: 280, kbzhu: '215 ккал • Б 7г • Ж 7г • У 29г', badge: 'Фирменный', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'latte_cinnabon', category: 'signature', title: 'Латте синабон', subtitle: 'Вкус горячей булочки с корицей и крем-чизом', description: 'Сладкий пряный латте с цейлонской корицей, тростниковым сахаром и сливочной ноткой.', basePrice: 290, kbzhu: '240 ккал • Б 8г • Ж 10г • У 28г', badge: 'Фирменный', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'raf_salted_caramel', category: 'signature', title: 'Раф солёная карамель', subtitle: 'Тягучая карамель и морская соль', description: 'Бархатный сливочный раф с домашней карамелью и кристаллом розовой соли для баланса сладости.', basePrice: 290, kbzhu: '260 ккал • Б 6г • Ж 15г • У 25г', badge: 'Бестселлер', selectedVolIndex: 1, cupType: 'cappuccino', stopped: false },
+                { id: 'raf_lavender', category: 'signature', title: 'Раф лавандовый', subtitle: 'Крымская лаванда и нежные сливки', description: 'Утончённый цветочный раф с перемолотыми соцветиями горной лаванды и мягким эспрессо.', basePrice: 290, kbzhu: '240 ккал • Б 6г • Ж 14г • У 22г', badge: 'Фирменный', selectedVolIndex: 1, cupType: 'cappuccino', stopped: false },
+
+                // 5. СЕЗОННЫЕ НАПИТКИ
+                { id: 'seasonal_cocoa_dates', category: 'seasonal', title: 'Шоколадный какао с финиками', subtitle: 'Натуральная сладость фиников и какао-бобов', description: 'Густой бархатистый какао со спелыми королевскими финиками и ноткой мускатного ореха.', basePrice: 290, kbzhu: '250 ккал • Б 7г • Ж 9г • У 34г', badge: 'Сезон', selectedVolIndex: 1, cupType: 'cappuccino', stopped: false },
+                { id: 'seasonal_cocoa_punch', category: 'seasonal', title: 'Какао-пунш с вишнёвой пеной', subtitle: 'Пряный шоколад и воздушный вишнёвый мусс', description: 'Согревающий какао с ягодной кислинкой и пышной шапкой нежной вишнёвой пены.', basePrice: 310, kbzhu: '265 ккал • Б 7г • Ж 11г • У 35г', badge: 'Сезон', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'seasonal_latte_apple_pie', category: 'seasonal', title: 'Латте «Яблочный пирог»', subtitle: 'Печёное яблоко, корица и карамель', description: 'Уютный осенне-зимний латте со вкусом домашней шарлотки с печёными яблоками и специями.', basePrice: 290, kbzhu: '225 ккал • Б 7г • Ж 8г • У 29г', badge: 'Сезон', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'seasonal_rooibos_orange', category: 'seasonal', title: 'Апельсиновый чай-ройбуш с карамелью', subtitle: 'Африканский ройбуш без кофеина с цитрусом', description: 'Ароматный травяной настой ройбуша со свежим апельсином и тёплым карамельным послевкусием.', basePrice: 280, kbzhu: '130 ккал • Б 1г • Ж 0г • У 30г', badge: 'Без кофеина', selectedVolIndex: 1, cupType: 'americano', stopped: false },
+                { id: 'seasonal_filter_rowan', category: 'seasonal', title: 'Фильтр «Рябина-лимон»', subtitle: 'Ягодный фильтр-кофе с цитрусовой свежестью', description: 'Авторский фильтр-пунш на спешелти зерне с терпкой красной рябиной и соком лимона.', basePrice: 250, kbzhu: '95 ккал • Б 1г • Ж 0г • У 22г', badge: 'Сезон', selectedVolIndex: 1, cupType: 'americano', stopped: false },
+                { id: 'seasonal_matcha_pumpkin', category: 'seasonal', title: 'Пряная матча с тыквой', subtitle: 'Японская матча, запечённая тыква и специи', description: 'Яркое сочетание зелёного чая матча со сладким тыквенным пюре, корицей и имбирём.', basePrice: 300, kbzhu: '210 ккал • Б 7г • Ж 8г • У 26г', badge: 'Сезон', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'seasonal_matcha_mint', category: 'seasonal', title: 'Шоколадная крем-матча с мятой', subtitle: 'Матча, шоколад и освежающий мятный крем', description: 'Многослойный напиток с насыщенным шоколадом, зелёной матчей и прохладной мятно-сливочной шапкой.', basePrice: 310, kbzhu: '240 ккал • Б 7г • Ж 12г • У 25г', badge: 'Сезон', selectedVolIndex: 1, cupType: 'latte', stopped: false },
+                { id: 'seasonal_matcha_jasmine', category: 'seasonal', title: 'Жасминовая крем-матча с мёдом', subtitle: 'Цветочный жасмин, матча и цветочный мёд', description: 'Нежная матча с ароматом цветков жасмина, натуральным мёдом и воздушным сливочным кремом.', basePrice: 310, kbzhu: '220 ккал • Б 7г • Ж 10г • У 24г', badge: 'Сезон', selectedVolIndex: 1, cupType: 'latte', stopped: false }
             ],
             volumes: [
                 { label: '250 мл', code: 'S', addPrice: 0 },
@@ -1106,6 +1159,7 @@
             ],
             milks: [
                 { label: 'Классическое', addPrice: 0 },
+                { label: 'Без молока', addPrice: 0 },
                 { label: 'Кокосовое', addPrice: 70 },
                 { label: 'Банановое', addPrice: 70 },
                 { label: 'Миндальное', addPrice: 70 },
@@ -1123,43 +1177,35 @@
                 drinkId: 'cappuccino',
                 volIndex: 1,
                 milkIndex: 0,
-                syrupIndex: 0
+                syrupIndex: 0,
+                teaVariety: 'Жасмин'
             }
         };
 
         let appState = loadLocalState();
+        let activeCategory = 'all';
+        let adminSelectedCategory = 'all';
         let isAdminMode = false;
         let deferredPwaPrompt = null;
-
-        // Нормализация URL Supabase (если вставили с /rest/v1/, автоматически очищаем хвост)
-        function normalizeSupabaseBaseUrl(rawUrl) {
-            if (!rawUrl) return DEFAULT_SUPABASE_URL;
-            return rawUrl.trim().replace(/\/rest\/v1\/?$/i, '').replace(/\/$/, '');
-        }
 
         function loadLocalState() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (!raw) return JSON.parse(JSON.stringify(defaultAppState));
                 const parsed = JSON.parse(raw);
-                const merged = Object.assign(JSON.parse(JSON.stringify(defaultAppState)), parsed);
-                if (!merged.supabase || !merged.supabase.url) {
-                    merged.supabase = { url: DEFAULT_SUPABASE_URL, anonKey: DEFAULT_SUPABASE_KEY };
-                } else {
-                    merged.supabase.url = normalizeSupabaseBaseUrl(merged.supabase.url);
-                    if (!merged.supabase.anonKey) merged.supabase.anonKey = DEFAULT_SUPABASE_KEY;
+                if (!parsed.drinks || parsed.drinks.length < 5) {
+                    parsed.drinks = JSON.parse(JSON.stringify(defaultAppState.drinks));
                 }
-                return merged;
+                return Object.assign(JSON.parse(JSON.stringify(defaultAppState)), parsed);
             } catch (e) {
                 return JSON.parse(JSON.stringify(defaultAppState));
             }
         }
 
-        // Иллюстрации стаканчиков
         function getDrinkSvgIllustration(cupType) {
             if (cupType === 'americano') {
                 return `
-                <svg viewBox="0 0 120 120" class="w-24 h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 120 120" class="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="60" cy="60" r="52" fill="#E9EFE0"/>
                     <path d="M48 26 C45 20, 52 16, 49 10" stroke="#7B9244" stroke-width="2.5" stroke-linecap="round"/>
                     <path d="M60 24 C57 18, 64 14, 61 8" stroke="#7B9244" stroke-width="2.5" stroke-linecap="round"/>
@@ -1172,7 +1218,7 @@
                 </svg>`;
             } else if (cupType === 'latte') {
                 return `
-                <svg viewBox="0 0 120 120" class="w-24 h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 120 120" class="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="60" cy="60" r="52" fill="#E9EFE0"/>
                     <path d="M36 32 H84 L78 98 C77.5 102 74 105 69 105 H51 C46 105 42.5 102 42 98 L36 32Z" fill="#F6F4E8" stroke="#7B9244" stroke-width="2"/>
                     <path d="M38 50 H82 L80 74 H40 L38 50Z" fill="#D48C46" opacity="0.85"/>
@@ -1183,7 +1229,7 @@
                 </svg>`;
             }
             return `
-            <svg viewBox="0 0 120 120" class="w-24 h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 120 120" class="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="60" cy="60" r="52" fill="#E9EFE0"/>
                 <path d="M82 50 H90 C96 50 99 55 99 61 C99 67 96 72 90 72 H80" stroke="#7B9244" stroke-width="5" stroke-linecap="round"/>
                 <path d="M28 42 H86 L81 84 C79.5 96 70 102 57 102 C44 102 34.5 96 33 84 L28 42Z" fill="#7B9244"/>
@@ -1213,7 +1259,7 @@
             if (pass === null) return;
             if (pass === appState.adminPassword) {
                 enableAdminMode();
-                showToast('Режим визуального конструктора активирован! Теперь вы можете редактировать тексты и блоки.');
+                showToast('Режим администратора включён! Теперь вы можете управлять Стоп-листом и скидкой 20%.');
             } else {
                 showToast('Неверный пароль администратора');
             }
@@ -1223,7 +1269,7 @@
             isAdminMode = true;
             document.body.classList.add('admin-mode-active');
             document.getElementById('ownerTopBar').classList.remove('hidden');
-            document.getElementById('mainSiteHeader').classList.replace('top-0', 'top-[45px]');
+            document.getElementById('mainSiteHeader').classList.replace('top-0', 'top-[41px]');
             document.getElementById('editLocationsBtn').classList.replace('hidden', 'inline-flex');
             document.getElementById('footerAdminBtn').innerHTML = '<i class="ph-bold ph-sliders-horizontal"></i><span>Открыть конструктор</span>';
 
@@ -1245,7 +1291,7 @@
             isAdminMode = false;
             document.body.classList.remove('admin-mode-active');
             document.getElementById('ownerTopBar').classList.add('hidden');
-            document.getElementById('mainSiteHeader').classList.replace('top-[45px]', 'top-0');
+            document.getElementById('mainSiteHeader').classList.replace('top-[41px]', 'top-0');
             document.getElementById('editLocationsBtn').classList.replace('inline-flex', 'hidden');
             document.getElementById('footerAdminBtn').innerHTML = '<i class="ph-bold ph-lock-key"></i><span>Вход для владельца</span>';
 
@@ -1261,7 +1307,7 @@
 
             applySectionOrderAndVisibility();
             renderDrinksGrid();
-            showToast('Вы вышли из режима администратора. Сайт показан глазами гостя.');
+            showToast('Вы вышли из режима администратора.');
         }
 
         function saveInlineText(key, value) {
@@ -1302,7 +1348,7 @@
             const idx = appState.hiddenSections.indexOf(secKey);
             if (idx === -1) {
                 appState.hiddenSections.push(secKey);
-                showToast('Секция скрыта для гостей (в режиме админа она полупрозрачная)');
+                showToast('Секция скрыта для гостей');
             } else {
                 appState.hiddenSections.splice(idx, 1);
                 showToast('Секция снова видна всем гостям');
@@ -1311,60 +1357,128 @@
             saveStateToStorageAndCloud(true);
         }
 
-        // ================= РЕНДЕР МЕНЮ НАПИТКОВ =================
+        // ================= ИНТЕРАКТИВНЫЕ ВКЛАДКИ КАТЕГОРИЙ И СЕТКА МЕНЮ =================
+        function renderCategoryTabs() {
+            const container = document.getElementById('categoryTabsContainer');
+            container.innerHTML = MENU_CATEGORIES.map(cat => {
+                const isActive = cat.id === activeCategory;
+                const count = cat.id === 'all'
+                    ? appState.drinks.length
+                    : appState.drinks.filter(d => d.category === cat.id).length;
+
+                return `
+                    <button type="button" onclick="selectMenuCategory('${cat.id}')"
+                        class="px-4 py-2.5 rounded-2xl font-display font-semibold text-xs sm:text-sm transition flex items-center gap-2 whitespace-nowrap shrink-0 ${
+                            isActive
+                                ? 'bg-smysl-green text-smysl-cream shadow-md'
+                                : 'bg-smysl-cream hover:bg-smysl-greenSoft text-smysl-greenDeep border border-smysl-green/20'
+                        }">
+                        <i class="ph-fill ${cat.icon} text-base"></i>
+                        <span>${cat.title}</span>
+                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            isActive ? 'bg-smysl-cream/20 text-smysl-cream' : 'bg-smysl-green/10 text-smysl-greenDark'
+                        }">${count}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectMenuCategory(catId) {
+            activeCategory = catId;
+            renderCategoryTabs();
+            renderDrinksGrid();
+        }
+
+        // Переключение стоп-листа позиции (только админ)
+        function toggleDrinkStopById(drinkId) {
+            if (!isAdminMode) return;
+            const drink = appState.drinks.find(d => d.id === drinkId);
+            if (!drink) return;
+            drink.stopped = !drink.stopped;
+            saveStateToStorageAndCloud(true);
+            renderDrinksGrid();
+            if (!document.getElementById('adminModal').classList.contains('hidden')) {
+                renderAdminModalInputs();
+            }
+            showToast(drink.stopped
+                ? `⛔ «${drink.title}» поставлен в СТОП-ЛИСТ`
+                : `✅ «${drink.title}» снова в продаже!`);
+        }
+
         function renderDrinksGrid() {
+            renderCategoryTabs();
             const grid = document.getElementById('drinksGrid');
-            const cardsHtml = appState.drinks.map((drink) => {
+            const filteredDrinks = activeCategory === 'all'
+                ? appState.drinks
+                : appState.drinks.filter(d => d.category === activeCategory);
+
+            const cardsHtml = filteredDrinks.map((drink) => {
                 const vol = appState.volumes[drink.selectedVolIndex] || appState.volumes[0];
                 const priceObj = calculatePrice(drink.basePrice, vol.addPrice, 0);
+                const isStopped = Boolean(drink.stopped);
 
                 const volumeButtonsHtml = appState.volumes.map((v, vIdx) => {
                     const isSelected = vIdx === drink.selectedVolIndex;
                     return `
-                        <button type="button" onclick="selectCardVolume('${drink.id}', ${vIdx})"
+                        <button type="button" ${isStopped ? 'disabled' : ''} onclick="selectCardVolume('${drink.id}', ${vIdx})"
                             class="py-1.5 px-2.5 rounded-xl text-xs font-bold transition ${
                                 isSelected
                                     ? 'bg-smysl-green text-smysl-cream shadow-sm'
                                     : 'bg-smysl-creamLight text-smysl-greenDeep/75 hover:bg-smysl-greenSoft border border-smysl-green/15'
-                            }">
+                            } ${isStopped ? 'opacity-50 cursor-not-allowed' : ''}">
                             ${v.label}
                         </button>
                     `;
                 }).join('');
 
                 return `
-                <div class="rounded-[28px] bg-smysl-cream border border-smysl-green/20 p-5 sm:p-6 shadow-soft hover:shadow-card transition-all flex flex-col justify-between relative overflow-hidden group">
+                <div class="rounded-[28px] bg-smysl-cream border ${isStopped ? 'border-red-300/60 bg-smysl-cream/60' : 'border-smysl-green/20'} p-5 sm:p-6 shadow-soft hover:shadow-card transition-all flex flex-col justify-between relative overflow-hidden group">
                     <div>
-                        <div class="flex items-center justify-between gap-2 mb-4">
-                            <span class="px-3 py-1 rounded-full bg-smysl-green/15 text-smysl-greenDark text-xs font-bold">
-                                ${drink.badge}
-                            </span>
-                            <div class="flex items-center gap-1">
-                                ${priceObj.isDiscounted ? `
+                        <div class="flex items-center justify-between gap-2 mb-4 flex-wrap">
+                            ${isStopped ? `
+                                <span class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-extrabold uppercase tracking-wider flex items-center gap-1">
+                                    <i class="ph-fill ph-prohibit"></i> Временно нет (Стоп)
+                                </span>
+                            ` : `
+                                <span class="px-3 py-1 rounded-full bg-smysl-green/15 text-smysl-greenDark text-xs font-bold">
+                                    ${drink.badge || 'Смысл'}
+                                </span>
+                            `}
+
+                            <div class="flex items-center gap-1.5">
+                                ${(!isStopped && priceObj.isDiscounted) ? `
                                     <span class="px-2.5 py-1 rounded-full bg-smysl-caramel text-white text-xs font-extrabold flex items-center gap-1 shadow-sm">
                                         <i class="ph-fill ph-clock"></i> -${appState.discountPercent}%
                                     </span>
                                 ` : ''}
+
                                 ${isAdminMode ? `
-                                    <button onclick="openAdminTab('drinks')" class="w-7 h-7 rounded-lg bg-smysl-greenDeep text-smysl-cream flex items-center justify-center text-xs hover:bg-smysl-green" title="Редактировать напиток">
+                                    <button onclick="toggleDrinkStopById('${drink.id}')" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition ${
+                                        isStopped
+                                            ? 'bg-green-600 text-white hover:bg-green-700'
+                                            : 'bg-red-100 text-red-700 hover:bg-red-200'
+                                    }" title="Поставить на стоп / Вернуть в продажу">
+                                        ${isStopped ? 'Вернуть ✅' : 'В стоп ⛔'}
+                                    </button>
+                                    <button onclick="openAdminTab('drinks')" class="w-7 h-7 rounded-lg bg-smysl-greenDeep text-smysl-cream flex items-center justify-center text-xs hover:bg-smysl-green" title="Редактировать">
                                         <i class="ph-bold ph-pencil-simple"></i>
                                     </button>
                                 ` : ''}
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4 mb-4">
+                        <div class="flex items-center gap-4 mb-4 ${isStopped ? 'opacity-50 grayscale' : ''}">
                             <div class="shrink-0 group-hover:scale-105 transition-transform duration-300">
                                 ${getDrinkSvgIllustration(drink.cupType)}
                             </div>
                             <div>
-                                <h3 class="font-display font-bold text-xl text-smysl-greenDeep">${drink.title}</h3>
+                                <h3 class="font-display font-bold text-lg sm:text-xl text-smysl-greenDeep leading-snug">${drink.title}</h3>
                                 <p class="text-xs font-semibold text-smysl-greenDark mt-0.5">${drink.subtitle}</p>
-                                <span class="inline-block text-[11px] text-smysl-greenDeep/60 mt-1.5">${drink.kbzhu}</span>
+                                <span class="inline-block text-[11px] text-smysl-greenDeep/60 mt-1">${drink.kbzhu}</span>
                             </div>
                         </div>
 
-                        <p class="text-xs sm:text-sm text-smysl-greenDeep/80 leading-relaxed mb-5">
+                        <p class="text-xs sm:text-sm text-smysl-greenDeep/80 leading-relaxed mb-5 ${isStopped ? 'opacity-50' : ''}">
                             ${drink.description}
                         </p>
                     </div>
@@ -1378,8 +1492,8 @@
                         </div>
 
                         <div class="flex items-center justify-between gap-3 pt-1">
-                            <div>
-                                <span class="text-[11px] text-smysl-greenDeep/60 block">Цена сейчас:</span>
+                            <div class="${isStopped ? 'opacity-50' : ''}">
+                                <span class="text-[11px] text-smysl-greenDeep/60 block">Цена:</span>
                                 <div class="flex items-baseline gap-2">
                                     <span class="font-display font-extrabold text-2xl text-smysl-greenDeep">${priceObj.finalPrice} ₽</span>
                                     ${priceObj.isDiscounted ? `
@@ -1388,10 +1502,17 @@
                                 </div>
                             </div>
 
-                            <button onclick="openDrinkCustomizer('${drink.id}')" class="px-4 py-3 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-md">
-                                <i class="ph-bold ph-plus"></i>
-                                <span>Выбрать</span>
-                            </button>
+                            ${isStopped ? `
+                                <button disabled class="px-4 py-3 rounded-2xl bg-gray-300 text-gray-600 font-display font-semibold text-xs sm:text-sm cursor-not-allowed flex items-center gap-1.5">
+                                    <i class="ph-bold ph-prohibit"></i>
+                                    <span>На стопе</span>
+                                </button>
+                            ` : `
+                                <button onclick="openDrinkCustomizer('${drink.id}')" class="px-4 py-3 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 shadow-md">
+                                    <i class="ph-bold ph-plus"></i>
+                                    <span>Выбрать</span>
+                                </button>
+                            `}
                         </div>
                     </div>
                 </div>
@@ -1403,7 +1524,7 @@
                     <div class="w-16 h-16 rounded-2xl bg-smysl-green/15 group-hover:bg-smysl-green text-smysl-greenDark group-hover:text-smysl-cream flex items-center justify-center transition mb-3">
                         <i class="ph-bold ph-plus text-2xl"></i>
                     </div>
-                    <div class="font-display font-bold text-base text-smysl-greenDeep">Добавить напиток в меню</div>
+                    <div class="font-display font-bold text-base text-smysl-greenDeep">Добавить напиток в раздел</div>
                     <p class="text-xs text-smysl-greenDeep/65 mt-1 max-w-xs">Нажмите, чтобы добавить новую позицию в кофейную карту «Смысл»</p>
                 </div>
             ` : '';
@@ -1413,28 +1534,32 @@
 
         function selectCardVolume(drinkId, volIdx) {
             const drink = appState.drinks.find(d => d.id === drinkId);
-            if (drink) {
+            if (drink && !drink.stopped) {
                 drink.selectedVolIndex = volIdx;
                 renderDrinksGrid();
             }
         }
 
-        // ================= КАСТОМИЗАТОР НАПИТКА =================
+        // ================= КАСТОМИЗАТОР НАПИТКА (С ВЫБОРОМ ЛИСТОВОГО ЧАЯ) =================
         function openDrinkCustomizer(drinkId) {
             const drink = appState.drinks.find(d => d.id === drinkId);
-            if (!drink) return;
+            if (!drink || drink.stopped) return;
+
+            const isBlackOrTea = drink.category === 'tea' || ['espresso', 'americano', 'filter', 'pourover', 'aeropress', 'seasonal_filter_rowan', 'seasonal_rooibos_orange'].includes(drink.id);
+
             appState.activeCustomizer = {
                 drinkId: drink.id,
                 volIndex: drink.selectedVolIndex || 0,
-                milkIndex: 0,
-                syrupIndex: 0
+                milkIndex: isBlackOrTea ? 1 : 0, // для чая и чёрного кофе по умолчанию "Без молока"
+                syrupIndex: 0,
+                teaVariety: TEA_VARIETIES[0]
             };
             updateCustomizerView();
             openModal('drinkModal');
         }
 
         function updateCustomizerView() {
-            const { drinkId, volIndex, milkIndex, syrupIndex } = appState.activeCustomizer;
+            const { drinkId, volIndex, milkIndex, syrupIndex, teaVariety } = appState.activeCustomizer;
             const drink = appState.drinks.find(d => d.id === drinkId);
             if (!drink) return;
 
@@ -1447,6 +1572,7 @@
             discountTag.textContent = `Скидка -${appState.discountPercent}% (12:00–16:00)`;
             discountTag.style.display = appState.happyHourActive ? 'inline-block' : 'none';
 
+            // Объёмы
             document.getElementById('customizerVolumes').innerHTML = appState.volumes.map((v, idx) => `
                 <button type="button" onclick="setCustomizerOption('volIndex', ${idx})"
                     class="p-3 rounded-2xl border text-left transition ${
@@ -1459,6 +1585,26 @@
                 </button>
             `).join('');
 
+            // Блок выбора сорта чая (только для Листового чая)
+            const teaSection = document.getElementById('customizerTeaVarietySection');
+            if (drink.hasTeaChoice || drink.id === 'leaf_tea') {
+                teaSection.classList.remove('hidden');
+                document.getElementById('customizerTeaVarieties').innerHTML = TEA_VARIETIES.map(variety => `
+                    <button type="button" onclick="setCustomizerOption('teaVariety', '${variety}')"
+                        class="p-2.5 rounded-xl border text-left transition ${
+                            teaVariety === variety
+                                ? 'bg-smysl-green text-smysl-cream border-smysl-green shadow-sm'
+                                : 'bg-white text-smysl-greenDeep border-smysl-green/20 hover:bg-smysl-greenSoft/50'
+                        }">
+                        <div class="font-bold text-xs">${variety}</div>
+                        <div class="text-[10px] opacity-75">Листовой чай</div>
+                    </button>
+                `).join('');
+            } else {
+                teaSection.classList.add('hidden');
+            }
+
+            // Молоко
             document.getElementById('customizerMilks').innerHTML = appState.milks.map((m, idx) => `
                 <button type="button" onclick="setCustomizerOption('milkIndex', ${idx})"
                     class="p-2.5 rounded-xl border text-left transition ${
@@ -1471,6 +1617,7 @@
                 </button>
             `).join('');
 
+            // Сиропы
             document.getElementById('customizerSyrups').innerHTML = appState.syrups.map((s, idx) => `
                 <button type="button" onclick="setCustomizerOption('syrupIndex', ${idx})"
                     class="p-2.5 rounded-xl border text-left transition ${
@@ -1498,21 +1645,24 @@
             }
         }
 
-        function setCustomizerOption(key, idx) {
-            appState.activeCustomizer[key] = idx;
+        function setCustomizerOption(key, val) {
+            appState.activeCustomizer[key] = val;
             updateCustomizerView();
         }
 
         function confirmAddToCart() {
-            const { drinkId, volIndex, milkIndex, syrupIndex } = appState.activeCustomizer;
+            const { drinkId, volIndex, milkIndex, syrupIndex, teaVariety } = appState.activeCustomizer;
             const drink = appState.drinks.find(d => d.id === drinkId);
             const vol = appState.volumes[volIndex];
             const milk = appState.milks[milkIndex];
             const syrup = appState.syrups[syrupIndex];
 
+            const isLeafTea = drink.hasTeaChoice || drink.id === 'leaf_tea';
+            const displayTitle = isLeafTea ? `${drink.title} (${teaVariety})` : drink.title;
+
             appState.cart.push({
                 uid: Date.now() + Math.random(),
-                title: drink.title,
+                title: displayTitle,
                 volumeLabel: vol.label,
                 milkLabel: milk.label,
                 syrupLabel: syrup.label,
@@ -1524,7 +1674,7 @@
 
             closeModal('drinkModal');
             updateCartUI();
-            showToast(`«${drink.title}» (${vol.label}) добавлен в предзаказ!`);
+            showToast(`«${displayTitle}» (${vol.label}) добавлен в предзаказ!`);
         }
 
         // ================= КОРЗИНА И НАЧИСЛЕНИЕ БОНУСОВ SAMOSALE =================
@@ -1620,7 +1770,7 @@
                 document.getElementById('guestPhoneInput').value = s.guestPhone;
             }
 
-            const qrPayload = encodeURIComponent(s.guestCardCode || s.guestPhone || 'SMYSL-8842');
+            const qrPayload = encodeURIComponent(`SAMOSALE_CARD:${s.guestCardCode};PHONE:${s.guestPhone || 'GUEST'}`);
             document.getElementById('samosaleQrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrPayload}`;
         }
 
@@ -1650,7 +1800,6 @@
                 }
             } catch (e) {}
 
-            // Резервный режим, если сайт открыт локально с компьютера
             const digits = phone.replace(/\D/g, '') || '8842';
             appState.samosale.guestPhone = phone;
             appState.samosale.guestCardCode = digits;
@@ -1659,20 +1808,26 @@
             showToast('Карта привязана к номеру телефона!');
         }
 
-        // ================= СЧАСТЛИВЫЕ ЧАСЫ (-20%) =================
-        function toggleHappyHourDemo() {
+        // ================= СЧАСТЛИВЫЕ ЧАСЫ (-20%) — УПРАВЛЕНИЕ ТОЛЬКО ДЛЯ АДМИНА =================
+        function toggleHappyHourAdmin() {
+            if (!isAdminMode) {
+                showToast('Управлять скидкой счастливых часов может только администратор');
+                return;
+            }
             appState.happyHourActive = !appState.happyHourActive;
             updateHappyHourUI();
             renderDrinksGrid();
             updateCartUI();
+            saveStateToStorageAndCloud(true);
             showToast(appState.happyHourActive
-                ? `Включены счастливые часы: цены снижены на ${appState.discountPercent}%!`
-                : 'Показаны стандартные цены меню.');
+                ? `Скидка -${appState.discountPercent}% ВКЛЮЧЕНА для всех гостей`
+                : 'Скидка счастливых часов ВЫКЛЮЧЕНА (показаны стандартные цены)');
         }
 
         function updateHappyHourUI() {
             const topBtn = document.getElementById('topHappyHourBtn');
             const topText = document.getElementById('topHappyHourText');
+            const modalBtn = document.getElementById('adminModalHappyHourBtn');
             const promoBadge = document.getElementById('promoLiveStatusBadge');
             const promoSubtext = document.getElementById('promoCardSubtext');
             const menuNotice = document.getElementById('menuDiscountNoticeText');
@@ -1683,19 +1838,27 @@
             document.getElementById('locationsDiscountFooter').textContent = `${pct}%`;
 
             if (appState.happyHourActive) {
-                topText.textContent = `Акция -${pct}%: ВКЛ`;
-                topBtn.className = 'px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-smysl-caramel text-white hover:opacity-95 shadow-sm';
+                topText.textContent = `-${pct}%: ВКЛ`;
+                topBtn.className = 'px-2.5 py-1.5 rounded-xl font-semibold transition flex items-center gap-1 bg-smysl-caramel text-white hover:opacity-95 shadow-sm whitespace-nowrap';
+                if (modalBtn) {
+                    modalBtn.textContent = `Акция -${pct}%: ВКЛЮЧЕНА (Выключить)`;
+                    modalBtn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs transition shrink-0 shadow-sm bg-smysl-caramel text-white';
+                }
                 promoBadge.innerHTML = `<i class="ph-fill ph-sparkle"></i> Акция активна (-${pct}%)`;
                 promoBadge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-smysl-caramel/15 text-smysl-caramel';
-                promoSubtext.textContent = `Сейчас показаны с учётом скидки -${pct}%`;
+                promoSubtext.textContent = `Сейчас цены указаны с учётом скидки -${pct}%`;
                 menuNotice.innerHTML = `Действует будничная скидка <strong>-${pct}% (12:00–16:00)</strong>`;
             } else {
-                topText.textContent = `Акция -${pct}%: ВЫКЛ`;
-                topBtn.className = 'px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-white/15 text-smysl-cream hover:bg-white/25';
+                topText.textContent = `-${pct}%: ВЫКЛ`;
+                topBtn.className = 'px-2.5 py-1.5 rounded-xl font-semibold transition flex items-center gap-1 bg-white/15 text-smysl-cream hover:bg-white/25 whitespace-nowrap';
+                if (modalBtn) {
+                    modalBtn.textContent = `Акция -${pct}%: ВЫКЛЮЧЕНА (Включить)`;
+                    modalBtn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs transition shrink-0 shadow-sm bg-gray-200 text-smysl-greenDeep';
+                }
                 promoBadge.innerHTML = 'Будни 12:00–16:00';
                 promoBadge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-smysl-green/15 text-smysl-greenDark';
-                promoSubtext.textContent = `Сейчас показаны стандартные цены (нажмите, чтобы проверить -${pct}%)`;
-                menuNotice.innerHTML = `В будни с 12:00 до 16:00 действует <strong>скидка -${pct}%</strong> на меню`;
+                promoSubtext.textContent = `Сейчас действуют стандартные цены меню`;
+                menuNotice.innerHTML = `В будни с 12:00 до 16:00 действует <strong>скидка -${pct}%</strong>`;
             }
         }
 
@@ -1705,7 +1868,7 @@
             const currentShop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
             document.getElementById('currentShopLabel').textContent = currentShop.address;
             document.getElementById('cartLocationSubtitle').textContent = `Кофейня: ${currentShop.address} (${appState.workingHours})`;
-            document.getElementById('headerWorkingHours').textContent = `Ежедневно ${appState.workingHours}`;
+            document.getElementById('headerWorkingHours').textContent = appState.workingHours;
             document.getElementById('featureHoursText').textContent = appState.workingHours;
             document.getElementById('locationsHoursBadge').textContent = appState.workingHours;
 
@@ -1784,11 +1947,10 @@
             });
             const earnedBonus = Math.round(totalFinal * ((appState.samosale.cashbackPercent || 7) / 100));
 
-            // Начисляем демо-бонусы в карту гостя SAMOSALE
             appState.samosale.guestPoints += earnedBonus;
             if (phone !== 'Без телефона') appState.samosale.guestPhone = phone;
 
-            // 1. Отправляем заказ через серверный мост Netlify в Ytimes и Telegram
+            // Отправляем заказ через серверный мост Vercel (/api) в Ytimes и Telegram
             try {
                 await fetch('/api', {
                     method: 'POST',
@@ -1806,7 +1968,6 @@
                 });
             } catch (e) {}
 
-            // 2. Если указан дополнительный Webhook в админке, отправляем туда заказ
             if (appState.ytimes.orderWebhookUrl) {
                 try {
                     await fetch(appState.ytimes.orderWebhookUrl, {
@@ -1834,7 +1995,7 @@
             showToast(`Заказ №${orderNum} принят! Начислено +${earnedBonus} Б SAMOSALE. Ждём вас в «Смысл» (${shop.address}).`);
         }
 
-        // ================= АДМИН-МОДАЛКА И РЕДАКТИРОВАНИЕ =================
+        // ================= АДМИН-МОДАЛКА И УПРАВЛЕНИЕ СТОП-ЛИСТОМ =================
         function openAdminTab(tabName) {
             openModal('adminModal');
             switchAdminTab(tabName);
@@ -1852,33 +2013,74 @@
             });
         }
 
+        function selectAdminCategoryFilter(catId) {
+            adminSelectedCategory = catId;
+            renderAdminModalInputs();
+        }
+
         function renderAdminModalInputs() {
+            // Фильтр категорий в админке
+            const filterContainer = document.getElementById('adminCategoryFilter');
+            filterContainer.innerHTML = MENU_CATEGORIES.map(c => `
+                <button type="button" onclick="selectAdminCategoryFilter('${c.id}')"
+                    class="px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+                        adminSelectedCategory === c.id
+                            ? 'bg-smysl-green text-smysl-cream'
+                            : 'bg-white border border-smysl-green/20 text-smysl-greenDeep'
+                    }">
+                    ${c.title}
+                </button>
+            `).join('');
+
+            // Напитки и стоп-лист
             const drinksContainer = document.getElementById('adminDrinksList');
-            drinksContainer.innerHTML = appState.drinks.map((d, idx) => `
-                <div class="p-4 rounded-2xl bg-smysl-cream border border-smysl-green/25 space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <span class="font-display font-bold text-sm text-smysl-greenDeep">#${idx + 1}. ${d.title}</span>
-                        <button onclick="removeDrinkAdmin(${idx})" class="text-xs text-red-600 hover:underline font-bold">Удалить</button>
+            const categoryOptionsHtml = MENU_CATEGORIES.filter(c => c.id !== 'all').map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+
+            drinksContainer.innerHTML = appState.drinks.map((d, idx) => {
+                if (adminSelectedCategory !== 'all' && d.category !== adminSelectedCategory) return '';
+                const isStopped = Boolean(d.stopped);
+
+                return `
+                <div class="p-4 rounded-2xl ${isStopped ? 'bg-red-50/70 border-red-300' : 'bg-smysl-cream border-smysl-green/25'} border space-y-2.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-display font-bold text-sm text-smysl-greenDeep">#${idx + 1}. ${d.title}</span>
+                            ${isStopped ? '<span class="px-2 py-0.5 rounded-md bg-red-600 text-white text-[10px] font-extrabold uppercase">НА СТОПЕ</span>' : '<span class="px-2 py-0.5 rounded-md bg-green-600/15 text-green-800 text-[10px] font-bold">В продаже</span>'}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="toggleDrinkStopById('${d.id}')"
+                                class="px-3 py-1 rounded-xl text-xs font-extrabold transition ${
+                                    isStopped
+                                        ? 'bg-green-600 text-white hover:bg-green-700'
+                                        : 'bg-red-600 text-white hover:bg-red-700'
+                                }">
+                                ${isStopped ? 'Снять со стопа ✅' : 'Поставить на стоп ⛔'}
+                            </button>
+                            <button type="button" onclick="removeDrinkAdmin(${idx})" class="text-xs text-red-600 hover:underline font-bold px-2">Удалить</button>
+                        </div>
                     </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
                         <div>
                             <label class="text-[11px] font-bold text-smysl-greenDeep/70">Название</label>
                             <input type="text" value="${d.title}" oninput="appState.drinks[${idx}].title = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
                         </div>
                         <div>
-                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Цена 250 мл (₽)</label>
-                            <input type="number" value="${d.basePrice}" oninput="appState.drinks[${idx}].basePrice = parseInt(this.value)||0" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Раздел меню</label>
+                            <select onchange="appState.drinks[${idx}].category = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs font-semibold">
+                                ${MENU_CATEGORIES.filter(c => c.id !== 'all').map(c => `<option value="${c.id}" ${d.category === c.id ? 'selected' : ''}>${c.title}</option>`).join('')}
+                            </select>
                         </div>
                         <div>
-                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Бейдж</label>
-                            <input type="text" value="${d.badge}" oninput="appState.drinks[${idx}].badge = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Цена 250 мл (₽)</label>
+                            <input type="number" value="${d.basePrice}" oninput="appState.drinks[${idx}].basePrice = parseInt(this.value)||0" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs font-bold">
                         </div>
                         <div>
                             <label class="text-[11px] font-bold text-smysl-greenDeep/70">Иконка стакана</label>
                             <select onchange="appState.drinks[${idx}].cupType = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
                                 <option value="cappuccino" ${d.cupType === 'cappuccino' ? 'selected' : ''}>Чашка Капучино</option>
-                                <option value="americano" ${d.cupType === 'americano' ? 'selected' : ''}>Стакан Американо</option>
-                                <option value="latte" ${d.cupType === 'latte' ? 'selected' : ''}>Бокал Латте</option>
+                                <option value="americano" ${d.cupType === 'americano' ? 'selected' : ''}>Стакан Американо/Чай</option>
+                                <option value="latte" ${d.cupType === 'latte' ? 'selected' : ''}>Бокал Латте/Матча</option>
                             </select>
                         </div>
                     </div>
@@ -1888,17 +2090,16 @@
                             <input type="text" value="${d.subtitle}" oninput="appState.drinks[${idx}].subtitle = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
                         </div>
                         <div>
-                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">КБЖУ</label>
-                            <input type="text" value="${d.kbzhu}" oninput="appState.drinks[${idx}].kbzhu = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
+                            <label class="text-[11px] font-bold text-smysl-greenDeep/70">Описание</label>
+                            <input type="text" value="${d.description}" oninput="appState.drinks[${idx}].description = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
                         </div>
                     </div>
-                    <div>
-                        <label class="text-[11px] font-bold text-smysl-greenDeep/70">Описание вкуса</label>
-                        <input type="text" value="${d.description}" oninput="appState.drinks[${idx}].description = this.value" class="w-full px-2.5 py-1.5 rounded-xl bg-white border border-smysl-green/25 text-xs">
-                    </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
+            // Точки и акция
+            updateHappyHourUI();
             document.getElementById('adminWorkingHoursInput').value = appState.workingHours;
             document.getElementById('adminDiscountPercentInput').value = appState.discountPercent;
             const locsContainer = document.getElementById('adminLocationsList');
@@ -1910,6 +2111,7 @@
                 </div>
             `).join('');
 
+            // Интеграции SAMOSALE + YTIMES
             document.getElementById('adminSamosaleBotUrl').value = appState.samosale.botUrl || '';
             document.getElementById('adminSamosaleWalletUrl').value = appState.samosale.walletUrl || '';
             document.getElementById('adminSamosaleApiKey').value = appState.samosale.apiKey || '';
@@ -1919,26 +2121,30 @@
             document.getElementById('adminYtimesApiKey').value = appState.ytimes.apiKey || '';
             document.getElementById('adminOrderWebhookUrl').value = appState.ytimes.orderWebhookUrl || '';
 
-            document.getElementById('adminSupabaseUrl').value = appState.supabase.url || DEFAULT_SUPABASE_URL;
-            document.getElementById('adminSupabaseKey').value = appState.supabase.anonKey || DEFAULT_SUPABASE_KEY;
+            // Supabase + Пароль
+            document.getElementById('adminSupabaseUrl').value = appState.supabase.url || '';
+            document.getElementById('adminSupabaseKey').value = appState.supabase.anonKey || '';
             document.getElementById('adminNewPassword').value = appState.adminPassword || '1234';
         }
 
         function addNewDrinkAdmin() {
-            appState.drinks.push({
+            const targetCategory = activeCategory === 'all' ? 'coffee' : activeCategory;
+            appState.drinks.unshift({
                 id: 'drink_' + Date.now(),
-                title: 'Раф Авторский',
-                subtitle: 'Нежный сливочно-ванильный кофе',
-                description: 'Готовится путем взбивания эспрессо со сливками и фирменным ванильным сахаром.',
+                category: targetCategory,
+                title: 'Новый напиток',
+                subtitle: 'Авторский рецепт «Смысл»',
+                description: 'Нежный сбалансированный вкус из отборных ингредиентов.',
                 basePrice: 260,
-                kbzhu: '210 ккал • Б 6г • Ж 12г • У 18г',
+                kbzhu: '190 ккал • Б 6г • Ж 9г • У 18г',
                 badge: 'Новинка',
                 selectedVolIndex: 1,
-                cupType: 'latte'
+                cupType: 'latte',
+                stopped: false
             });
             renderAdminModalInputs();
             renderDrinksGrid();
-            showToast('Новый напиток добавлен! Отредактируйте его название и цену.');
+            showToast('Новая позиция добавлена в начало списка!');
         }
 
         function removeDrinkAdmin(idx) {
@@ -1985,9 +2191,10 @@
             appState.ytimes.apiKey = document.getElementById('adminYtimesApiKey').value.trim();
             appState.ytimes.orderWebhookUrl = document.getElementById('adminOrderWebhookUrl').value.trim();
 
-            appState.supabase.url = normalizeSupabaseBaseUrl(document.getElementById('adminSupabaseUrl').value);
-            appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim() || DEFAULT_SUPABASE_KEY;
+            appState.supabase.url = document.getElementById('adminSupabaseUrl').value.trim();
+            appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim();
             appState.adminPassword = document.getElementById('adminNewPassword').value.trim() || '1234';
+            appState.menuVersion = 3;
 
             updateHappyHourUI();
             renderDrinksGrid();
@@ -2000,56 +2207,53 @@
 
         // ================= СОХРАНЕНИЕ В LOCALSTORAGE И ОБЛАКО SUPABASE =================
         async function saveStateToStorageAndCloud(silent = false) {
+            appState.menuVersion = 3;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
 
             const badge = document.getElementById('cloudSyncBadge');
-            const cleanUrl = normalizeSupabaseBaseUrl(appState.supabase.url);
-            const anonKey = appState.supabase.anonKey || DEFAULT_SUPABASE_KEY;
-
-            if (cleanUrl && anonKey) {
+            if (appState.supabase.url && appState.supabase.anonKey) {
                 try {
-                    const res = await fetch(`${cleanUrl}/rest/v1/site_settings?on_conflict=id`, {
+                    const cleanUrl = appState.supabase.url.replace(/\/$/, '');
+                    await fetch(`${cleanUrl}/rest/v1/site_settings?id=eq.1`, {
                         method: 'POST',
                         headers: {
-                            'apikey': anonKey,
-                            'Authorization': `Bearer ${anonKey}`,
+                            'apikey': appState.supabase.anonKey,
+                            'Authorization': `Bearer ${appState.supabase.anonKey}`,
                             'Content-Type': 'application/json',
                             'Prefer': 'resolution=merge-duplicates'
                         },
                         body: JSON.stringify({ id: 1, config: appState, updated_at: new Date().toISOString() })
                     });
-                    if (res.ok) {
-                        badge.innerHTML = '<i class="ph-fill ph-cloud-check text-green-400"></i> Синхронизировано с Supabase';
-                        if (!silent) showToast('Все изменения сохранены и опубликованы в облако Supabase!');
-                    } else {
-                        if (!silent) showToast('Сохранено локально (проверьте, создана ли таблица site_settings в Supabase)');
-                    }
+                    badge.innerHTML = '<i class="ph-fill ph-cloud-check text-green-400"></i> Облако ОК';
+                    if (!silent) showToast('Все изменения сохранены и опубликованы в облако Supabase!');
                 } catch (e) {
-                    if (!silent) showToast('Сохранено в браузере (ошибка соединения с Supabase)');
+                    if (!silent) showToast('Сохранено локально (ошибка соединения с Supabase)');
                 }
             } else {
-                badge.innerHTML = '<i class="ph-fill ph-hard-drives"></i> Сохранено локально';
-                if (!silent) showToast('Изменения конструктора сохранены!');
+                badge.innerHTML = '<i class="ph-fill ph-hard-drives"></i> Локально';
+                if (!silent) showToast('Изменения сохранены!');
             }
         }
 
         async function fetchCloudStateIfConfigured() {
-            const cleanUrl = normalizeSupabaseBaseUrl(appState.supabase.url);
-            const anonKey = appState.supabase.anonKey || DEFAULT_SUPABASE_KEY;
-            if (!cleanUrl || !anonKey) return;
-
+            if (!appState.supabase.url || !appState.supabase.anonKey) return;
             try {
+                const cleanUrl = appState.supabase.url.replace(/\/$/, '');
                 const res = await fetch(`${cleanUrl}/rest/v1/site_settings?id=eq.1&select=config`, {
                     headers: {
-                        'apikey': anonKey,
-                        'Authorization': `Bearer ${anonKey}`
+                        'apikey': appState.supabase.anonKey,
+                        'Authorization': `Bearer ${appState.supabase.anonKey}`
                     }
                 });
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data[0] && data[0].config) {
                         const cloudCfg = data[0].config;
-                        cloudCfg.supabase = { url: cleanUrl, anonKey: anonKey };
+                        // Если в облаке ещё старая версия из 3 напитков, сохраняем новое меню из 25 позиций
+                        if (!cloudCfg.menuVersion || cloudCfg.menuVersion < 3) {
+                            cloudCfg.drinks = defaultAppState.drinks;
+                            cloudCfg.menuVersion = 3;
+                        }
                         appState = Object.assign(JSON.parse(JSON.stringify(defaultAppState)), cloudCfg);
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
                         applyAllStateToDOM();
@@ -2059,11 +2263,10 @@
         }
 
         function resetToFactoryDefaults() {
-            if (!confirm('Сбросить все настройки меню, текстов и точек к начальному виду?')) return;
+            if (!confirm('Сбросить все настройки меню, текстов и точек к начальному виду (25 напитков)?')) return;
             localStorage.removeItem(STORAGE_KEY);
             appState = JSON.parse(JSON.stringify(defaultAppState));
             applyAllStateToDOM();
-            saveStateToStorageAndCloud(true);
             closeModal('adminModal');
             showToast('Настройки сброшены к заводским');
         }
@@ -2079,33 +2282,17 @@
                 viewport.classList.add('phone-frame-active');
                 bottomNav.classList.remove('sm:hidden');
                 bottomNav.classList.add('sticky');
-                btnApp.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm';
-                btnWeb.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white';
-                showToast('Режим предпросмотра: Мобильное приложение (iPhone / Android)');
+                btnApp.className = 'px-2 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm';
+                btnWeb.className = 'px-2 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white';
+                showToast('Режим предпросмотра: Мобильное приложение');
             } else {
                 viewport.classList.remove('phone-frame-active');
                 bottomNav.classList.add('sm:hidden');
                 bottomNav.classList.remove('sticky');
-                btnWeb.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm';
-                btnApp.className = 'px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white';
-                showToast('Режим предпросмотра: Полноэкранный адаптивный сайт');
+                btnWeb.className = 'px-2 py-1 rounded-lg font-medium transition flex items-center gap-1 bg-smysl-cream text-smysl-greenDeep shadow-sm';
+                btnApp.className = 'px-2 py-1 rounded-lg font-medium transition flex items-center gap-1 text-smysl-cream/80 hover:text-white';
+                showToast('Режим предпросмотра: Полноэкранный сайт');
             }
-        }
-
-        function initDynamicPwaManifest() {
-            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#7B9244"/><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#F6F4E8" font-family="serif" font-style="italic" font-size="148">Смысл</text></svg>`;
-            const iconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgIcon);
-            const manifest = {
-                name: 'Кофейня «Смысл»',
-                short_name: 'Смысл',
-                start_url: '.',
-                display: 'standalone',
-                background_color: '#FAF9F3',
-                theme_color: '#7B9244',
-                icons: [{ src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }]
-            };
-            const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-            document.getElementById('pwaManifestLink').href = URL.createObjectURL(blob);
         }
 
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -2193,7 +2380,7 @@
             const now = new Date();
             const hour = now.getHours();
             const badge = document.getElementById('openStatusBadge');
-            badge.textContent = (hour >= 8 && hour < 22) ? 'Открыто до 22:00' : 'Откроемся в 08:00';
+            badge.textContent = (hour >= 8 && hour < 22) ? 'Открыто' : 'С 08:00';
         }
 
         function applyAllStateToDOM() {
