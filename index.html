@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Смысл">
-    <link id="pwaManifestLink" rel="manifest" href="">
+    <link id="pwaManifestLink" rel="manifest" href="/manifest.json">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -2211,7 +2211,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            initDynamicPwaManifest();
             checkWorkingHoursStatus();
             applyAllStateToDOM();
             fetchCloudStateIfConfigured();
