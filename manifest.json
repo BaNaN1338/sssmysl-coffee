@@ -1,7 +1,7 @@
 {
   "name": "Кофейня «Смысл»",
   "short_name": "Смысл",
-  "description": "Кофейня Смысл — предзаказ кофе и бонусная карта SAMOSALE",
+  "description": "Кофейня «Смысл» — меню, предзаказ кофе и истории кофейни",
   "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",

@@ -125,19 +125,43 @@
             outline: 2px solid #D48C46;
             background: rgba(255, 255, 255, 0.7);
         }
+
+        /* Сторис: тонкие полосы прогресса в просмотрщике */
+        .story-progress-bar {
+            height: 3px;
+            flex: 1;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.28);
+            overflow: hidden;
+        }
+        .story-progress-fill {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 999px;
+            background: #FFFFFF;
+        }
+
+        @keyframes storyIn {
+            from { opacity: 0; transform: scale(1.015); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .story-viewer-media {
+            animation: storyIn 0.22s ease-out;
+        }
     </style>
 <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Manrope, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.pointer-events-auto{pointer-events:auto}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.-bottom-3{bottom:-0.75rem}.-right-3{right:-0.75rem}.bottom-4{bottom:1rem}.left-0{left:0px}.left-3\.5{left:0.875rem}.left-4{left:1rem}.right-0{right:0px}.right-3{right:0.75rem}.right-4{right:1rem}.top-0{top:0px}.top-1\/2{top:50%}.top-14{top:3.5rem}.top-3{top:0.75rem}.top-3\.5{top:0.875rem}.top-\[41px\]{top:41px}.left-2{left:0.5rem}.right-2{right:0.5rem}.top-2{top:0.5rem}.bottom-2{bottom:0.5rem}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.-mt-2{margin-top:-0.5rem}.-mt-8{margin-top:-2rem}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-2\.5{margin-top:0.625rem}.mt-3{margin-top:0.75rem}.mt-3\.5{margin-top:0.875rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mb-2\.5{margin-bottom:0.625rem}.line-clamp-2{overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.aspect-square{aspect-ratio:1 / 1}.h-1\.5{height:0.375rem}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-14{height:3.5rem}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-24{height:6rem}.h-44{height:11rem}.h-6{height:1.5rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-auto{height:auto}.h-full{height:100%}.max-h-\[90vh\]{max-height:90vh}.max-h-\[92vh\]{max-height:92vh}.min-h-\[210px\]{min-height:210px}.w-1\.5{width:0.375rem}.w-10{width:2.5rem}.w-11{width:2.75rem}.w-11\/12{width:91.666667%}.w-14{width:3.5rem}.w-2{width:0.5rem}.w-2\.5{width:0.625rem}.w-24{width:6rem}.w-44{width:11rem}.w-48{width:12rem}.w-6{width:1.5rem}.w-7{width:1.75rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-5xl{max-width:64rem}.max-w-\[440px\]{max-width:440px}.max-w-\[460px\]{max-width:460px}.max-w-\[470px\]{max-width:470px}.max-w-\[500px\]{max-width:500px}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-3{--tw-translate-y:-0.75rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-y-0{--tw-translate-y:0px;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.scroll-mt-28{scroll-margin-top:7rem}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.scroll-smooth{scroll-behavior:smooth}.whitespace-nowrap{white-space:nowrap}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[26px\]{border-radius:26px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.rounded-\[18px\]{border-radius:18px}.rounded-\[22px\]{border-radius:22px}.rounded-b-\[32px\]{border-bottom-right-radius:32px;border-bottom-left-radius:32px}.rounded-t-\[30px\]{border-top-left-radius:30px;border-top-right-radius:30px}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-smysl-green{--tw-border-opacity:1;border-color:rgb(123 146 68 / var(--tw-border-opacity, 1))}.border-smysl-green\/10{border-color:rgb(123 146 68 / 0.1)}.border-smysl-green\/15{border-color:rgb(123 146 68 / 0.15)}.border-smysl-green\/20{border-color:rgb(123 146 68 / 0.2)}.border-smysl-green\/25{border-color:rgb(123 146 68 / 0.25)}.border-smysl-green\/40{border-color:rgb(123 146 68 / 0.4)}.border-transparent{border-color:transparent}.border-white{--tw-border-opacity:1;border-color:rgb(255 255 255 / var(--tw-border-opacity, 1))}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.border-smysl-green\/35{border-color:rgb(123 146 68 / 0.35)}.bg-black\/25{background-color:rgb(0 0 0 / 0.25)}.bg-black\/35{background-color:rgb(0 0 0 / 0.35)}.bg-black\/55{background-color:rgb(0 0 0 / 0.55)}.bg-black\/60{background-color:rgb(0 0 0 / 0.6)}.bg-smysl-caramel{--tw-bg-opacity:1;background-color:rgb(212 140 70 / var(--tw-bg-opacity, 1))}.bg-smysl-caramel\/15{background-color:rgb(212 140 70 / 0.15)}.bg-smysl-cream{--tw-bg-opacity:1;background-color:rgb(246 244 232 / var(--tw-bg-opacity, 1))}.bg-smysl-creamLight{--tw-bg-opacity:1;background-color:rgb(250 249 243 / var(--tw-bg-opacity, 1))}.bg-smysl-creamLight\/95{background-color:rgb(250 249 243 / 0.95)}.bg-smysl-green{--tw-bg-opacity:1;background-color:rgb(123 146 68 / var(--tw-bg-opacity, 1))}.bg-smysl-green\/10{background-color:rgb(123 146 68 / 0.1)}.bg-smysl-greenDeep{--tw-bg-opacity:1;background-color:rgb(37 46 19 / var(--tw-bg-opacity, 1))}.bg-smysl-greenDeep\/10{background-color:rgb(37 46 19 / 0.1)}.bg-smysl-greenDeep\/15{background-color:rgb(37 46 19 / 0.15)}.bg-smysl-greenSoft{--tw-bg-opacity:1;background-color:rgb(233 239 224 / var(--tw-bg-opacity, 1))}.bg-smysl-greenSoft\/60{background-color:rgb(233 239 224 / 0.6)}.bg-smysl-greenSoft\/90{background-color:rgb(233 239 224 / 0.9)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/15{background-color:rgb(255 255 255 / 0.15)}.bg-white\/20{background-color:rgb(255 255 255 / 0.2)}.bg-smysl-greenSoft\/40{background-color:rgb(233 239 224 / 0.4)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.bg-smysl-green\/15{background-color:rgb(123 146 68 / 0.15)}.bg-smysl-greenDeep\/90{background-color:rgb(37 46 19 / 0.9)}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-black\/25{--tw-gradient-from:rgb(0 0 0 / 0.25) var(--tw-gradient-from-position);--tw-gradient-to:rgb(0 0 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-smysl-caramel{--tw-gradient-from:#D48C46 var(--tw-gradient-from-position);--tw-gradient-to:rgb(212 140 70 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:rgb(0 0 0 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), transparent var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-\[\#b9712c\]{--tw-gradient-to:#b9712c var(--tw-gradient-to-position)}.to-black\/45{--tw-gradient-to:rgb(0 0 0 / 0.45) var(--tw-gradient-to-position)}.object-contain{object-fit:contain}.object-cover{object-fit:cover}.p-0{padding:0px}.p-0\.5{padding:0.125rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-2\.5{padding:0.625rem}.p-1{padding:0.25rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.px-0\.5{padding-left:0.125rem;padding-right:0.125rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-1{padding-bottom:0.25rem}.pb-2\.5{padding-bottom:0.625rem}.pb-28{padding-bottom:7rem}.pb-4{padding-bottom:1rem}.pb-8{padding-bottom:2rem}.pl-9{padding-left:2.25rem}.pr-6{padding-right:1.5rem}.pr-9{padding-right:2.25rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.pt-2\.5{padding-top:0.625rem}.pt-3{padding-top:0.75rem}.pt-6{padding-top:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.font-display{font-family:Unbounded, sans-serif}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-script{font-family:Marck Script, cursive}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-none{line-height:1}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-\[0\.2em\]{letter-spacing:0.2em}.tracking-wider{letter-spacing:0.05em}.text-red-600{--tw-text-opacity:1;color:rgb(220 38 38 / var(--tw-text-opacity, 1))}.text-smysl-caramel{--tw-text-opacity:1;color:rgb(212 140 70 / var(--tw-text-opacity, 1))}.text-smysl-cream{--tw-text-opacity:1;color:rgb(246 244 232 / var(--tw-text-opacity, 1))}.text-smysl-cream\/70{color:rgb(246 244 232 / 0.7)}.text-smysl-cream\/75{color:rgb(246 244 232 / 0.75)}.text-smysl-cream\/80{color:rgb(246 244 232 / 0.8)}.text-smysl-cream\/85{color:rgb(246 244 232 / 0.85)}.text-smysl-cream\/90{color:rgb(246 244 232 / 0.9)}.text-smysl-green{--tw-text-opacity:1;color:rgb(123 146 68 / var(--tw-text-opacity, 1))}.text-smysl-greenDark{--tw-text-opacity:1;color:rgb(94 113 49 / var(--tw-text-opacity, 1))}.text-smysl-greenDeep{--tw-text-opacity:1;color:rgb(37 46 19 / var(--tw-text-opacity, 1))}.text-smysl-greenDeep\/40{color:rgb(37 46 19 / 0.4)}.text-smysl-greenDeep\/50{color:rgb(37 46 19 / 0.5)}.text-smysl-greenDeep\/55{color:rgb(37 46 19 / 0.55)}.text-smysl-greenDeep\/60{color:rgb(37 46 19 / 0.6)}.text-smysl-greenDeep\/65{color:rgb(37 46 19 / 0.65)}.text-smysl-greenDeep\/70{color:rgb(37 46 19 / 0.7)}.text-smysl-greenDeep\/85{color:rgb(37 46 19 / 0.85)}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/90{color:rgb(255 255 255 / 0.9)}.text-smysl-greenDeep\/45{color:rgb(37 46 19 / 0.45)}.text-smysl-greenDeep\/80{color:rgb(37 46 19 / 0.8)}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.line-through{-webkit-text-decoration-line:line-through;text-decoration-line:line-through}.opacity-0{opacity:0}.opacity-80{opacity:0.8}.opacity-100{opacity:1}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-floating{--tw-shadow:0 14px 34px -6px rgba(37, 46, 19, 0.32);--tw-shadow-colored:0 14px 34px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-qrb{--tw-shadow:0 6px 24px -4px rgba(37, 46, 19, 0.07);--tw-shadow-colored:0 6px 24px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sheet{--tw-shadow:0 -12px 45px rgba(25, 32, 12, 0.22);--tw-shadow-colored:0 -12px 45px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.drop-shadow-md{--tw-drop-shadow:drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.selection\:bg-smysl-green *::selection{--tw-bg-opacity:1;background-color:rgb(123 146 68 / var(--tw-bg-opacity, 1))}.selection\:text-smysl-cream *::selection{--tw-text-opacity:1;color:rgb(246 244 232 / var(--tw-text-opacity, 1))}.selection\:bg-smysl-green::selection{--tw-bg-opacity:1;background-color:rgb(123 146 68 / var(--tw-bg-opacity, 1))}.selection\:text-smysl-cream::selection{--tw-text-opacity:1;color:rgb(246 244 232 / var(--tw-text-opacity, 1))}.hover\:border-smysl-green:hover{--tw-border-opacity:1;border-color:rgb(123 146 68 / var(--tw-border-opacity, 1))}.hover\:bg-black:hover{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.hover\:bg-black\/50:hover{background-color:rgb(0 0 0 / 0.5)}.hover\:bg-red-50:hover{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.hover\:bg-smysl-green:hover{--tw-bg-opacity:1;background-color:rgb(123 146 68 / var(--tw-bg-opacity, 1))}.hover\:bg-smysl-greenDark:hover{--tw-bg-opacity:1;background-color:rgb(94 113 49 / var(--tw-bg-opacity, 1))}.hover\:bg-smysl-greenDeep:hover{--tw-bg-opacity:1;background-color:rgb(37 46 19 / var(--tw-bg-opacity, 1))}.hover\:bg-smysl-greenSoft:hover{--tw-bg-opacity:1;background-color:rgb(233 239 224 / var(--tw-bg-opacity, 1))}.hover\:bg-white\/20:hover{background-color:rgb(255 255 255 / 0.2)}.hover\:bg-white\/25:hover{background-color:rgb(255 255 255 / 0.25)}.hover\:text-smysl-cream:hover{--tw-text-opacity:1;color:rgb(246 244 232 / var(--tw-text-opacity, 1))}.hover\:text-smysl-greenDark:hover{--tw-text-opacity:1;color:rgb(94 113 49 / var(--tw-text-opacity, 1))}.hover\:text-smysl-greenDeep:hover{--tw-text-opacity:1;color:rgb(37 46 19 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:shadow-qrb-hover:hover{--tw-shadow:0 12px 32px -6px rgba(123, 146, 68, 0.18);--tw-shadow-colored:0 12px 32px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:border-smysl-green:focus{--tw-border-opacity:1;border-color:rgb(123 146 68 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.active\:scale-\[0\.99\]:active{--tw-scale-x:0.99;--tw-scale-y:0.99;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:scale-105{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:bg-smysl-green{--tw-bg-opacity:1;background-color:rgb(123 146 68 / var(--tw-bg-opacity, 1))}.group:hover .group-hover\:text-smysl-cream{--tw-text-opacity:1;color:rgb(246 244 232 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:left-auto{left:auto}.sm\:right-5{right:1.25rem}.sm\:col-span-2{grid-column:span 2 / span 2}.sm\:inline{display:inline}.sm\:inline-flex{display:inline-flex}.sm\:h-48{height:12rem}.sm\:w-56{width:14rem}.sm\:w-36{width:9rem}.sm\:max-w-sm{max-width:24rem}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:rounded-\[30px\]{border-radius:30px}.sm\:p-4{padding:1rem}.sm\:p-5{padding:1.25rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}.sm\:text-\[13px\]{font-size:13px}}@media (min-width: 768px){.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}</style></head>
-<body class="selection:bg-smysl-green selection:text-smysl-cream admin-active">
+<body class="selection:bg-smysl-green selection:text-smysl-cream">
 
-    <!-- ================= ВЕРХНЯЯ ПАНЕЛЬ ПРЕДПРОСМОТРА И БЫСТРОГО ТЕСТА ================= -->
-    <div id="previewControlStrip" class="bg-smysl-greenDeep text-smysl-cream border-b border-white/10 sticky top-0 z-50">
+    <!-- ================= ВЕРХНЯЯ ПАНЕЛЬ (ТОЛЬКО ДЛЯ АДМИНИСТРАТОРА) ================= -->
+    <div id="previewControlStrip" class="hidden bg-smysl-greenDeep text-smysl-cream border-b border-white/10 z-50">
         <div class="max-w-5xl mx-auto px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-smysl-green text-smysl-cream font-bold text-[11px]">
-                    <i class="ph-fill ph-sparkle"></i> QR-Меню «Смысл»
+                    <i class="ph-fill ph-sparkle"></i> Режим администратора
                 </span>
-                <span id="cloudStatusIndicator" class="hidden sm:inline-flex items-center gap-1 text-[11px] text-smysl-cream/75">
-                    <i class="ph-fill ph-check-circle text-smysl-green"></i> Стиль QRBooster
+                <span class="hidden sm:inline-flex items-center gap-1 text-[11px] text-smysl-cream/75">
+                    <i class="ph-fill ph-check-circle text-smysl-green"></i> Изменения видны сразу
                 </span>
             </div>
 
@@ -160,10 +184,13 @@
                     <span id="topHappyHourText">-20%: ВЫКЛ</span>
                 </button>
 
-                <!-- Переключатель режима конструктора админа -->
-                <button id="topAdminToggleBtn" onclick="toggleAdminModeQuick()" class="px-2.5 py-1 rounded-xl font-bold bg-smysl-green text-smysl-cream transition flex items-center gap-1">
+                <button onclick="openAdminPanel()" class="px-2.5 py-1 rounded-xl font-bold bg-smysl-green text-smysl-cream transition flex items-center gap-1">
                     <i class="ph-bold ph-sliders-horizontal"></i>
-                    <span id="topAdminToggleText">Админ: ВКЛ</span>
+                    <span>Конструктор</span>
+                </button>
+                <button onclick="exitAdminMode()" class="px-2.5 py-1 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-smysl-cream transition flex items-center gap-1" title="Выйти из режима администратора">
+                    <i class="ph-bold ph-sign-out"></i>
+                    <span class="hidden sm:inline">Выйти</span>
                 </button>
             </div>
         </div>
@@ -200,113 +227,24 @@
                 <svg viewBox="0 0 360 115" class="w-48 sm:w-56 h-auto drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <text x="50%" y="66%" dominant-baseline="middle" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="96" letter-spacing="-1">Смысл</text>
                 </svg>
-                <span id="editableCoverTagline" onblur="saveInlineText('coverTagline', this.innerText)" class="text-[11px] uppercase tracking-[0.2em] text-smysl-cream/90 font-semibold -mt-2 pointer-events-auto" contenteditable="true"><br></span>
+                <span id="editableCoverTagline" onblur="saveInlineText('coverTagline', this.innerText)" class="text-[11px] uppercase tracking-[0.2em] text-smysl-cream/90 font-semibold -mt-2 pointer-events-auto" contenteditable="false">Спешелти кофейня</span>
             </div>
         </div>
 
-        <!-- 2. КАРТОЧКА ЗАВЕДЕНИЯ (НАЕЗЖАЕТ НА ОБЛОЖКУ СНИЗУ КАК В QRBOOSTER) -->
-        <div class="px-3.5 -mt-8 relative z-20">
-            <div class="bg-white rounded-[26px] p-4 shadow-qrb border border-smysl-green/10">
-                <div class="flex items-start justify-between gap-3">
-                    <!-- Аватарка логотипа + Название и статус -->
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-2xl bg-smysl-green flex items-center justify-center shadow-md border-2 border-white shrink-0 overflow-hidden">
-                            <img id="customLogoAvatar" src="" alt="Смысл" class="hidden w-full h-full object-cover">
-                            <svg id="svgLogoAvatar" viewBox="0 0 200 100" class="w-11/12 h-auto select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <text x="50%" y="62%" dominant-baseline="middle" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="56">Смысл</text>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h1 id="editableVenueTitle" onblur="saveInlineText('venueTitle', this.innerText)" class="font-display font-bold text-base sm:text-lg text-smysl-greenDeep leading-tight" contenteditable="true">Кофейня «Смысл»</h1>
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-smysl-greenSoft text-smysl-greenDark">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-smysl-green pulse-dot"></span>
-                                    <span id="openStatusBadge">Открыто</span>
-                                </span>
-                            </div>
-                            <p id="currentLocationSubtitle" onclick="openModal('locationModal')" class="text-xs text-smysl-greenDeep/70 font-medium mt-0.5 cursor-pointer hover:text-smysl-greenDark flex items-center gap-1">
-                                <i class="ph-fill ph-map-pin text-smysl-green"></i>
-                                <span id="currentShopAddressText">Точка: Рожда • 08:00 – 22:00</span>
-                                <i class="ph-bold ph-caret-right text-[10px]"></i>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Кнопка информации о кофейне -->
-                    <button onclick="openModal('venueInfoModal')" class="w-9 h-9 rounded-2xl bg-smysl-creamLight hover:bg-smysl-greenSoft text-smysl-greenDeep flex items-center justify-center shrink-0 border border-smysl-green/15 transition" title="Информация, Wi-Fi и контакты">
-                        <i class="ph-bold ph-info text-lg text-smysl-greenDark"></i>
-                    </button>
-                </div>
-
-                <!-- Нижний ряд карточки: Бонусная карта SAMOSALE + Быстрый переход в Ytimes -->
-                <div class="mt-3.5 pt-3 border-t border-smysl-green/10 flex items-center gap-2">
-                    <button onclick="openModal('loyaltyModal')" class="flex-1 py-2.5 px-3.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-bold text-xs transition flex items-center justify-between shadow-sm">
-                        <span class="flex items-center gap-2">
-                            <i class="ph-fill ph-qr-code text-base"></i>
-                            <span>Карта гостя SAMOSALE</span>
-                        </span>
-                        <span id="headerBonusPill" class="px-2 py-0.5 rounded-full bg-white/20 text-[11px] font-extrabold">250 Б</span>
-                    </button>
-
-                    <button onclick="openModal('locationModal')" class="py-2.5 px-3 rounded-2xl bg-smysl-cream hover:bg-smysl-greenSoft text-smysl-greenDeep font-bold text-xs border border-smysl-green/20 transition flex items-center gap-1.5 shrink-0">
-                        <i class="ph-bold ph-storefront text-sm text-smysl-greenDark"></i>
-                        <span id="shopSwitchShortBtn">Рожда</span>
-                    </button>
-                </div>
+        <!-- 2. СТОРИС КОФЕЙНИ (РЕДАКТИРУЮТСЯ В КОНСТРУКТОРЕ) -->
+        <div id="storiesSection" class="mt-4 px-3.5">
+            <div class="flex items-center justify-between mb-1 px-0.5">
+                <h2 class="font-display font-bold text-sm text-smysl-greenDeep">Истории</h2>
+                <button id="storiesAdminAddBtn" onclick="openAdminTab('stories')" class="hidden text-[11px] font-bold text-smysl-greenDark items-center gap-1">
+                    <i class="ph-bold ph-plus"></i>
+                    <span>Добавить</span>
+                </button>
             </div>
-        </div>
-
-        <!-- 3. ГОРИЗОНТАЛЬНАЯ ЛЕНТА СТОРИС / ПРОМО-КАРТОЧЕК (КАК В QRBOOSTER) -->
-        <div class="mt-3.5 px-3.5">
-            <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1">
-                
-                <!-- Сторис 1: Счастливые часы -20% -->
-                <div onclick="toggleHappyHourDemo()" class="cursor-pointer shrink-0 w-44 rounded-2xl p-3 bg-gradient-to-br from-smysl-caramel to-[#b9712c] text-white shadow-sm relative overflow-hidden group">
-                    <div class="absolute -right-3 -bottom-3 w-14 h-14 rounded-full bg-white/15 pointer-events-none"></div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="px-2 py-0.5 rounded-full bg-black/25 text-[10px] font-extrabold uppercase tracking-wider">Будни 12–16</span>
-                        <span id="storyHappyHourStatus" class="w-2 h-2 rounded-full bg-white pulse-dot"></span>
-                    </div>
-                    <div id="storyDiscountTitle" class="font-display font-extrabold text-base leading-tight">Скидка -20%</div>
-                    <p id="storyDiscountSub" class="text-[11px] text-white/90 mt-0.5 leading-tight">На всё меню • Нажмите для теста</p>
-                </div>
-
-                <!-- Сторис 2: Кэшбэк SAMOSALE -->
-                <div onclick="openModal('loyaltyModal')" class="cursor-pointer shrink-0 w-44 rounded-2xl p-3 bg-smysl-green text-smysl-cream shadow-sm relative overflow-hidden">
-                    <div class="absolute -right-3 -bottom-3 w-14 h-14 rounded-full bg-white/10 pointer-events-none"></div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-bold">SAMOSALE</span>
-                        <i class="ph-fill ph-qr-code text-sm"></i>
-                    </div>
-                    <div class="font-display font-bold text-sm leading-tight">Кэшбэк баллами</div>
-                    <p class="text-[11px] text-smysl-cream/85 mt-0.5 leading-tight">Копите и списывайте на кассе Ytimes</p>
-                </div>
-
-                <!-- Сторис 3: Сезонное меню -->
-                <a href="#cat-seasonal" class="cursor-pointer shrink-0 w-44 rounded-2xl p-3 bg-white border border-smysl-green/20 text-smysl-greenDeep shadow-sm relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="px-2 py-0.5 rounded-full bg-smysl-greenSoft text-smysl-greenDark text-[10px] font-extrabold">Новинки</span>
-                        <span class="text-xs">🔥</span>
-                    </div>
-                    <div class="font-display font-bold text-sm leading-tight">Сезонное меню</div>
-                    <p class="text-[11px] text-smysl-greenDeep/70 mt-0.5 leading-tight">Крем-матча, пунш и яблочный пай</p>
-                </a>
-
-                <!-- Сторис 4: Установка приложения -->
-                <div onclick="triggerPwaInstall()" class="cursor-pointer shrink-0 w-44 rounded-2xl p-3 bg-smysl-greenDeep text-smysl-cream shadow-sm relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-bold">iOS &amp; Android</span>
-                        <i class="ph-bold ph-download-simple text-sm text-smysl-caramel"></i>
-                    </div>
-                    <div class="font-display font-bold text-sm leading-tight">В телефон</div>
-                    <p class="text-[11px] text-smysl-cream/80 mt-0.5 leading-tight">Скачать APK или иконку на экран</p>
-                </div>
-
-            </div>
+            <div id="storiesTrack" class="flex items-start gap-4 overflow-x-auto no-scrollbar py-1"></div>
         </div>
 
         <!-- 4. ЛИПКАЯ НАВИГАЦИЯ ПО КАТЕГОРИЯМ + ПОИСК (STICKY BAR В СТИЛЕ QRBOOSTER) -->
-        <div id="stickyCatNav" class="sticky top-[41px] z-30 bg-smysl-creamLight/95 backdrop-blur-md border-b border-smysl-green/15 mt-3 px-3.5 py-2.5 transition-all">
+        <div id="stickyCatNav" class="sticky top-0 z-30 bg-smysl-creamLight/95 backdrop-blur-md border-b border-smysl-green/15 mt-3 px-3.5 py-2.5 transition-all">
             <div class="flex items-center gap-2">
                 <!-- Кнопка открытия строки поиска -->
                 <button onclick="toggleSearchInput()" id="searchToggleBtn" class="w-9 h-9 rounded-full bg-white border border-smysl-green/20 text-smysl-greenDeep flex items-center justify-center shrink-0 shadow-sm hover:border-smysl-green transition">
@@ -366,9 +304,6 @@
                     <span class="w-2 h-2 rounded-full bg-smysl-green pulse-dot shrink-0"></span>
                     <span id="happyHourBannerText" class="text-smysl-greenDeep font-medium">В будни 12:00–16:00 действует <strong>скидка -20%</strong> на напитки</span>
                 </div>
-                <button onclick="toggleHappyHourDemo()" class="text-[11px] font-extrabold text-smysl-greenDark underline shrink-0">
-                    Переключить
-                </button>
             </div>
         </div>
 
@@ -2591,28 +2526,7 @@
                 </section>
                 </main>
 
-        <!-- 6. БЛОК ПЕРЕХОДА В ПОЛНУЮ КАССОВУЮ ВИТРИНУ YTIMES -->
-        <div class="px-3.5 mt-7">
-            <div class="rounded-3xl bg-white border border-smysl-green/20 p-4 shadow-qrb flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center shrink-0">
-                        <i class="ph-fill ph-storefront text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="font-display font-bold text-xs sm:text-sm text-smysl-greenDeep">Кассовая витрина Ytimes</div>
-                        <p class="text-[11px] text-smysl-greenDeep/70 leading-snug mt-0.5">
-                            Синхронизация остатков и оплата баллами SAMOSALE
-                        </p>
-                    </div>
-                </div>
-                <button onclick="redirectToYtimesPreorder()" class="px-3.5 py-2.5 rounded-2xl bg-smysl-greenSoft hover:bg-smysl-green text-smysl-greenDeep hover:text-smysl-cream font-bold text-xs transition shrink-0 flex items-center gap-1">
-                    <span>Открыть</span>
-                    <i class="ph-bold ph-arrow-up-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- 7. ПОДВАЛ QR-МЕНЮ + ВХОД В КОНСТРУКТОР ДЛЯ ВЛАДЕЛЬЦА -->
+        <!-- 6. ПОДВАЛ QR-МЕНЮ + ВХОД В КОНСТРУКТОР ДЛЯ ВЛАДЕЛЬЦА -->
         <footer class="mt-8 px-4 pt-6 pb-8 border-t border-smysl-green/15 text-center space-y-3">
             <div class="inline-flex items-center gap-2">
                 <span class="font-script text-3xl text-smysl-greenDark">Смысл</span>
@@ -2621,9 +2535,6 @@
             </div>
 
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
-                <button onclick="openModal('loyaltyModal')" class="px-3 py-1.5 rounded-xl bg-white border border-smysl-green/15 text-smysl-greenDeep font-semibold">
-                    Бонусы SAMOSALE
-                </button>
                 <button onclick="openModal('venueInfoModal')" class="px-3 py-1.5 rounded-xl bg-white border border-smysl-green/15 text-smysl-greenDeep font-semibold">
                     Wi-Fi и адреса
                 </button>
@@ -2743,74 +2654,7 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- BOTTOM-SHEET 2: КАРТА ГОСТЯ SAMOSALE + СКАНЕР YTIMES                      -->
-    <!-- ========================================================================= -->
-    <div id="loyaltyModal" onclick="handleBackdropClick(event, 'loyaltyModal')" class="fixed inset-0 z-50 hidden bg-black/55 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-smysl-creamLight w-full max-w-[460px] rounded-t-[30px] sm:rounded-[30px] shadow-sheet p-5 animate-sheet-up">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-smysl-green"></span>
-                    <h3 class="font-display font-bold text-base text-smysl-greenDeep">Бонусная карта SAMOSALE</h3>
-                </div>
-                <button onclick="closeModal('loyaltyModal')" class="w-8 h-8 rounded-full bg-smysl-green/10 text-smysl-greenDeep flex items-center justify-center">
-                    <i class="ph-bold ph-x"></i>
-                </button>
-            </div>
-
-            <!-- Привязка номера телефона гостя -->
-            <div class="mb-4 p-3.5 rounded-2xl bg-white border border-smysl-green/20">
-                <label class="block text-xs font-bold text-smysl-greenDeep mb-1.5">
-                    Ваш телефон для синхронизации бонусов SAMOSALE:
-                </label>
-                <div class="flex gap-2">
-                    <input id="samosalePhoneInput" type="tel" placeholder="+7 (999) 123-45-67" class="flex-1 px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
-                    <button onclick="loginSamosaleGuest()" class="px-3.5 py-2 rounded-xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-bold text-xs transition shrink-0">
-                        Показать QR
-                    </button>
-                </div>
-            </div>
-
-            <!-- Карта с QR-кодом для кассы Ytimes -->
-            <div class="rounded-3xl bg-smysl-green text-smysl-cream p-5 shadow-qrb relative overflow-hidden mb-4">
-                <div class="flex items-start justify-between gap-2 mb-4">
-                    <div>
-                        <div class="font-script text-4xl text-smysl-cream leading-none">Смысл</div>
-                        <span id="samosaleCardHolder" class="text-[11px] text-smysl-cream/85 font-semibold block mt-1">Клуб друзей • SAMOSALE</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-[11px] text-smysl-cream/80 block">Баланс</span>
-                        <span id="samosalePointsDisplay" class="font-display font-extrabold text-2xl text-smysl-cream">250 Б</span>
-                        <span id="samosaleCashbackDisplay" class="block text-[10px] text-smysl-cream/90 font-bold">Кэшбэк 7% • 1 Б = 1 ₽</span>
-                    </div>
-                </div>
-
-                <div class="bg-smysl-cream rounded-2xl p-3.5 flex items-center justify-between gap-3 text-smysl-greenDeep">
-                    <div>
-                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-smysl-greenDark block">Покажите бариста</span>
-                        <div class="font-display font-bold text-sm mt-0.5">Сканер кассы Ytimes</div>
-                        <p id="samosaleCardNumberText" class="text-xs text-smysl-greenDeep/70 mt-1 font-mono">Карта: #SMYSL-8842</p>
-                    </div>
-                    <div class="w-24 h-24 bg-white p-2 rounded-xl border border-smysl-green/20 shrink-0 flex items-center justify-center">
-                        <img id="samosaleQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=SAMOSALE%3ASMYSL-8842%3BPHONE%3AGUEST" alt="QR SAMOSALE" class="w-full h-full object-contain">
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-2">
-                <button onclick="redirectToSamosaleBot()" class="w-full py-3 px-4 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2">
-                    <i class="ph-fill ph-telegram-logo text-lg"></i>
-                    <span>Открыть в Telegram-боте SAMOSALE</span>
-                </button>
-                <button onclick="redirectToSamosaleWallet()" class="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-smysl-greenSoft text-smysl-greenDeep border border-smysl-green/20 font-bold text-xs transition flex items-center justify-center gap-2">
-                    <i class="ph-bold ph-wallet text-base text-smysl-greenDark"></i>
-                    <span>Добавить карту в Apple Wallet / Google Pay</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- BOTTOM-SHEET 3: КОРЗИНА И ПРЕДЗАКАЗ (РОЖДА / ГОРЬКОГО + YTIMES)           -->
+    <!-- BOTTOM-SHEET 2: КОРЗИНА И ПРЕДЗАКАЗ (РОЖДА / ГОРЬКОГО)                     -->
     <!-- ========================================================================= -->
     <div id="cartModal" onclick="handleBackdropClick(event, 'cartModal')" class="fixed inset-0 z-50 hidden bg-black/55 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-smysl-creamLight w-full max-w-[500px] rounded-t-[30px] sm:rounded-[30px] shadow-sheet overflow-hidden animate-sheet-up max-h-[90vh] flex flex-col">
@@ -2869,7 +2713,7 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <input id="guestNameInput" type="text" placeholder="Ваше имя" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-xs sm:text-sm focus:outline-none focus:border-smysl-green">
-                        <input id="guestPhoneInput" type="tel" placeholder="Телефон (для бонусов SAMOSALE)" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-xs sm:text-sm focus:outline-none focus:border-smysl-green">
+                        <input id="guestPhoneInput" type="tel" placeholder="Телефон" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-xs sm:text-sm focus:outline-none focus:border-smysl-green">
                     </div>
                 </div>
             </div>
@@ -2878,7 +2722,6 @@
                 <div class="flex items-center justify-between text-xs sm:text-sm">
                     <div>
                         <span class="text-smysl-greenDeep/70 font-medium block">Итого к оплате:</span>
-                        <span id="cartSamosaleEarnText" class="text-[11px] font-bold text-smysl-greenDark">+0 бонусов SAMOSALE</span>
                     </div>
                     <div class="flex items-baseline gap-2">
                         <span id="cartTotalAmount" class="font-display font-extrabold text-xl text-smysl-greenDeep">0 ₽</span>
@@ -2886,16 +2729,10 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <button onclick="submitQuickOrder()" class="py-3.5 px-4 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md">
-                        <i class="ph-bold ph-check-circle text-lg"></i>
-                        <span>Отправить на кассу</span>
-                    </button>
-                    <button onclick="redirectToYtimesPreorder()" class="py-3.5 px-4 rounded-2xl bg-smysl-greenDeep hover:bg-black text-smysl-cream font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5">
-                        <span>Оплатить в Ytimes</span>
-                        <i class="ph-bold ph-arrow-up-right"></i>
-                    </button>
-                </div>
+                <button onclick="submitQuickOrder()" class="w-full py-3.5 px-4 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md">
+                    <i class="ph-bold ph-check-circle text-lg"></i>
+                    <span>Отправить на кассу</span>
+                </button>
             </div>
         </div>
     </div>
@@ -2988,10 +2825,6 @@
                     <span class="text-smysl-greenDeep/70">Счастливые часы:</span>
                     <span class="font-bold text-smysl-caramel">Пн–Пт 12:00 – 16:00 (-20%)</span>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-smysl-greenDeep/70">Лояльность:</span>
-                    <span class="font-bold text-smysl-greenDark">SAMOSALE + касса Ytimes</span>
-                </div>
             </div>
 
             <button onclick="closeModal('venueInfoModal')" class="w-full py-3 rounded-2xl bg-smysl-green text-smysl-cream font-bold text-xs">
@@ -3038,6 +2871,90 @@
     </div>
 
     <!-- ========================================================================= -->
+    <!-- ВХОД ДЛЯ АДМИНИСТРАТОРА                                                   -->
+    <!-- ========================================================================= -->
+    <div id="adminLoginModal" onclick="handleBackdropClick(event, 'adminLoginModal')" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-xs items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-[420px] rounded-t-[30px] sm:rounded-[30px] shadow-sheet p-5 animate-sheet-up">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-smysl-green text-smysl-cream flex items-center justify-center">
+                        <i class="ph-bold ph-lock-key text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-smysl-greenDeep">Вход владельца</h3>
+                        <p class="text-[11px] text-smysl-greenDeep/65">Только для администратора сайта</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('adminLoginModal')" class="w-8 h-8 rounded-full bg-smysl-green/10 text-smysl-greenDeep flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-smysl-greenDeep mb-1.5">Пароль администратора</label>
+                    <input id="adminLoginPassword" type="password" autocomplete="current-password" placeholder="Введите пароль" class="w-full px-3.5 py-3 rounded-2xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
+                </div>
+                <button type="submit" class="w-full py-3.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-bold text-sm transition flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-sign-in text-lg"></i>
+                    <span>Войти в конструктор</span>
+                </button>
+            </form>
+            <p class="text-[10px] text-smysl-greenDeep/50 text-center mt-3">Пароль можно изменить в разделе «Supabase и доступ».</p>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- ПРОСМОТР СТОРИС                                                            -->
+    <!-- ========================================================================= -->
+    <div id="storyViewer" class="fixed inset-0 z-[70] hidden bg-black">
+        <div class="relative mx-auto h-full w-full max-w-[500px] overflow-hidden bg-smysl-greenDeep">
+            <div id="storyViewerMedia" class="story-viewer-media absolute inset-0 bg-cover bg-center"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/5 to-black/85 pointer-events-none"></div>
+
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <i id="storyViewerFallbackIcon" class="ph-fill ph-percent text-[120px] text-white/15"></i>
+            </div>
+
+            <div class="absolute top-0 left-0 right-0 p-4 z-20">
+                <div id="storyProgressTrack" class="flex gap-1 mb-3"></div>
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <div class="w-8 h-8 rounded-full bg-smysl-cream text-smysl-greenDeep flex items-center justify-center font-script text-lg shrink-0 shadow-sm">С</div>
+                        <div class="min-w-0">
+                            <div class="text-xs font-bold text-white truncate">Смысл</div>
+                            <div id="storyViewerHeaderTitle" class="text-[10px] text-white/65 truncate"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button id="storyAdminEditBtn" onclick="editCurrentStory()" class="hidden w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white items-center justify-center backdrop-blur-sm" title="Редактировать историю">
+                            <i class="ph-bold ph-pencil-simple text-sm"></i>
+                        </button>
+                        <button onclick="closeStoryViewer()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-sm" title="Закрыть">
+                            <i class="ph-bold ph-x text-base"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute inset-y-0 left-0 w-1/3 z-10" onclick="prevStory()"></div>
+            <div class="absolute inset-y-0 right-0 w-1/3 z-10" onclick="nextStory(false)"></div>
+
+            <div class="absolute inset-x-0 bottom-0 p-5 pb-8 z-20 pointer-events-none">
+                <div class="pointer-events-auto">
+                    <span id="storyViewerBadge" class="hidden inline-flex px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-[10px] font-extrabold uppercase tracking-wider text-white mb-2"></span>
+                    <h2 id="storyViewerTitle" class="font-display font-extrabold text-2xl leading-tight text-white drop-shadow-sm"></h2>
+                    <p id="storyViewerSubtitle" class="text-sm text-white/85 mt-1.5 leading-snug"></p>
+                    <button id="storyViewerCta" onclick="handleStoryCta()" class="hidden mt-4 px-5 py-3 rounded-2xl bg-smysl-cream text-smysl-greenDeep font-display font-bold text-xs transition hover:bg-white items-center gap-2 shadow-lg">
+                        <span id="storyViewerCtaText">Подробнее</span>
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
     <!-- МОДАЛЬНОЕ ОКНО 7: ВНУТРЕННИЙ КОНСТРУКТОР АДМИНИСТРАТОРА                   -->
     <!-- ========================================================================= -->
     <div id="adminModal" onclick="handleBackdropClick(event, 'adminModal')" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
@@ -3046,7 +2963,7 @@
             <div class="p-4 sm:p-5 bg-smysl-greenDeep text-smysl-cream flex items-center justify-between">
                 <div>
                     <span class="text-[10px] uppercase tracking-wider text-smysl-cream/70 font-bold block">Внутренний визуальный конструктор</span>
-                    <h3 class="font-display font-bold text-base sm:text-lg">Управление меню «Смысл», стоп-листом и интеграциями</h3>
+                    <h3 class="font-display font-bold text-base sm:text-lg">Меню, сторис и настройки кофейни «Смысл»</h3>
                 </div>
                 <button onclick="closeModal('adminModal')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-smysl-cream flex items-center justify-center">
                     <i class="ph-bold ph-x"></i>
@@ -3061,11 +2978,11 @@
                 <button onclick="switchAdminTab('locations')" id="tabBtn-locations" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
                     📍 Рожда / Горького и Скидка
                 </button>
-                <button onclick="switchAdminTab('integrations')" id="tabBtn-integrations" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
-                    🔗 SAMOSALE + Ytimes
+                <button onclick="switchAdminTab('stories')" id="tabBtn-stories" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
+                    📸 Сторис
                 </button>
                 <button onclick="switchAdminTab('cloud')" id="tabBtn-cloud" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
-                    ☁️ Supabase и Оформление
+                    ☁️ Supabase и доступ
                 </button>
             </div>
 
@@ -3551,36 +3468,21 @@
             </div>
                 </div>
 
-                <!-- ВКЛАДКА 3: SAMOSALE + YTIMES -->
-                <div id="adminTab-integrations" class="hidden space-y-4">
-                    <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
-                        <div class="font-bold text-smysl-greenDeep">Интеграция лояльности SAMOSALE</div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs text-smysl-greenDeep/70 mb-1">Telegram-бот SAMOSALE:</label>
-                                <input id="adminSamosaleBotUrl" type="url" class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-smysl-greenDeep/70 mb-1">Ссылка на карту Wallet:</label>
-                                <input id="adminSamosaleWalletUrl" type="url" class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-smysl-greenDeep/70 mb-1">Базовый кэшбэк (%):</label>
-                                <input id="adminSamosaleCashback" type="number" class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs font-bold">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
-                        <div class="font-bold text-smysl-greenDeep">Касса и онлайн-витрина Ytimes</div>
+                <!-- ВКЛАДКА 3: СТОРИС -->
+                <div id="adminTab-stories" class="hidden space-y-4">
+                    <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <label class="block text-xs text-smysl-greenDeep/70 mb-1">Ссылка на витрину предзаказа Ytimes:</label>
-                            <input id="adminYtimesPreorderUrl" type="url" class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs">
+                            <div class="font-bold text-smysl-greenDeep">Истории на главной</div>
+                            <p class="text-[11px] text-smysl-greenDeep/65 mt-0.5">Меняйте фото, заголовки и ссылки. Новые истории сразу появляются в ленте.</p>
                         </div>
+                        <button onclick="addStoryAdmin()" class="px-3.5 py-2 rounded-xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream text-xs font-bold transition flex items-center gap-1 shrink-0">
+                            <i class="ph-bold ph-plus"></i> Добавить историю
+                        </button>
                     </div>
+                    <div id="adminStoriesList" class="space-y-3"></div>
                 </div>
 
-                <!-- ВКЛАДКА 4: ОБЛАКО SUPABASE И ЛОГОТИП -->
+                <!-- ВКЛАДКА 4: ОБЛАКО SUPABASE И ДОСТУП -->
                 <div id="adminTab-cloud" class="hidden space-y-4">
                     <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
                         <div class="font-bold text-smysl-greenDeep">Синхронизация с базой Supabase (`site_settings`)</div>
@@ -3597,18 +3499,9 @@
                     </div>
 
                     <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
-                        <div class="font-bold text-smysl-greenDeep">Логотип, обложка и пароль владельца</div>
-                        <div class="flex flex-wrap gap-2">
-                            <label class="cursor-pointer px-3.5 py-2 rounded-xl bg-smysl-green text-smysl-cream font-bold text-xs">
-                                Загрузить аватар логотипа
-                                <input type="file" accept="image/*" onchange="handleCustomLogoUpload(event)" class="hidden">
-                            </label>
-                            <button onclick="resetToSvgLogo()" class="px-3.5 py-2 rounded-xl bg-smysl-cream text-smysl-greenDeep font-bold text-xs border border-smysl-green/20">
-                                Сбросить на каллиграфию «Смысл»
-                            </button>
-                        </div>
-                        <div class="pt-2">
-                            <label class="block text-xs text-smysl-greenDeep/70 mb-1">Пароль конструктора (по умолчанию 1234):</label>
+                        <div class="font-bold text-smysl-greenDeep">Пароль владельца</div>
+                        <div>
+                            <label class="block text-xs text-smysl-greenDeep/70 mb-1">Пароль для входа в конструктор (по умолчанию 1234):</label>
                             <input id="adminNewPassword" type="text" class="w-44 px-3 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs font-bold">
                         </div>
                     </div>
@@ -3645,6 +3538,16 @@
     <!-- ================= JAVASCRIPT ЯДРО QR-МЕНЮ «СМЫСЛ» ================= -->
     <script>
         const STORAGE_KEY = 'smysl_qrb_menu_v3';
+        const ADMIN_SESSION_KEY = 'smysl_admin_session';
+        const STORY_DURATION = 6000;
+
+        const STORY_THEMES = {
+            caramel: { gradient: 'linear-gradient(155deg, #E2A45E 0%, #D48C46 42%, #A55F22 100%)', icon: 'ph-fill ph-percent' },
+            green:   { gradient: 'linear-gradient(155deg, #9BB166 0%, #7B9244 45%, #3F4D20 100%)', icon: 'ph-fill ph-coffee' },
+            dark:    { gradient: 'linear-gradient(155deg, #3A451E 0%, #252E13 58%, #151B0A 100%)', icon: 'ph-bold ph-download-simple' },
+            cream:   { gradient: 'linear-gradient(155deg, #FBF8EC 0%, #E9EFE0 62%, #C9D6B3 100%)', icon: 'ph-fill ph-storefront' },
+            rose:    { gradient: 'linear-gradient(155deg, #E8B4B8 0%, #C97C86 52%, #7F3242 100%)', icon: 'ph-fill ph-heart' }
+        };
 
         // Категории меню в стиле verymatch.qrbooster.ru/menu
         const MENU_CATEGORIES = [
@@ -3661,22 +3564,14 @@
             happyHourActive: true,
             discountPercent: 20,
             workingHours: '08:00 – 22:00',
-            customLogoDataUrl: '',
             texts: {
-                coverTagline: 'Спешелти кофейня',
-                venueTitle: 'Кофейня «Смысл»'
+                coverTagline: 'Спешелти кофейня'
             },
-            samosale: {
-                botUrl: 'https://t.me/',
-                walletUrl: 'https://samosale.ru/',
-                cashbackPercent: 7,
-                guestPhone: '',
-                guestPoints: 250,
-                guestCardCode: 'SMYSL-8842'
-            },
-            ytimes: {
-                preorderUrl: 'https://ytimes.ru/'
-            },
+            stories: [
+                { id: 'story-discount', title: 'Будни 12–16', subtitle: 'Скидка −20% на всё меню. Загляните в гости в будний день с 12:00 до 16:00.', badge: 'Акция', theme: 'caramel', image: '', action: 'link', link: '#cat-seasonal', ctaLabel: 'Смотреть меню', active: true },
+                { id: 'story-seasonal', title: 'Сезонное меню', subtitle: 'Крем-матча, пунш и яблочный пай — уже в меню кофейни.', badge: 'Новинки', theme: 'green', image: '', action: 'link', link: '#cat-seasonal', ctaLabel: 'Открыть сезонное', active: true },
+                { id: 'story-app', title: 'В телефон', subtitle: 'Скачайте APK для Android или добавьте иконку кофейни на главный экран.', badge: 'iOS & Android', theme: 'dark', image: '', action: 'install', link: '', ctaLabel: 'Установить', active: true }
+            ],
             supabase: {
                 url: '',
                 anonKey: ''
@@ -3766,7 +3661,17 @@
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (!raw) return JSON.parse(JSON.stringify(defaultAppState));
                 const parsed = JSON.parse(raw);
-                return Object.assign(JSON.parse(JSON.stringify(defaultAppState)), parsed);
+
+                if (parsed.texts) delete parsed.texts.venueTitle;
+
+                const merged = Object.assign(JSON.parse(JSON.stringify(defaultAppState)), parsed);
+                Object.keys(merged).forEach(key => {
+                    if (!Object.prototype.hasOwnProperty.call(defaultAppState, key)) delete merged[key];
+                });
+                if (!Array.isArray(merged.stories)) {
+                    merged.stories = JSON.parse(JSON.stringify(defaultAppState.stories));
+                }
+                return merged;
             } catch (e) {
                 return JSON.parse(JSON.stringify(defaultAppState));
             }
@@ -4018,6 +3923,422 @@
             wrapper.innerHTML = html;
         }
 
+        // ================= СТОРИС =================
+        let activeStoryIndex = 0;
+        let storyTimer = null;
+        let storyProgress = 0;
+        let storySaveTimer = null;
+        const viewedStories = new Set();
+
+        function queueStorySave() {
+            if (storySaveTimer) clearTimeout(storySaveTimer);
+            storySaveTimer = setTimeout(() => saveStateToStorageAndCloud(true), 700);
+        }
+
+        function escapeHtml(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getStoryTheme(story) {
+            return STORY_THEMES[story && story.theme] || STORY_THEMES.green;
+        }
+
+        function getActiveStories() {
+            return (appState.stories || []).filter(story => story && story.active !== false);
+        }
+
+        function renderStories() {
+            const track = document.getElementById('storiesTrack');
+            const section = document.getElementById('storiesSection');
+            const addBtn = document.getElementById('storiesAdminAddBtn');
+            if (!track || !section) return;
+
+            const stories = getActiveStories();
+            let html = stories.map(story => {
+                const theme = getStoryTheme(story);
+                const viewed = viewedStories.has(story.id);
+                const preview = story.image
+                    ? `<span class="block w-full h-full bg-cover bg-center" style="background-image:url('${escapeHtml(story.image)}')"></span>`
+                    : `<span class="w-full h-full flex items-center justify-center" style="background:${theme.gradient}"><i class="${theme.icon} text-2xl text-white/85"></i></span>`;
+                return `
+                    <button type="button" onclick="openStoryViewer('${escapeHtml(story.id)}')" class="shrink-0 w-[78px] flex flex-col items-center gap-1.5 group">
+                        <span class="block w-[74px] h-[74px] rounded-full p-[3px] ${viewed ? 'bg-smysl-green/25' : 'bg-gradient-to-tr from-smysl-caramel via-smysl-green to-smysl-greenDark'} transition group-active:scale-95">
+                            <span class="block w-full h-full rounded-full p-[2px] bg-smysl-creamLight">
+                                <span class="block w-full h-full rounded-full overflow-hidden relative">${preview}</span>
+                            </span>
+                        </span>
+                        <span class="w-[78px] text-center text-[10px] font-bold text-smysl-greenDeep leading-tight line-clamp-2">${escapeHtml(story.title)}</span>
+                    </button>
+                `;
+            }).join('');
+
+            if (isAdminMode) {
+                html += `
+                    <button type="button" onclick="openAdminTab('stories')" class="shrink-0 w-[78px] flex flex-col items-center gap-1.5 group">
+                        <span class="block w-[74px] h-[74px] rounded-full border-2 border-dashed border-smysl-green/40 bg-white flex items-center justify-center text-smysl-greenDark group-hover:border-smysl-green transition">
+                            <i class="ph-bold ph-plus text-xl"></i>
+                        </span>
+                        <span class="w-[78px] text-center text-[10px] font-bold text-smysl-greenDeep leading-tight">Добавить</span>
+                    </button>
+                `;
+            }
+
+            track.innerHTML = html || `<div class="text-[11px] text-smysl-greenDeep/55 py-4">Пока нет активных историй.</div>`;
+            section.classList.toggle('hidden', stories.length === 0 && !isAdminMode);
+            if (addBtn) {
+                addBtn.classList.toggle('hidden', !isAdminMode);
+                addBtn.classList.toggle('flex', isAdminMode);
+            }
+        }
+
+        function openStoryViewer(storyId) {
+            const stories = getActiveStories();
+            const index = stories.findIndex(story => story.id === storyId);
+            if (index < 0) return;
+
+            activeStoryIndex = index;
+            document.getElementById('storyViewer').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            renderStoryViewer();
+            startStoryTimer(true);
+        }
+
+        function renderStoryViewer() {
+            const stories = getActiveStories();
+            if (!stories.length) return closeStoryViewer();
+            if (activeStoryIndex >= stories.length) activeStoryIndex = stories.length - 1;
+
+            const story = stories[activeStoryIndex];
+            const theme = getStoryTheme(story);
+            const media = document.getElementById('storyViewerMedia');
+            const fallback = document.getElementById('storyViewerFallbackIcon');
+
+            if (story.image) {
+                media.style.background = '';
+                media.style.backgroundImage = `url("${story.image}")`;
+                media.style.backgroundSize = 'cover';
+                media.style.backgroundPosition = 'center';
+                fallback.classList.add('hidden');
+            } else {
+                media.style.backgroundImage = 'none';
+                media.style.background = theme.gradient;
+                fallback.classList.remove('hidden');
+                fallback.className = `${theme.icon} text-[120px] ${story.theme === 'cream' ? 'text-smysl-greenDeep/15' : 'text-white/15'}`;
+            }
+
+            document.getElementById('storyViewerHeaderTitle').textContent = story.title || '';
+            document.getElementById('storyViewerTitle').textContent = story.title || '';
+            document.getElementById('storyViewerSubtitle').textContent = story.subtitle || '';
+
+            const badge = document.getElementById('storyViewerBadge');
+            if (story.badge) {
+                badge.textContent = story.badge;
+                badge.classList.remove('hidden');
+                badge.classList.add('inline-flex');
+            } else {
+                badge.classList.add('hidden');
+                badge.classList.remove('inline-flex');
+            }
+
+            const cta = document.getElementById('storyViewerCta');
+            const hasLink = story.link && story.action === 'link';
+            const ctaVisible = story.action === 'install' || story.action === 'info' || hasLink;
+            if (ctaVisible) {
+                document.getElementById('storyViewerCtaText').textContent = story.ctaLabel || (story.action === 'install' ? 'Установить' : 'Подробнее');
+                cta.classList.remove('hidden');
+                cta.classList.add('inline-flex');
+            } else {
+                cta.classList.add('hidden');
+                cta.classList.remove('inline-flex');
+            }
+
+            document.getElementById('storyAdminEditBtn').classList.toggle('hidden', !isAdminMode);
+            document.getElementById('storyAdminEditBtn').classList.toggle('flex', isAdminMode);
+
+            renderStoryProgressBars();
+            updateStoryProgress();
+        }
+
+        function renderStoryProgressBars() {
+            const track = document.getElementById('storyProgressTrack');
+            const stories = getActiveStories();
+            track.innerHTML = stories.map((_, index) => `
+                <span class="story-progress-bar"><span class="story-progress-fill" data-story-progress="${index}"></span></span>
+            `).join('');
+        }
+
+        function updateStoryProgress() {
+            const fills = document.querySelectorAll('[data-story-progress]');
+            fills.forEach((fill, index) => {
+                if (index < activeStoryIndex) {
+                    fill.style.width = '100%';
+                } else if (index > activeStoryIndex) {
+                    fill.style.width = '0%';
+                } else {
+                    fill.style.width = `${Math.min(100, (storyProgress / STORY_DURATION) * 100)}%`;
+                }
+            });
+        }
+
+        function startStoryTimer(reset = true) {
+            stopStoryTimer();
+            if (reset) storyProgress = 0;
+            updateStoryProgress();
+            storyTimer = setInterval(() => {
+                storyProgress += 50;
+                if (storyProgress >= STORY_DURATION) {
+                    nextStory(true);
+                    return;
+                }
+                updateStoryProgress();
+            }, 50);
+        }
+
+        function stopStoryTimer() {
+            if (storyTimer) {
+                clearInterval(storyTimer);
+                storyTimer = null;
+            }
+        }
+
+        function nextStory(auto = false) {
+            const stories = getActiveStories();
+            if (activeStoryIndex < stories.length - 1) {
+                activeStoryIndex += 1;
+                renderStoryViewer();
+                startStoryTimer(true);
+            } else {
+                closeStoryViewer();
+            }
+        }
+
+        function prevStory() {
+            if (activeStoryIndex > 0) {
+                activeStoryIndex -= 1;
+                renderStoryViewer();
+                startStoryTimer(true);
+            } else {
+                startStoryTimer(true);
+            }
+        }
+
+        function closeStoryViewer() {
+            const stories = getActiveStories();
+            if (stories[activeStoryIndex]) viewedStories.add(stories[activeStoryIndex].id);
+            stopStoryTimer();
+            document.getElementById('storyViewer').classList.add('hidden');
+            document.body.style.overflow = '';
+            renderStories();
+        }
+
+        function handleStoryCta() {
+            const stories = getActiveStories();
+            const story = stories[activeStoryIndex];
+            if (!story) return;
+
+            if (story.action === 'install') {
+                closeStoryViewer();
+                triggerPwaInstall();
+                return;
+            }
+            if (story.action === 'info') {
+                closeStoryViewer();
+                openModal('venueInfoModal');
+                return;
+            }
+            if (story.action === 'link' && story.link) {
+                if (story.link.startsWith('#')) {
+                    closeStoryViewer();
+                    const target = document.querySelector(story.link);
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    window.open(story.link, '_blank', 'noopener,noreferrer');
+                }
+            }
+        }
+
+        function editCurrentStory() {
+            const story = getActiveStories()[activeStoryIndex];
+            if (!story) return;
+            closeStoryViewer();
+            openAdminTab('stories');
+            setTimeout(() => {
+                const card = document.getElementById(`adminStoryCard-${story.id}`);
+                if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 180);
+        }
+
+        // ================= РЕДАКТОР СТОРИС В АДМИНКЕ =================
+        function renderAdminStories() {
+            const container = document.getElementById('adminStoriesList');
+            if (!container) return;
+
+            if (!appState.stories.length) {
+                container.innerHTML = `
+                    <div class="text-center py-8 px-4 rounded-2xl bg-white border border-dashed border-smysl-green/25">
+                        <i class="ph-duotone ph-images text-3xl text-smysl-green mb-1"></i>
+                        <div class="font-bold text-smysl-greenDeep">Историй пока нет</div>
+                        <p class="text-[11px] text-smysl-greenDeep/60 mt-1">Добавьте первую историю и загрузите картинку.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const themeOptions = [
+                ['caramel', 'Карамель'],
+                ['green', 'Зелёный'],
+                ['dark', 'Тёмный'],
+                ['cream', 'Светлый'],
+                ['rose', 'Розовый']
+            ];
+
+            container.innerHTML = appState.stories.map((story, index) => {
+                const theme = getStoryTheme(story);
+                const preview = story.image
+                    ? `<span class="block w-full h-full bg-cover bg-center" style="background-image:url('${escapeHtml(story.image)}')"></span>`
+                    : `<span class="w-full h-full flex items-center justify-center" style="background:${theme.gradient}"><i class="${theme.icon} text-2xl text-white/80"></i></span>`;
+
+                return `
+                    <div id="adminStoryCard-${escapeHtml(story.id)}" class="p-3.5 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
+                        <div class="flex gap-3">
+                            <div class="w-16 h-24 rounded-2xl overflow-hidden shrink-0 border border-smysl-green/10">${preview}</div>
+                            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
+                                <input type="text" value="${escapeHtml(story.title)}" oninput="updateStoryField(${index}, 'title', this.value)" placeholder="Заголовок" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs font-bold">
+                                <input type="text" value="${escapeHtml(story.subtitle)}" oninput="updateStoryField(${index}, 'subtitle', this.value)" placeholder="Текст истории" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                                <input type="text" value="${escapeHtml(story.badge)}" oninput="updateStoryField(${index}, 'badge', this.value)" placeholder="Плашка (например, Новинки)" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                                <input type="text" value="${escapeHtml(story.ctaLabel)}" oninput="updateStoryField(${index}, 'ctaLabel', this.value)" placeholder="Текст кнопки" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                                <select onchange="updateStoryField(${index}, 'action', this.value)" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                                    <option value="none" ${story.action === 'none' || !story.action ? 'selected' : ''}>Без кнопки</option>
+                                    <option value="link" ${story.action === 'link' ? 'selected' : ''}>Открыть ссылку</option>
+                                    <option value="install" ${story.action === 'install' ? 'selected' : ''}>Установить приложение</option>
+                                    <option value="info" ${story.action === 'info' ? 'selected' : ''}>О кофейне</option>
+                                </select>
+                                <select onchange="updateStoryField(${index}, 'theme', this.value)" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                                    ${themeOptions.map(([value, label]) => `<option value="${value}" ${story.theme === value ? 'selected' : ''}>${label}</option>`).join('')}
+                                </select>
+                                <input type="text" value="${escapeHtml(story.link)}" oninput="updateStoryField(${index}, 'link', this.value)" placeholder="Ссылка или #cat-seasonal" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-smysl-green/10">
+                            <label class="cursor-pointer px-2.5 py-1.5 rounded-xl bg-smysl-green text-smysl-cream text-[11px] font-bold flex items-center gap-1">
+                                <i class="ph-bold ph-upload-simple"></i>
+                                <span>Загрузить фото</span>
+                                <input type="file" accept="image/*" onchange="handleStoryImageUpload(event, ${index})" class="hidden">
+                            </label>
+                            ${story.image ? `<button onclick="removeStoryImage(${index})" class="px-2.5 py-1.5 rounded-xl bg-smysl-cream text-smysl-greenDeep border border-smysl-green/20 text-[11px] font-bold">Убрать фото</button>` : ''}
+                            <label class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-[11px] font-bold flex items-center gap-1 cursor-pointer">
+                                <input type="checkbox" ${story.active !== false ? 'checked' : ''} onchange="updateStoryField(${index}, 'active', this.checked)" class="accent-smysl-green">
+                                <span>Показывать</span>
+                            </label>
+                            <button onclick="moveStory(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="w-7 h-7 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold disabled:opacity-30">↑</button>
+                            <button onclick="moveStory(${index}, 1)" ${index === appState.stories.length - 1 ? 'disabled' : ''} class="w-7 h-7 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold disabled:opacity-30">↓</button>
+                            <button onclick="removeStory(${index})" class="ml-auto px-2.5 py-1.5 rounded-xl bg-red-50 text-red-600 text-[11px] font-bold">Удалить</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStoryField(index, field, value) {
+            if (!appState.stories[index]) return;
+            appState.stories[index][field] = value;
+            if (field === 'title' || field === 'active' || field === 'theme') renderStories();
+            if (field === 'theme') renderAdminStories();
+            queueStorySave();
+        }
+
+        function addStoryAdmin() {
+            appState.stories.push({
+                id: 'story-' + Date.now(),
+                title: 'Новая история',
+                subtitle: 'Добавьте текст и загрузите фотографию',
+                badge: 'Новое',
+                theme: 'green',
+                image: '',
+                action: 'none',
+                link: '',
+                ctaLabel: 'Подробнее',
+                active: true
+            });
+            renderAdminStories();
+            renderStories();
+            saveStateToStorageAndCloud(true);
+            showToast('История добавлена. Загрузите фото и заполните текст.');
+        }
+
+        function removeStory(index) {
+            if (!appState.stories[index]) return;
+            appState.stories.splice(index, 1);
+            renderAdminStories();
+            renderStories();
+            saveStateToStorageAndCloud(true);
+            showToast('История удалена');
+        }
+
+        function moveStory(index, direction) {
+            const target = index + direction;
+            if (target < 0 || target >= appState.stories.length) return;
+            const [story] = appState.stories.splice(index, 1);
+            appState.stories.splice(target, 0, story);
+            renderAdminStories();
+            renderStories();
+            saveStateToStorageAndCloud(true);
+        }
+
+        function compressStoryImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = event => {
+                const image = new Image();
+                image.onload = () => {
+                    const maxSide = 1200;
+                    const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.max(1, Math.round(image.width * scale));
+                    canvas.height = Math.max(1, Math.round(image.height * scale));
+                    const context = canvas.getContext('2d');
+                    context.fillStyle = '#FAF9F3';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    callback(canvas.toDataURL('image/jpeg', 0.82));
+                };
+                image.onerror = () => callback(event.target.result);
+                image.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleStoryImageUpload(event, index) {
+            const file = event.target.files && event.target.files[0];
+            event.target.value = '';
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showToast('Выберите файл изображения');
+                return;
+            }
+            compressStoryImage(file, dataUrl => {
+                if (!appState.stories[index]) return;
+                appState.stories[index].image = dataUrl;
+                renderAdminStories();
+                renderStories();
+                saveStateToStorageAndCloud(true);
+                showToast('Фото истории обновлено');
+            });
+        }
+
+        function removeStoryImage(index) {
+            if (!appState.stories[index]) return;
+            appState.stories[index].image = '';
+            renderAdminStories();
+            renderStories();
+            saveStateToStorageAndCloud(true);
+        }
+
         // ================= BOTTOM-SHEET КАСТОМИЗАТОР НАПИТКА =================
         function openDrinkCustomizer(drinkId) {
             const drink = appState.drinks.find(d => d.id === drinkId);
@@ -4192,7 +4513,6 @@
                     </div>
                 `;
                 document.getElementById('cartTotalAmount').textContent = '0 ₽';
-                document.getElementById('cartSamosaleEarnText').textContent = '+0 бонусов SAMOSALE';
                 return;
             }
 
@@ -4220,9 +4540,7 @@
                 `;
             }).join('');
 
-            const earnPoints = Math.round(totalFinal * ((appState.samosale.cashbackPercent || 7) / 100));
             document.getElementById('cartTotalAmount').textContent = `${totalFinal} ₽`;
-            document.getElementById('cartSamosaleEarnText').textContent = `+${earnPoints} бонусов на карту SAMOSALE`;
 
             const savedBadge = document.getElementById('cartSavedBadge');
             savedBadge.classList.toggle('hidden', !appState.happyHourActive);
@@ -4246,10 +4564,10 @@
         // ================= ЛОКАЦИИ («РОЖДА» И «ГОРЬКОГО») =================
         function renderLocations() {
             const currentShop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
-            document.getElementById('coverLocationBadge').textContent = currentShop.shortName || currentShop.address;
-            document.getElementById('shopSwitchShortBtn').textContent = currentShop.shortName || 'Точка';
-            document.getElementById('currentShopAddressText').textContent = `Точка: ${currentShop.shortName} • ${appState.workingHours}`;
-            document.getElementById('cartLocationSubtitle').textContent = `Кофейня: ${currentShop.address} (${appState.workingHours})`;
+            const coverBadge = document.getElementById('coverLocationBadge');
+            const cartSubtitle = document.getElementById('cartLocationSubtitle');
+            if (coverBadge) coverBadge.textContent = currentShop.shortName || currentShop.address;
+            if (cartSubtitle) cartSubtitle.textContent = `Кофейня: ${currentShop.address} (${appState.workingHours})`;
 
             // Кнопки в модалке выбора точки
             document.getElementById('modalLocationsContainer').innerHTML = appState.locations.map(loc => {
@@ -4299,60 +4617,14 @@
             if (loc) showToast(`Выбрана точка: ${loc.shortName || loc.address}`);
         }
 
-        // ================= SAMOSALE И ОТПРАВКА ЗАКАЗА НА VERCEL (/api) =================
-        function renderSamosaleCard() {
-            const s = appState.samosale;
-            document.getElementById('samosalePointsDisplay').textContent = `${s.guestPoints} Б`;
-            document.getElementById('headerBonusPill').textContent = `${s.guestPoints} Б`;
-            document.getElementById('samosaleCashbackDisplay').textContent = `Кэшбэк ${s.cashbackPercent}% • 1 Б = 1 ₽`;
-            document.getElementById('samosaleCardNumberText').textContent = `Карта: #${s.guestCardCode}`;
-            document.getElementById('samosalePhoneInput').value = s.guestPhone || '';
-
-            const qrData = encodeURIComponent(`SAMOSALE:${s.guestCardCode};PHONE:${s.guestPhone || 'GUEST'}`);
-            document.getElementById('samosaleQrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}`;
-        }
-
-        async function loginSamosaleGuest() {
-            const phone = document.getElementById('samosalePhoneInput').value.trim();
-            if (!phone || phone.length < 6) {
-                showToast('Введите номер телефона для привязки карты');
-                return;
-            }
-            showToast('Синхронизация с базой SAMOSALE...');
-            try {
-                const res = await fetch('/api', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_loyalty', phone })
-                });
-                const data = await res.json();
-                if (data && data.success) {
-                    appState.samosale.guestPhone = phone;
-                    appState.samosale.guestPoints = data.points;
-                    appState.samosale.cashbackPercent = data.cashback;
-                    appState.samosale.guestCardCode = data.cardCode;
-                    saveStateToStorageAndCloud(true);
-                    renderSamosaleCard();
-                    showToast('Карта SAMOSALE обновлена! Покажите QR на кассе Ytimes.');
-                    return;
-                }
-            } catch (e) {}
-
-            const digits = phone.replace(/\D/g, '').slice(-4) || '8842';
-            appState.samosale.guestPhone = phone;
-            appState.samosale.guestCardCode = `SMYSL-${digits}`;
-            saveStateToStorageAndCloud(true);
-            renderSamosaleCard();
-            showToast('QR-код карты сгенерирован по вашему номеру!');
-        }
-
+        // ================= ОТПРАВКА ЗАКАЗА НА VERCEL (/api) =================
         async function submitQuickOrder() {
             if (cart.length === 0) {
                 showToast('Добавьте хотя бы один напиток в заказ');
                 return;
             }
             const name = document.getElementById('guestNameInput').value.trim() || 'Гость';
-            const phone = document.getElementById('guestPhoneInput').value.trim() || appState.samosale.guestPhone || 'Не указан';
+            const phone = document.getElementById('guestPhoneInput').value.trim() || 'Не указан';
             const shop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
             const orderNum = Math.floor(100 + Math.random() * 900);
 
@@ -4361,7 +4633,6 @@
                 const p = calculatePrice(item.basePrice, item.addPrice);
                 totalFinal += p.finalPrice * item.qty;
             });
-            const earnedBonus = Math.round(totalFinal * ((appState.samosale.cashbackPercent || 7) / 100));
 
             try {
                 await fetch('/api', {
@@ -4380,17 +4651,19 @@
                 });
             } catch (e) {}
 
-            appState.samosale.guestPoints += earnedBonus;
             cart = [];
             saveStateToStorageAndCloud(true);
-            renderSamosaleCard();
             updateCartUI();
             closeModal('cartModal');
-            showToast(`Заказ №${orderNum} отправлен (${shop.shortName})! +${earnedBonus} Б SAMOSALE.`);
+            showToast(`Заказ №${orderNum} отправлен (${shop.shortName})!`);
         }
 
         // ================= СЧАСТЛИВЫЕ ЧАСЫ (-20%) =================
         function toggleHappyHourDemo() {
+            if (!isAdminMode) {
+                requestAdminLogin();
+                return;
+            }
             appState.happyHourActive = !appState.happyHourActive;
             updateHappyHourUI();
             renderMenuSections();
@@ -4405,44 +4678,95 @@
             const topBtn = document.getElementById('topHappyHourBtn');
             const topText = document.getElementById('topHappyHourText');
             const bannerText = document.getElementById('happyHourBannerText');
-            const storyTitle = document.getElementById('storyDiscountTitle');
 
-            storyTitle.textContent = `Скидка -${pct}%`;
-            if (appState.happyHourActive) {
-                topText.textContent = `-${pct}%: ВКЛ`;
-                topBtn.className = 'px-2.5 py-1 rounded-xl font-bold transition flex items-center gap-1 bg-smysl-caramel text-white shadow-sm';
-                bannerText.innerHTML = `Будни 12:00–16:00: цены указаны со <strong>скидкой -${pct}%</strong>`;
-            } else {
-                topText.textContent = `-${pct}%: ВЫКЛ`;
-                topBtn.className = 'px-2.5 py-1 rounded-xl font-semibold transition flex items-center gap-1 bg-white/15 text-smysl-cream';
-                bannerText.innerHTML = `В будни 12:00–16:00 действует <strong>скидка -${pct}%</strong> на напитки`;
+            if (topText) topText.textContent = appState.happyHourActive ? `-${pct}%: ВКЛ` : `-${pct}%: ВЫКЛ`;
+            if (topBtn) {
+                topBtn.className = appState.happyHourActive
+                    ? 'px-2.5 py-1 rounded-xl font-bold transition flex items-center gap-1 bg-smysl-caramel text-white shadow-sm'
+                    : 'px-2.5 py-1 rounded-xl font-semibold transition flex items-center gap-1 bg-white/15 text-smysl-cream';
+            }
+            if (bannerText) {
+                bannerText.innerHTML = appState.happyHourActive
+                    ? `Будни 12:00–16:00: цены указаны со <strong>скидкой -${pct}%</strong>`
+                    : `В будни 12:00–16:00 действует <strong>скидка -${pct}%</strong> на напитки`;
             }
         }
 
         // ================= АДМИН-РЕЖИМ И СТОП-ЛИСТ =================
-        function toggleAdminModeQuick() {
-            if (!isAdminMode) {
-                isAdminMode = true;
-                document.body.classList.add('admin-active');
-                document.getElementById('topAdminToggleBtn').className = 'px-2.5 py-1 rounded-xl font-bold bg-smysl-green text-smysl-cream transition flex items-center gap-1';
-                document.getElementById('topAdminToggleText').textContent = 'Админ: ВКЛ';
-                ['editableCoverTagline', 'editableVenueTitle'].forEach(id => {
-                    document.getElementById(id).setAttribute('contenteditable', 'true');
-                });
-                renderMenuSections();
-                showToast('Режим конструктора включён: можно ставить напитки в СТОП и менять цены');
-            } else {
-                openModal('adminModal');
+        function setAdminMode(enabled) {
+            isAdminMode = !!enabled;
+            document.body.classList.toggle('admin-active', isAdminMode);
+            document.body.classList.toggle('admin-mode', isAdminMode);
+
+            const strip = document.getElementById('previewControlStrip');
+            if (strip) strip.classList.toggle('hidden', !isAdminMode);
+
+            const tagline = document.getElementById('editableCoverTagline');
+            if (tagline) tagline.setAttribute('contenteditable', isAdminMode ? 'true' : 'false');
+
+            renderMenuSections();
+            renderStories();
+            updateHappyHourUI();
+        }
+
+        function restoreAdminSession() {
+            try {
+                if (sessionStorage.getItem(ADMIN_SESSION_KEY) === '1') {
+                    setAdminMode(true);
+                }
+            } catch (e) {}
+        }
+
+        function requestAdminLogin() {
+            if (isAdminMode) {
+                openAdminPanel();
+                return;
             }
+            openModal('adminLoginModal');
+            setTimeout(() => {
+                const input = document.getElementById('adminLoginPassword');
+                if (input) input.focus();
+            }, 120);
         }
 
         function promptAdminLogin() {
-            if (isAdminMode) {
-                openModal('adminModal');
+            requestAdminLogin();
+        }
+
+        function handleAdminLoginSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('adminLoginPassword');
+            const password = input ? input.value.trim() : '';
+            const expected = appState.adminPassword || '1234';
+
+            if (password && password === expected) {
+                try { sessionStorage.setItem(ADMIN_SESSION_KEY, '1'); } catch (e) {}
+                if (input) input.value = '';
+                closeModal('adminLoginModal');
+                setAdminMode(true);
+                showToast('Добро пожаловать в конструктор «Смысл»');
+                setTimeout(() => openModal('adminModal'), 140);
+            } else {
+                showToast('Неверный пароль администратора');
+                if (input) {
+                    input.select();
+                }
+            }
+        }
+
+        function openAdminPanel() {
+            if (!isAdminMode) {
+                requestAdminLogin();
                 return;
             }
-            toggleAdminModeQuick();
             openModal('adminModal');
+        }
+
+        function exitAdminMode() {
+            try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (e) {}
+            closeModal('adminModal');
+            setAdminMode(false);
+            showToast('Вы вышли из режима администратора');
         }
 
         function toggleDrinkStopStatus(drinkId) {
@@ -4455,12 +4779,16 @@
         }
 
         function openAdminTab(tabName) {
+            if (!isAdminMode) {
+                requestAdminLogin();
+                return;
+            }
             openModal('adminModal');
             switchAdminTab(tabName);
         }
 
         function switchAdminTab(tabName) {
-            ['drinks', 'locations', 'integrations', 'cloud'].forEach(t => {
+            ['drinks', 'locations', 'stories', 'cloud'].forEach(t => {
                 document.getElementById(`adminTab-${t}`).classList.toggle('hidden', t !== tabName);
                 const btn = document.getElementById(`tabBtn-${t}`);
                 btn.className = t === tabName
@@ -4501,13 +4829,10 @@
                 </div>
             `).join('');
 
-            document.getElementById('adminSamosaleBotUrl').value = appState.samosale.botUrl || '';
-            document.getElementById('adminSamosaleWalletUrl').value = appState.samosale.walletUrl || '';
-            document.getElementById('adminSamosaleCashback').value = appState.samosale.cashbackPercent || 7;
-            document.getElementById('adminYtimesPreorderUrl').value = appState.ytimes.preorderUrl || '';
             document.getElementById('adminSupabaseUrl').value = appState.supabase.url || '';
             document.getElementById('adminSupabaseKey').value = appState.supabase.anonKey || '';
             document.getElementById('adminNewPassword').value = appState.adminPassword || '1234';
+            renderAdminStories();
         }
 
         function addNewDrinkAdmin(defaultCat = 'seasonal') {
@@ -4556,10 +4881,6 @@
         async function saveAdminSettings() {
             appState.workingHours = document.getElementById('adminWorkingHoursInput').value.trim() || '08:00 – 22:00';
             appState.discountPercent = parseInt(document.getElementById('adminDiscountPercentInput').value, 10) || 20;
-            appState.samosale.botUrl = document.getElementById('adminSamosaleBotUrl').value.trim();
-            appState.samosale.walletUrl = document.getElementById('adminSamosaleWalletUrl').value.trim();
-            appState.samosale.cashbackPercent = parseInt(document.getElementById('adminSamosaleCashback').value, 10) || 7;
-            appState.ytimes.preorderUrl = document.getElementById('adminYtimesPreorderUrl').value.trim();
             appState.supabase.url = document.getElementById('adminSupabaseUrl').value.trim();
             appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim();
             appState.adminPassword = document.getElementById('adminNewPassword').value.trim() || '1234';
@@ -4567,7 +4888,7 @@
             updateHappyHourUI();
             renderLocations();
             renderMenuSections();
-            renderSamosaleCard();
+            renderStories();
             updateCartUI();
             await saveStateToStorageAndCloud();
             closeModal('adminModal');
@@ -4661,51 +4982,6 @@
             showToast(`Пароль Wi-Fi (${pass}) скопирован!`);
         }
 
-        function handleCustomLogoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                appState.customLogoDataUrl = e.target.result;
-                applyLogoState();
-                saveStateToStorageAndCloud(true);
-                showToast('Логотип обновлён!');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function resetToSvgLogo() {
-            appState.customLogoDataUrl = '';
-            applyLogoState();
-            saveStateToStorageAndCloud(true);
-            showToast('Включен каллиграфический логотип «Смысл»');
-        }
-
-        function applyLogoState() {
-            const img = document.getElementById('customLogoAvatar');
-            const svg = document.getElementById('svgLogoAvatar');
-            if (appState.customLogoDataUrl) {
-                img.src = appState.customLogoDataUrl;
-                img.classList.remove('hidden');
-                svg.classList.add('hidden');
-            } else {
-                img.classList.add('hidden');
-                svg.classList.remove('hidden');
-            }
-        }
-
-        function redirectToYtimesPreorder() {
-            window.open(appState.ytimes.preorderUrl || 'https://ytimes.ru/', '_blank', 'noopener,noreferrer');
-        }
-
-        function redirectToSamosaleBot() {
-            window.open(appState.samosale.botUrl || 'https://t.me/', '_blank', 'noopener,noreferrer');
-        }
-
-        function redirectToSamosaleWallet() {
-            window.open(appState.samosale.walletUrl || 'https://samosale.ru/', '_blank', 'noopener,noreferrer');
-        }
-
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPwaPrompt = e;
@@ -4722,8 +4998,13 @@
         }
 
         function openModal(id) {
-            if (id === 'adminModal') renderAdminModalInputs();
-            if (id === 'loyaltyModal') renderSamosaleCard();
+            if (id === 'adminModal') {
+                if (!isAdminMode) {
+                    requestAdminLogin();
+                    return;
+                }
+                renderAdminModalInputs();
+            }
             document.getElementById(id).classList.remove('hidden');
         }
 
@@ -4750,28 +5031,37 @@
             }, 3000);
         }
 
-        function checkWorkingHoursStatus() {
-            const hour = new Date().getHours();
-            const badge = document.getElementById('openStatusBadge');
-            badge.textContent = (hour >= 8 && hour < 22) ? 'Открыто' : 'До 08:00';
-        }
-
         function applyAllStateToDOM() {
-            document.getElementById('editableCoverTagline').innerText = appState.texts.coverTagline || 'Спешелти кофейня';
-            document.getElementById('editableVenueTitle').innerText = appState.texts.venueTitle || 'Кофейня «Смысл»';
-            applyLogoState();
+            const tagline = document.getElementById('editableCoverTagline');
+            if (tagline) tagline.innerText = appState.texts.coverTagline || 'Спешелти кофейня';
             updateHappyHourUI();
             renderCategoryPills();
             renderLocations();
             renderMenuSections();
-            renderSamosaleCard();
+            renderStories();
             updateCartUI();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            checkWorkingHoursStatus();
             applyAllStateToDOM();
+            restoreAdminSession();
             fetchCloudStateIfConfigured();
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('admin') === '1' && !isAdminMode) {
+                setTimeout(requestAdminLogin, 300);
+            }
+
+            document.addEventListener('keydown', event => {
+                if (event.key !== 'Escape') return;
+                const viewer = document.getElementById('storyViewer');
+                if (viewer && !viewer.classList.contains('hidden')) {
+                    closeStoryViewer();
+                    return;
+                }
+                const login = document.getElementById('adminLoginModal');
+                if (login && !login.classList.contains('hidden')) closeModal('adminLoginModal');
+            });
         });
     </script>
 
