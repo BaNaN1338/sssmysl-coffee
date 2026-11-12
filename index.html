@@ -3496,6 +3496,10 @@
                                 <input id="adminSupabaseKey" type="password" placeholder="eyJ... или sb_publishable_..." class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs">
                             </div>
                         </div>
+                        <div class="pt-2 border-t border-smysl-green/10">
+                            <span id="adminCloudStatus" class="text-[11px] font-bold text-smysl-greenDark">Проверка подключения…</span>
+                            <p class="text-[10px] text-smysl-greenDeep/50 mt-1">Можно указывать URL как с <code>/rest/v1/</code>, так и без него.</p>
+                        </div>
                     </div>
 
                     <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
@@ -3560,6 +3564,7 @@
 
         // Полное меню кофейни «Смысл»
         const defaultAppState = {
+            schemaVersion: 2,
             adminPassword: '1234',
             happyHourActive: true,
             discountPercent: 20,
@@ -3573,8 +3578,8 @@
                 { id: 'story-app', title: 'В телефон', subtitle: 'Скачайте APK для Android или добавьте иконку кофейни на главный экран.', badge: 'iOS & Android', theme: 'dark', image: '', action: 'install', link: '', ctaLabel: 'Установить', active: true }
             ],
             supabase: {
-                url: '',
-                anonKey: ''
+                url: 'https://jbsjtvpkgofiwiazqczz.supabase.co',
+                anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2p0dnBrZ29maXdpYXpxY3p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MzY3OTUsImV4cCI6MjEwOTMxMjc5NX0.6rjCKrYI5r7zY8stG5CAA0L9Vrpz68IQ_XFM_RBSpSs'
             },
             selectedLocationId: 1,
             pickupTime: 'Через 7–10 мин',
@@ -3656,25 +3661,97 @@
         };
         let deferredPwaPrompt = null;
 
+        function cloneDefaultState() {
+            return JSON.parse(JSON.stringify(defaultAppState));
+        }
+
+        function getSupabaseBaseUrl(rawUrl) {
+            return String(rawUrl || '')
+                .trim()
+                .replace(/\/+$/, '')
+                .replace(/\/rest\/v1\/?$/i, '')
+                .replace(/\/+$/, '');
+        }
+
+        function isCurrentStateShape(state) {
+            if (!state || typeof state !== 'object') return false;
+            if (state.schemaVersion === 2) return true;
+            const categoryIds = new Set(MENU_CATEGORIES.map(c => c.id));
+            return Array.isArray(state.stories) &&
+                Array.isArray(state.drinks) &&
+                state.drinks.length > 0 &&
+                state.drinks.every(drink => drink && categoryIds.has(drink.category));
+        }
+
+        function applySupabaseCredentials(target, source) {
+            const fallback = defaultAppState.supabase;
+            const candidate = source && typeof source === 'object' ? source : {};
+            target.supabase = {
+                url: getSupabaseBaseUrl(candidate.url) || fallback.url,
+                anonKey: (typeof candidate.anonKey === 'string' && candidate.anonKey) ? candidate.anonKey : fallback.anonKey
+            };
+            return target;
+        }
+
         function loadLocalState() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) return JSON.parse(JSON.stringify(defaultAppState));
+                const base = cloneDefaultState();
+                if (!raw) return base;
+
                 const parsed = JSON.parse(raw);
-
-                if (parsed.texts) delete parsed.texts.venueTitle;
-
-                const merged = Object.assign(JSON.parse(JSON.stringify(defaultAppState)), parsed);
-                Object.keys(merged).forEach(key => {
-                    if (!Object.prototype.hasOwnProperty.call(defaultAppState, key)) delete merged[key];
-                });
-                if (!Array.isArray(merged.stories)) {
-                    merged.stories = JSON.parse(JSON.stringify(defaultAppState.stories));
+                if (typeof parsed.adminPassword === 'string' && parsed.adminPassword) {
+                    base.adminPassword = parsed.adminPassword;
                 }
+                applySupabaseCredentials(base, parsed.supabase);
+
+                // Старые версии сайта имели другую структуру меню — сбрасываем их,
+                // сохраняя только пароль владельца и доступ к Supabase.
+                if (!isCurrentStateShape(parsed)) return base;
+
+                const merged = Object.assign(base, parsed);
+                merged.schemaVersion = 2;
+                applySupabaseCredentials(merged, parsed.supabase);
+                if (!Array.isArray(merged.stories)) merged.stories = cloneDefaultState().stories;
+                if (typeof merged.texts !== 'object' || merged.texts === null) merged.texts = cloneDefaultState().texts;
+                if (!merged.texts.coverTagline) merged.texts.coverTagline = cloneDefaultState().texts.coverTagline;
                 return merged;
             } catch (e) {
-                return JSON.parse(JSON.stringify(defaultAppState));
+                return cloneDefaultState();
             }
+        }
+
+        function normalizeCloudConfig(config) {
+            const base = cloneDefaultState();
+            if (!config || typeof config !== 'object') return base;
+
+            // Конфиг от старой версии сайта (без schemaVersion) несовместим
+            // с текущим меню и структурой сторис.
+            if (config.schemaVersion !== 2) {
+                if (typeof config.adminPassword === 'string' && config.adminPassword) {
+                    base.adminPassword = config.adminPassword;
+                }
+                applySupabaseCredentials(base, config.supabase);
+                return base;
+            }
+
+            const merged = Object.assign(base, config);
+            merged.schemaVersion = 2;
+            applySupabaseCredentials(merged, config.supabase);
+
+            if (!Array.isArray(merged.stories) || merged.stories.length === 0) merged.stories = cloneDefaultState().stories;
+            if (!Array.isArray(merged.drinks) || merged.drinks.length === 0) merged.drinks = cloneDefaultState().drinks;
+            if (!Array.isArray(merged.locations) || merged.locations.length === 0) merged.locations = cloneDefaultState().locations;
+            if (!Array.isArray(merged.volumes) || merged.volumes.length === 0) merged.volumes = cloneDefaultState().volumes;
+            if (!Array.isArray(merged.milks) || merged.milks.length === 0) merged.milks = cloneDefaultState().milks;
+            if (!Array.isArray(merged.syrups) || merged.syrups.length === 0) merged.syrups = cloneDefaultState().syrups;
+            if (!Array.isArray(merged.teaVarieties) || merged.teaVarieties.length === 0) merged.teaVarieties = cloneDefaultState().teaVarieties;
+            if (!merged.texts || typeof merged.texts !== 'object') merged.texts = cloneDefaultState().texts;
+            if (!merged.texts.coverTagline) merged.texts.coverTagline = cloneDefaultState().texts.coverTagline;
+            if (!merged.locations.some(location => location.id === merged.selectedLocationId)) {
+                merged.selectedLocationId = merged.locations[0].id;
+            }
+            return merged;
         }
 
         // Генерация фирменных иллюстраций напитков для карточек в стиле QRBooster
@@ -4829,7 +4906,7 @@
                 </div>
             `).join('');
 
-            document.getElementById('adminSupabaseUrl').value = appState.supabase.url || '';
+            document.getElementById('adminSupabaseUrl').value = getSupabaseBaseUrl(appState.supabase.url);
             document.getElementById('adminSupabaseKey').value = appState.supabase.anonKey || '';
             document.getElementById('adminNewPassword').value = appState.adminPassword || '1234';
             renderAdminStories();
@@ -4881,8 +4958,8 @@
         async function saveAdminSettings() {
             appState.workingHours = document.getElementById('adminWorkingHoursInput').value.trim() || '08:00 – 22:00';
             appState.discountPercent = parseInt(document.getElementById('adminDiscountPercentInput').value, 10) || 20;
-            appState.supabase.url = document.getElementById('adminSupabaseUrl').value.trim();
-            appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim();
+            appState.supabase.url = getSupabaseBaseUrl(document.getElementById('adminSupabaseUrl').value) || defaultAppState.supabase.url;
+            appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim() || defaultAppState.supabase.anonKey;
             appState.adminPassword = document.getElementById('adminNewPassword').value.trim() || '1234';
 
             updateHappyHourUI();
@@ -4895,51 +4972,81 @@
         }
 
         // ================= SUPABASE СИНХРОНИЗАЦИЯ =================
+        function setCloudStatus(message, isError = false) {
+            const status = document.getElementById('adminCloudStatus');
+            if (!status) return;
+            status.textContent = message;
+            status.className = isError
+                ? 'text-[11px] font-bold text-red-600'
+                : 'text-[11px] font-bold text-smysl-greenDark';
+        }
+
         async function saveStateToStorageAndCloud(silent = false) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-            if (appState.supabase.url && appState.supabase.anonKey) {
-                try {
-                    const cleanUrl = appState.supabase.url.replace(/\/$/, '');
-                    const headers = {
-                        'apikey': appState.supabase.anonKey,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'resolution=merge-duplicates'
-                    };
-                    if (appState.supabase.anonKey.startsWith('eyJ')) {
-                        headers['Authorization'] = `Bearer ${appState.supabase.anonKey}`;
-                    }
-                    await fetch(`${cleanUrl}/rest/v1/site_settings?id=eq.1`, {
-                        method: 'POST',
-                        headers,
-                        body: JSON.stringify({ id: 1, config: appState, updated_at: new Date().toISOString() })
-                    });
-                    if (!silent) showToast('Сохранено и синхронизировано с облаком Supabase!');
-                } catch (e) {
-                    if (!silent) showToast('Сохранено локально в браузере');
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+            } catch (e) {
+                if (!silent) showToast('Не удалось сохранить данные в браузере');
+            }
+
+            if (!appState.supabase.url || !appState.supabase.anonKey) {
+                setCloudStatus('Supabase не настроен', true);
+                if (!silent) showToast('Изменения сохранены локально');
+                return false;
+            }
+
+            const baseUrl = getSupabaseBaseUrl(appState.supabase.url);
+            try {
+                const headers = {
+                    'apikey': appState.supabase.anonKey,
+                    'Authorization': `Bearer ${appState.supabase.anonKey}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=merge-duplicates,return=minimal'
+                };
+                const response = await fetch(`${baseUrl}/rest/v1/site_settings?on_conflict=id`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ id: 1, config: appState, updated_at: new Date().toISOString() })
+                });
+                if (!response.ok) {
+                    throw new Error(`Supabase ${response.status}: ${await response.text()}`);
                 }
-            } else if (!silent) {
-                showToast('Изменения сохранены!');
+                setCloudStatus('Синхронизировано с Supabase');
+                if (!silent) showToast('Сохранено и синхронизировано с Supabase!');
+                return true;
+            } catch (error) {
+                console.warn('Supabase save failed:', error);
+                setCloudStatus('Ошибка записи в Supabase', true);
+                if (!silent) showToast('Сохранено локально. Не удалось записать в Supabase');
+                return false;
             }
         }
 
         async function fetchCloudStateIfConfigured() {
-            if (!appState.supabase.url || !appState.supabase.anonKey) return;
+            if (!appState.supabase.url || !appState.supabase.anonKey) {
+                setCloudStatus('Supabase не настроен', true);
+                return;
+            }
+            const baseUrl = getSupabaseBaseUrl(appState.supabase.url);
             try {
-                const cleanUrl = appState.supabase.url.replace(/\/$/, '');
-                const headers = { 'apikey': appState.supabase.anonKey };
-                if (appState.supabase.anonKey.startsWith('eyJ')) {
-                    headers['Authorization'] = `Bearer ${appState.supabase.anonKey}`;
+                const headers = {
+                    'apikey': appState.supabase.anonKey,
+                    'Authorization': `Bearer ${appState.supabase.anonKey}`
+                };
+                const res = await fetch(`${baseUrl}/rest/v1/site_settings?id=eq.1&select=config`, { headers });
+                if (!res.ok) throw new Error(`Supabase ${res.status}`);
+                const data = await res.json();
+                if (data && data[0] && data[0].config) {
+                    appState = normalizeCloudConfig(data[0].config);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                    applyAllStateToDOM();
+                    setCloudStatus('Данные получены из Supabase');
+                } else {
+                    setCloudStatus('В Supabase ещё нет сохранённых настроек', true);
                 }
-                const res = await fetch(`${cleanUrl}/rest/v1/site_settings?id=eq.1&select=config`, { headers });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data[0] && data[0].config) {
-                        appState = Object.assign(JSON.parse(JSON.stringify(defaultAppState)), data[0].config);
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-                        applyAllStateToDOM();
-                    }
-                }
-            } catch (e) {}
+            } catch (error) {
+                console.warn('Supabase load failed:', error);
+                setCloudStatus('Ошибка чтения из Supabase', true);
+            }
         }
 
         function saveInlineText(key, val) {
