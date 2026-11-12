@@ -216,7 +216,7 @@
                     <button onclick="openModal('venueInfoModal')" class="w-8 h-8 rounded-full bg-black/35 hover:bg-black/50 backdrop-blur-md text-white flex items-center justify-center border border-white/20 transition" title="О кофейне и Wi-Fi">
                         <i class="ph-bold ph-wifi-high text-sm"></i>
                     </button>
-                    <button onclick="triggerPwaInstall()" class="w-8 h-8 rounded-full bg-black/35 hover:bg-black/50 backdrop-blur-md text-white flex items-center justify-center border border-white/20 transition" title="Скачать приложение">
+                    <button id="coverInstallBtn" onclick="triggerPwaInstall()" class="w-8 h-8 rounded-full bg-black/35 hover:bg-black/50 backdrop-blur-md text-white flex items-center justify-center border border-white/20 transition" title="Скачать приложение">
                         <i class="ph-bold ph-download-simple text-sm"></i>
                     </button>
                 </div>
@@ -2538,7 +2538,7 @@
                 <button onclick="openModal('venueInfoModal')" class="px-3 py-1.5 rounded-xl bg-white border border-smysl-green/15 text-smysl-greenDeep font-semibold">
                     Wi-Fi и адреса
                 </button>
-                <button onclick="triggerPwaInstall()" class="px-3 py-1.5 rounded-xl bg-white border border-smysl-green/15 text-smysl-greenDeep font-semibold">
+                <button id="footerInstallAppBtn" onclick="triggerPwaInstall()" class="px-3 py-1.5 rounded-xl bg-white border border-smysl-green/15 text-smysl-greenDeep font-semibold">
                     Скачать APK / App
                 </button>
                 <button onclick="promptAdminLogin()" id="footerOwnerLoginBtn" class="px-3 py-1.5 rounded-xl bg-smysl-greenDeep/10 hover:bg-smysl-greenDeep text-smysl-greenDeep hover:text-smysl-cream font-bold transition flex items-center gap-1">
@@ -3544,6 +3544,7 @@
         const STORAGE_KEY = 'smysl_qrb_menu_v3';
         const ADMIN_SESSION_KEY = 'smysl_admin_session';
         const STORY_DURATION = 6000;
+        const IS_ANDROID_APP = new URLSearchParams(window.location.search).get('app') === 'android';
 
         const STORY_THEMES = {
             caramel: { gradient: 'linear-gradient(155deg, #E2A45E 0%, #D48C46 42%, #A55F22 100%)', icon: 'ph-fill ph-percent' },
@@ -4032,7 +4033,11 @@
         }
 
         function getActiveStories() {
-            return (appState.stories || []).filter(story => story && story.active !== false);
+            return (appState.stories || []).filter(story =>
+                story &&
+                story.active !== false &&
+                !(IS_ANDROID_APP && story.action === 'install')
+            );
         }
 
         function renderStories() {
@@ -5101,6 +5106,10 @@
         });
 
         async function triggerPwaInstall() {
+            if (IS_ANDROID_APP) {
+                showToast('Вы уже в приложении «Смысл»');
+                return;
+            }
             if (deferredPwaPrompt) {
                 deferredPwaPrompt.prompt();
                 await deferredPwaPrompt.userChoice;
@@ -5144,6 +5153,15 @@
             }, 3000);
         }
 
+        function applyAppModeUI() {
+            if (!IS_ANDROID_APP) return;
+            document.documentElement.classList.add('android-app');
+            ['coverInstallBtn', 'footerInstallAppBtn'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.classList.add('hidden');
+            });
+        }
+
         function applyAllStateToDOM() {
             const tagline = document.getElementById('editableCoverTagline');
             if (tagline) tagline.innerText = appState.texts.coverTagline || 'Спешелти кофейня';
@@ -5156,6 +5174,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            applyAppModeUI();
             applyAllStateToDOM();
             restoreAdminSession();
             fetchCloudStateIfConfigured();
