@@ -3745,7 +3745,7 @@
             });
             applySupabaseCredentials(merged, config.supabase);
 
-            if (!Array.isArray(merged.stories) || merged.stories.length === 0) merged.stories = cloneDefaultState().stories;
+            if (!Array.isArray(merged.stories)) merged.stories = cloneDefaultState().stories;
             if (!Array.isArray(merged.drinks) || merged.drinks.length === 0) merged.drinks = cloneDefaultState().drinks;
             if (!Array.isArray(merged.locations) || merged.locations.length === 0) merged.locations = cloneDefaultState().locations;
             if (!Array.isArray(merged.volumes) || merged.volumes.length === 0) merged.volumes = cloneDefaultState().volumes;
