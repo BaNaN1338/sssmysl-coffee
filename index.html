@@ -83,7 +83,9 @@
 
         /* Широкий режим (при переключении с ПК) */
         .qrb-app-shell.wide-mode {
-            max-width: 1024px;
+            max-width: 100%;
+            width: 100%;
+            box-shadow: none;
         }
 
         /* Анимация нижней шторки (Bottom Sheet) */
@@ -224,9 +226,7 @@
 
             <!-- Крупная каллиграфия «Смысл» в центре обложки -->
             <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-4">
-                <svg viewBox="0 0 360 115" class="w-48 sm:w-56 h-auto drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <text x="50%" y="66%" dominant-baseline="middle" text-anchor="middle" fill="#F6F4E8" font-family="'Marck Script', cursive" font-size="96" letter-spacing="-1">Смысл</text>
-                </svg>
+                <img src="smysl-wordmark.png" alt="Смысл" draggable="false" class="w-56 sm:w-72 h-auto drop-shadow-md select-none">
                 <span id="editableCoverTagline" onblur="saveInlineText('coverTagline', this.innerText)" class="text-[11px] uppercase tracking-[0.2em] text-smysl-cream/90 font-semibold -mt-2 pointer-events-auto" contenteditable="false">Спешелти кофейня</span>
             </div>
         </div>
@@ -315,10 +315,9 @@
                             <span>🔥</span>
                             <span>Сезонное</span>
                         </h2>
-                        <span class="text-[11px] font-bold text-smysl-greenDeep/45">8 поз.</span>
                     </div>
                     <!-- 2-колоночная сетка карточек как в QRBooster (в широком режиме до 3-4 колонок) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                         
                     <div onclick="openDrinkCustomizer('s1')" class="group bg-white rounded-[22px] p-2.5 shadow-qrb hover:shadow-qrb-hover border border-smysl-green/10 flex flex-col justify-between transition relative cursor-pointer active:scale-[0.99]">
                         
@@ -961,10 +960,9 @@
                             <span>✨</span>
                             <span>Авторские</span>
                         </h2>
-                        <span class="text-[11px] font-bold text-smysl-greenDeep/45">5 поз.</span>
                     </div>
                     <!-- 2-колоночная сетка карточек как в QRBooster (в широком режиме до 3-4 колонок) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                         
                     <div onclick="openDrinkCustomizer('a1')" class="group bg-white rounded-[22px] p-2.5 shadow-qrb hover:shadow-qrb-hover border border-smysl-green/10 flex flex-col justify-between transition relative cursor-pointer active:scale-[0.99]">
                         
@@ -1373,10 +1371,9 @@
                             <span>☕</span>
                             <span>Кофе</span>
                         </h2>
-                        <span class="text-[11px] font-bold text-smysl-greenDeep/45">9 поз.</span>
                     </div>
                     <!-- 2-колоночная сетка карточек как в QRBooster (в широком режиме до 3-4 колонок) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                         
                     <div onclick="openDrinkCustomizer('c1')" class="group bg-white rounded-[22px] p-2.5 shadow-qrb hover:shadow-qrb-hover border border-smysl-green/10 flex flex-col justify-between transition relative cursor-pointer active:scale-[0.99]">
                         
@@ -2097,10 +2094,9 @@
                             <span>🍵</span>
                             <span>Не кофе</span>
                         </h2>
-                        <span class="text-[11px] font-bold text-smysl-greenDeep/45">3 поз.</span>
                     </div>
                     <!-- 2-колоночная сетка карточек как в QRBooster (в широком режиме до 3-4 колонок) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                         
                     <div onclick="openDrinkCustomizer('n1')" class="group bg-white rounded-[22px] p-2.5 shadow-qrb hover:shadow-qrb-hover border border-smysl-green/10 flex flex-col justify-between transition relative cursor-pointer active:scale-[0.99]">
                         
@@ -2353,10 +2349,9 @@
                             <span>🫖</span>
                             <span>Чай</span>
                         </h2>
-                        <span class="text-[11px] font-bold text-smysl-greenDeep/45">2 поз.</span>
                     </div>
                     <!-- 2-колоночная сетка карточек как в QRBooster (в широком режиме до 3-4 колонок) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                         
                     <div onclick="openDrinkCustomizer('t1')" class="group bg-white rounded-[22px] p-2.5 shadow-qrb hover:shadow-qrb-hover border border-smysl-green/10 flex flex-col justify-between transition relative cursor-pointer active:scale-[0.99]">
                         
@@ -2893,7 +2888,7 @@
             <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-3">
                 <div>
                     <label class="block text-xs font-bold text-smysl-greenDeep mb-1.5">Пароль администратора</label>
-                    <input id="adminLoginPassword" type="password" autocomplete="current-password" placeholder="Введите пароль" class="w-full px-3.5 py-3 rounded-2xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
+                    <input id="adminLoginPassword" type="password" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" onfocus="this.dataset.keyboardFixApplied='0'" oninput="handleAdminPasswordInput(this)" placeholder="Введите пароль" class="w-full px-3.5 py-3 rounded-2xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
                 </div>
                 <button type="submit" class="w-full py-3.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-bold text-sm transition flex items-center justify-center gap-2">
                     <i class="ph-bold ph-sign-in text-lg"></i>
@@ -2991,7 +2986,7 @@
                 <!-- ВКЛАДКА 1: МЕНЮ И СТОП-ЛИСТ -->
                 <div id="adminTab-drinks" class="space-y-3">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div class="font-bold text-smysl-greenDeep">Все напитки (можно перевести в СТОП или изменить цену)</div>
+                        <div class="font-bold text-smysl-greenDeep">Все напитки (фото, цена, категория и стоп-лист)</div>
                         <button onclick="addNewDrinkAdmin()" class="px-3 py-2 rounded-xl bg-smysl-green text-smysl-cream text-xs font-bold hover:bg-smysl-greenDark transition flex items-center gap-1">
                             <i class="ph-bold ph-plus"></i> Добавить позицию
                         </button>
@@ -3885,6 +3880,9 @@
                 const cardsHtml = items.map(drink => {
                     const priceObj = calculatePrice(drink.basePrice, 0);
                     const isStopped = !!drink.stopped;
+                    const cardArt = drink.image
+                        ? `<img src="${escapeHtml(drink.image)}" alt="${escapeHtml(drink.title)}" class="w-full h-full object-cover" loading="lazy">`
+                        : getDrinkArtSvg(drink.art);
 
                     return `
                     <div onclick="${isStopped && !isAdminMode ? '' : `openDrinkCustomizer('${drink.id}')`}"
@@ -3896,7 +3894,7 @@
                             <!-- Квадратный визуал напитка сверху карточки (как в QRBooster) -->
                             <div class="relative aspect-square w-full rounded-[18px] overflow-hidden mb-2.5 bg-smysl-greenSoft/40">
                                 <div class="w-full h-full group-hover:scale-105 transition-transform duration-300">
-                                    ${getDrinkArtSvg(drink.art)}
+                                    ${cardArt}
                                 </div>
 
                                 <!-- Бейдж объёма в левом верхнем углу -->
@@ -3984,10 +3982,9 @@
                             <span>${cat.icon}</span>
                             <span>${cat.title}</span>
                         </h2>
-                        <span class="text-[11px] font-bold text-smysl-greenDeep/45">${items.length} поз.</span>
                     </div>
                     <!-- 2-колоночная сетка карточек как в QRBooster (в широком режиме до 3-4 колонок) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
                         ${cardsHtml}
                         ${adminAddCard}
                     </div>
@@ -4055,7 +4052,7 @@
                     : `<span class="w-full h-full flex items-center justify-center" style="background:${theme.gradient}"><i class="${theme.icon} text-2xl text-white/85"></i></span>`;
                 return `
                     <button type="button" onclick="openStoryViewer('${escapeHtml(story.id)}')" class="shrink-0 w-[78px] flex flex-col items-center gap-1.5 group">
-                        <span class="block w-[74px] h-[74px] rounded-full p-[3px] ${viewed ? 'bg-smysl-green/25' : 'bg-gradient-to-tr from-smysl-caramel via-smysl-green to-smysl-greenDark'} transition group-active:scale-95">
+                        <span class="block w-[74px] h-[74px] rounded-full p-[4px] ${viewed ? 'bg-smysl-green/25' : 'bg-gradient-to-tr from-[#DDE8C3] to-[#7B9244]'} transition group-active:scale-95">
                             <span class="block w-full h-full rounded-full p-[2px] bg-smysl-creamLight">
                                 <span class="block w-full h-full rounded-full overflow-hidden relative">${preview}</span>
                             </span>
@@ -4379,12 +4376,11 @@
             saveStateToStorageAndCloud(true);
         }
 
-        function compressStoryImage(file, callback) {
+        function compressImageFile(file, maxSide, quality, callback) {
             const reader = new FileReader();
             reader.onload = event => {
                 const image = new Image();
                 image.onload = () => {
-                    const maxSide = 1200;
                     const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
                     const canvas = document.createElement('canvas');
                     canvas.width = Math.max(1, Math.round(image.width * scale));
@@ -4393,12 +4389,48 @@
                     context.fillStyle = '#FAF9F3';
                     context.fillRect(0, 0, canvas.width, canvas.height);
                     context.drawImage(image, 0, 0, canvas.width, canvas.height);
-                    callback(canvas.toDataURL('image/jpeg', 0.82));
+                    callback(canvas.toDataURL('image/jpeg', quality));
                 };
                 image.onerror = () => callback(event.target.result);
                 image.src = event.target.result;
             };
             reader.readAsDataURL(file);
+        }
+
+        function compressStoryImage(file, callback) {
+            compressImageFile(file, 1200, 0.82, callback);
+        }
+
+        function compressDrinkImage(file, callback) {
+            compressImageFile(file, 720, 0.8, callback);
+        }
+
+        function handleDrinkImageUpload(event, index) {
+            const file = event.target.files && event.target.files[0];
+            event.target.value = '';
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showToast('Выберите файл изображения');
+                return;
+            }
+            compressDrinkImage(file, dataUrl => {
+                if (!appState.drinks[index]) return;
+                appState.drinks[index].image = dataUrl;
+                renderAdminModalInputs();
+                renderMenuSections();
+                if (activeCustomizer.drinkId === appState.drinks[index].id) updateCustomizerSheet();
+                saveStateToStorageAndCloud(true);
+                showToast('Фото позиции обновлено');
+            });
+        }
+
+        function removeDrinkImage(index) {
+            if (!appState.drinks[index]) return;
+            appState.drinks[index].image = '';
+            renderAdminModalInputs();
+            renderMenuSections();
+            if (activeCustomizer.drinkId === appState.drinks[index].id) updateCustomizerSheet();
+            saveStateToStorageAndCloud(true);
         }
 
         function handleStoryImageUpload(event, index) {
@@ -4454,7 +4486,9 @@
             document.getElementById('sheetDrinkTitle').textContent = drink.title;
             document.getElementById('sheetDrinkDesc').textContent = drink.desc;
             document.getElementById('sheetKbzhuText').textContent = drink.kbzhu || '150 ккал';
-            document.getElementById('sheetDrinkArt').innerHTML = getDrinkArtSvg(drink.art);
+            document.getElementById('sheetDrinkArt').innerHTML = drink.image
+                ? `<img src="${escapeHtml(drink.image)}" alt="${escapeHtml(drink.title)}" class="w-full h-full object-cover rounded-2xl">`
+                : getDrinkArtSvg(drink.art);
 
             const discountTag = document.getElementById('sheetDiscountTag');
             discountTag.textContent = `-${appState.discountPercent}% Будни`;
@@ -4811,14 +4845,53 @@
                 return;
             }
             openModal('adminLoginModal');
+            const input = document.getElementById('adminLoginPassword');
+            if (input) {
+                delete input.dataset.keyboardFixApplied;
+                input.value = '';
+            }
             setTimeout(() => {
-                const input = document.getElementById('adminLoginPassword');
-                if (input) input.focus();
+                const field = document.getElementById('adminLoginPassword');
+                if (field) field.focus();
             }, 120);
         }
 
         function promptAdminLogin() {
             requestAdminLogin();
+        }
+
+        function handleAdminPasswordInput(input) {
+            if (!input || input.value.length !== 1) return;
+            if (input.dataset.keyboardFixApplied === '1') return;
+            input.dataset.keyboardFixApplied = '1';
+
+            // Android WebView иногда закрывает клавиатуру после первого символа.
+            // Возвращаем фокус, если он потерялся, не мешая обычному вводу.
+            setTimeout(() => {
+                const modal = document.getElementById('adminLoginModal');
+                if (!modal || modal.classList.contains('hidden')) return;
+
+                const position = input.value.length;
+                const isAppWebView = IS_ANDROID_APP || /SmyslAndroid/i.test(navigator.userAgent || '');
+                const viewport = window.visualViewport;
+                const keyboardSeemsClosed = !viewport || viewport.height >= window.innerHeight * 0.85;
+
+                if (document.activeElement !== input) {
+                    input.focus({ preventScroll: true });
+                } else if (isAppWebView && keyboardSeemsClosed) {
+                    // В WebView фокус может остаться, а клавиатура — закрыться.
+                    input.blur();
+                    setTimeout(() => {
+                        const currentModal = document.getElementById('adminLoginModal');
+                        if (!currentModal || currentModal.classList.contains('hidden')) return;
+                        input.focus({ preventScroll: true });
+                        try { input.setSelectionRange(position, position); } catch (e) {}
+                    }, 40);
+                    return;
+                }
+
+                try { input.setSelectionRange(position, position); } catch (e) {}
+            }, 140);
         }
 
         function handleAdminLoginSubmit(event) {
@@ -4889,6 +4962,20 @@
             const drinksContainer = document.getElementById('adminDrinksList');
             drinksContainer.innerHTML = appState.drinks.map((d, idx) => `
                 <div class="p-3 rounded-2xl bg-white border border-smysl-green/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                        <div class="w-14 h-14 rounded-xl overflow-hidden bg-smysl-greenSoft/40 border border-smysl-green/10 shrink-0">
+                            ${d.image
+                                ? `<img src="${escapeHtml(d.image)}" alt="${escapeHtml(d.title)}" class="w-full h-full object-cover">`
+                                : `<div class="w-full h-full flex items-center justify-center text-smysl-greenDark/50"><i class="ph-duotone ph-image text-xl"></i></div>`}
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream text-[10px] font-bold text-center transition">
+                                ${d.image ? 'Заменить фото' : 'Добавить фото'}
+                                <input type="file" accept="image/*" onchange="handleDrinkImageUpload(event, ${idx})" class="hidden">
+                            </label>
+                            ${d.image ? `<button onclick="removeDrinkImage(${idx})" class="px-2.5 py-1 rounded-lg bg-smysl-cream text-smysl-greenDeep border border-smysl-green/20 text-[10px] font-bold">Убрать фото</button>` : ''}
+                        </div>
+                    </div>
                     <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-4 gap-2">
                         <input type="text" value="${d.title}" oninput="appState.drinks[${idx}].title = this.value" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs font-bold">
                         <select onchange="appState.drinks[${idx}].category = this.value" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
@@ -4933,6 +5020,7 @@
                 defaultVol: '350 мл',
                 kbzhu: '180 ккал',
                 art: 'latte',
+                image: '',
                 stopped: false
             });
             renderAdminModalInputs();
