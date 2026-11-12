@@ -3711,6 +3711,9 @@
 
                 const merged = Object.assign(base, parsed);
                 merged.schemaVersion = 2;
+                Object.keys(merged).forEach(key => {
+                    if (!Object.prototype.hasOwnProperty.call(defaultAppState, key)) delete merged[key];
+                });
                 applySupabaseCredentials(merged, parsed.supabase);
                 if (!Array.isArray(merged.stories)) merged.stories = cloneDefaultState().stories;
                 if (typeof merged.texts !== 'object' || merged.texts === null) merged.texts = cloneDefaultState().texts;
@@ -3737,6 +3740,9 @@
 
             const merged = Object.assign(base, config);
             merged.schemaVersion = 2;
+            Object.keys(merged).forEach(key => {
+                if (!Object.prototype.hasOwnProperty.call(defaultAppState, key)) delete merged[key];
+            });
             applySupabaseCredentials(merged, config.supabase);
 
             if (!Array.isArray(merged.stories) || merged.stories.length === 0) merged.stories = cloneDefaultState().stories;
