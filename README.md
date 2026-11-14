@@ -5,16 +5,14 @@
 ## Структура
 
 - `index.html` — только разметка страницы.
-- `src/site.css` — исходные стили.
-- `src/app.js` — исходный клиентский код.
-- `assets/site.css`, `assets/app.js` — собранные файлы, которые подключает сайт.
+- `site.css` — стили.
+- `app.js` — клиентский код.
 - `privacy.html`, `terms.html` — политика конфиденциальности и условия заказа.
-- `supabase/functions/create-order` — приём заказа и отправка в YTimes.
-- `supabase/functions/sync-ytimes-menu` — синхронизация цен и стоп-листа.
-- `supabase/functions/order-status` — статус заказа для гостя и вебхук YTimes.
-- `supabase/sql` — SQL-миграции.
-- `tests/smoke.spec.js` — браузерные smoke-тесты.
+- `build.mjs` — проверка сборки.
+- `smoke.spec.js` — браузерные smoke-тесты.
 - `.github/workflows` — CI, синхронизация меню и резервные копии.
+- `supabase/functions/*` — исходники Edge Functions (также задеплоены в Supabase).
+- `supabase/sql` — SQL-миграции.
 
 ## Локальный запуск
 
@@ -37,7 +35,7 @@ CI запускается на каждый push в `main` и на pull request.
 
 ## Деплой
 
-Сайт публикуется через GitHub Pages из ветки `main`. После изменения `src/` нужно выполнить `npm run build` и закоммитить обновлённые файлы в `assets/`.
+Сайт публикуется через GitHub Pages из ветки `main`. После изменения `app.js` или `site.css` выполните `npm run build` и закоммитьте файлы.
 
 ## Секреты Supabase Edge Functions
 
