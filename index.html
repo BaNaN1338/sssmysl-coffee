@@ -12,6 +12,9 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Supabase JS (Auth + protected database access) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Google Fonts: Unbounded, Manrope -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -2950,15 +2953,19 @@
 
             <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-smysl-greenDeep mb-1.5">Пароль администратора</label>
-                    <input id="adminLoginPassword" type="password" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" onfocus="this.dataset.keyboardFixApplied='0'" oninput="handleAdminPasswordInput(this)" placeholder="Введите пароль" class="w-full px-3.5 py-3 rounded-2xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
+                    <label class="block text-xs font-bold text-smysl-greenDeep mb-1.5">Email владельца</label>
+                    <input id="adminLoginEmail" type="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="admin@smysl.coffee" class="w-full px-3.5 py-3 rounded-2xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
                 </div>
-                <button type="submit" class="w-full py-3.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-bold text-sm transition flex items-center justify-center gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-smysl-greenDeep mb-1.5">Пароль</label>
+                    <input id="adminLoginPassword" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" onfocus="this.dataset.keyboardFixApplied='0'" oninput="handleAdminPasswordInput(this)" placeholder="Введите пароль" class="w-full px-3.5 py-3 rounded-2xl bg-white border border-smysl-green/25 text-sm focus:outline-none focus:border-smysl-green">
+                </div>
+                <button id="adminLoginSubmitBtn" type="submit" class="w-full py-3.5 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-bold text-sm transition flex items-center justify-center gap-2 disabled:opacity-60">
                     <i class="ph-bold ph-sign-in text-lg"></i>
-                    <span>Войти в конструктор</span>
+                    <span id="adminLoginSubmitText">Войти в конструктор</span>
                 </button>
             </form>
-            <p class="text-[10px] text-smysl-greenDeep/50 text-center mt-3">Пароль можно изменить в разделе «Supabase и доступ».</p>
+            <p class="text-[10px] text-smysl-greenDeep/50 text-center mt-3">Защищённый вход через Supabase Auth.</p>
         </div>
     </div>
 
@@ -3567,11 +3574,16 @@
                     </div>
 
                     <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
-                        <div class="font-bold text-smysl-greenDeep">Пароль владельца</div>
-                        <div>
-                            <label class="block text-xs text-smysl-greenDeep/70 mb-1">Пароль для входа в конструктор (по умолчанию 1234):</label>
-                            <input id="adminNewPassword" type="text" class="w-44 px-3 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs font-bold">
-                        </div>
+                        <div class="font-bold text-smysl-greenDeep">Аккаунт владельца</div>
+                        <p class="text-xs text-smysl-greenDeep/70">
+                            Вход: <span id="adminAccountEmail" class="font-bold text-smysl-greenDeep">admin@smysl.coffee</span>
+                        </p>
+                        <p class="text-[11px] text-smysl-greenDeep/50">
+                            Пароль меняется в Supabase → Authentication → Users.
+                        </p>
+                        <button onclick="exitAdminMode()" class="px-3.5 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold">
+                            Выйти из аккаунта
+                        </button>
                     </div>
                 </div>
 
@@ -3606,7 +3618,6 @@
     <!-- ================= JAVASCRIPT ЯДРО QR-МЕНЮ «СМЫСЛ» ================= -->
     <script>
         const STORAGE_KEY = 'smysl_qrb_menu_v3';
-        const ADMIN_SESSION_KEY = 'smysl_admin_session';
         const STORY_DURATION = 6000;
         const IS_ANDROID_APP = new URLSearchParams(window.location.search).get('app') === 'android';
 
@@ -3630,7 +3641,6 @@
         // Полное меню кофейни «Смысл»
         const defaultAppState = {
             schemaVersion: 2,
-            adminPassword: '1234',
             happyHourActive: true,
             discountPercent: 20,
             workingHours: '08:00 – 22:00',
@@ -3776,6 +3786,25 @@
             return target;
         }
 
+        let supabaseClient = null;
+        let supabaseClientConfigKey = '';
+
+        function getSupabaseClient() {
+            if (!window.supabase || !appState.supabase.url || !appState.supabase.anonKey) return null;
+            const configKey = `${appState.supabase.url}|${appState.supabase.anonKey}`;
+            if (!supabaseClient || supabaseClientConfigKey !== configKey) {
+                supabaseClient = window.supabase.createClient(appState.supabase.url, appState.supabase.anonKey, {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: false
+                    }
+                });
+                supabaseClientConfigKey = configKey;
+            }
+            return supabaseClient;
+        }
+
         function loadLocalState() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
@@ -3783,9 +3812,6 @@
                 if (!raw) return base;
 
                 const parsed = JSON.parse(raw);
-                if (typeof parsed.adminPassword === 'string' && parsed.adminPassword) {
-                    base.adminPassword = parsed.adminPassword;
-                }
                 applySupabaseCredentials(base, parsed.supabase);
 
                 // Старые версии сайта имели другую структуру меню — сбрасываем их,
@@ -3813,9 +3839,6 @@
             // Конфиг от старой версии сайта (без schemaVersion) несовместим
             // с текущим меню и структурой сторис.
             if (config.schemaVersion !== 2) {
-                if (typeof config.adminPassword === 'string' && config.adminPassword) {
-                    base.adminPassword = config.adminPassword;
-                }
                 applySupabaseCredentials(base, config.supabase);
                 return base;
             }
@@ -4943,12 +4966,24 @@
             updateHappyHourUI();
         }
 
-        function restoreAdminSession() {
+        function setAdminAccountEmail(email) {
+            const label = document.getElementById('adminAccountEmail');
+            if (label) label.textContent = email || 'admin@smysl.coffee';
+        }
+
+        async function restoreAdminSession() {
+            const client = getSupabaseClient();
+            if (!client) return;
             try {
-                if (sessionStorage.getItem(ADMIN_SESSION_KEY) === '1') {
+                const { data } = await client.auth.getSession();
+                const user = data && data.session ? data.session.user : null;
+                if (user && user.app_metadata && user.app_metadata.role === 'admin') {
                     setAdminMode(true);
+                    setAdminAccountEmail(user.email);
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.warn('Supabase session restore failed:', e);
+            }
         }
 
         function requestAdminLogin() {
@@ -4957,13 +4992,14 @@
                 return;
             }
             openModal('adminLoginModal');
-            const input = document.getElementById('adminLoginPassword');
-            if (input) {
-                delete input.dataset.keyboardFixApplied;
-                input.value = '';
+            const passwordInput = document.getElementById('adminLoginPassword');
+            const emailInput = document.getElementById('adminLoginEmail');
+            if (passwordInput) {
+                delete passwordInput.dataset.keyboardFixApplied;
+                passwordInput.value = '';
             }
             setTimeout(() => {
-                const field = document.getElementById('adminLoginPassword');
+                const field = emailInput && !emailInput.value ? emailInput : passwordInput;
                 if (field) field.focus();
             }, 120);
         }
@@ -4990,24 +5026,53 @@
             }, 140);
         }
 
-        function handleAdminLoginSubmit(event) {
+        async function handleAdminLoginSubmit(event) {
             event.preventDefault();
-            const input = document.getElementById('adminLoginPassword');
-            const password = input ? input.value.trim() : '';
-            const expected = appState.adminPassword || '1234';
+            const client = getSupabaseClient();
+            const emailInput = document.getElementById('adminLoginEmail');
+            const passwordInput = document.getElementById('adminLoginPassword');
+            const submitButton = document.getElementById('adminLoginSubmitBtn');
+            const submitText = document.getElementById('adminLoginSubmitText');
+            const email = emailInput ? emailInput.value.trim() : '';
+            const password = passwordInput ? passwordInput.value : '';
 
-            if (password && password === expected) {
-                try { sessionStorage.setItem(ADMIN_SESSION_KEY, '1'); } catch (e) {}
-                if (input) input.value = '';
+            if (!client || !window.supabase) {
+                showToast('Не удалось загрузить Supabase. Проверьте интернет.');
+                return;
+            }
+            if (!email || !password) {
+                showToast('Введите email и пароль');
+                return;
+            }
+
+            if (submitButton) submitButton.disabled = true;
+            if (submitText) submitText.textContent = 'Вход…';
+
+            try {
+                const { data, error } = await client.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                const user = data && data.user;
+                if (!user || !user.app_metadata || user.app_metadata.role !== 'admin') {
+                    await client.auth.signOut();
+                    throw new Error('У этой учётной записи нет прав администратора');
+                }
+
+                if (passwordInput) passwordInput.value = '';
                 closeModal('adminLoginModal');
                 setAdminMode(true);
+                setAdminAccountEmail(user.email);
                 showToast('Добро пожаловать в конструктор «Смысл»');
                 setTimeout(() => openModal('adminModal'), 140);
-            } else {
-                showToast('Неверный пароль администратора');
-                if (input) {
-                    input.select();
-                }
+            } catch (error) {
+                const message = error && error.message === 'Invalid login credentials'
+                    ? 'Неверный email или пароль'
+                    : (error && error.message ? error.message : 'Не удалось войти');
+                showToast(message);
+                if (passwordInput) passwordInput.select();
+            } finally {
+                if (submitButton) submitButton.disabled = false;
+                if (submitText) submitText.textContent = 'Войти в конструктор';
             }
         }
 
@@ -5019,11 +5084,14 @@
             openModal('adminModal');
         }
 
-        function exitAdminMode() {
-            try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (e) {}
+        async function exitAdminMode() {
+            const client = getSupabaseClient();
+            if (client) {
+                try { await client.auth.signOut(); } catch (e) {}
+            }
             closeModal('adminModal');
             setAdminMode(false);
-            showToast('Вы вышли из режима администратора');
+            showToast('Вы вышли из аккаунта владельца');
         }
 
         function toggleDrinkStopStatus(drinkId) {
@@ -5361,7 +5429,6 @@
 
             document.getElementById('adminSupabaseUrl').value = getSupabaseBaseUrl(appState.supabase.url);
             document.getElementById('adminSupabaseKey').value = appState.supabase.anonKey || '';
-            document.getElementById('adminNewPassword').value = appState.adminPassword || '1234';
             renderAdminStories();
         }
 
@@ -5414,7 +5481,6 @@
             appState.discountPercent = parseInt(document.getElementById('adminDiscountPercentInput').value, 10) || 20;
             appState.supabase.url = getSupabaseBaseUrl(document.getElementById('adminSupabaseUrl').value) || defaultAppState.supabase.url;
             appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim() || defaultAppState.supabase.anonKey;
-            appState.adminPassword = document.getElementById('adminNewPassword').value.trim() || '1234';
 
             updateHappyHourUI();
             renderLocations();
@@ -5442,28 +5508,26 @@
                 if (!silent) showToast('Не удалось сохранить данные в браузере');
             }
 
-            if (!appState.supabase.url || !appState.supabase.anonKey) {
+            const client = getSupabaseClient();
+            if (!client) {
                 setCloudStatus('Supabase не настроен', true);
                 if (!silent) showToast('Изменения сохранены локально');
                 return false;
             }
 
-            const baseUrl = getSupabaseBaseUrl(appState.supabase.url);
             try {
-                const headers = {
-                    'apikey': appState.supabase.anonKey,
-                    'Authorization': `Bearer ${appState.supabase.anonKey}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'resolution=merge-duplicates,return=minimal'
-                };
-                const response = await fetch(`${baseUrl}/rest/v1/site_settings?on_conflict=id`, {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify({ id: 1, config: appState, updated_at: new Date().toISOString() })
-                });
-                if (!response.ok) {
-                    throw new Error(`Supabase ${response.status}: ${await response.text()}`);
+                const { data: sessionData } = await client.auth.getSession();
+                if (!sessionData.session) {
+                    setCloudStatus('Нужен вход владельца', true);
+                    if (!silent) showToast('Войдите в аккаунт владельца, чтобы сохранить изменения');
+                    return false;
                 }
+
+                const { error } = await client
+                    .from('site_settings')
+                    .upsert({ id: 1, config: appState, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+
+                if (error) throw error;
                 setCloudStatus('Синхронизировано с Supabase');
                 if (!silent) showToast('Сохранено и синхронизировано с Supabase!');
                 return true;
@@ -5476,21 +5540,22 @@
         }
 
         async function fetchCloudStateIfConfigured() {
-            if (!appState.supabase.url || !appState.supabase.anonKey) {
+            const client = getSupabaseClient();
+            if (!client) {
                 setCloudStatus('Supabase не настроен', true);
                 return;
             }
-            const baseUrl = getSupabaseBaseUrl(appState.supabase.url);
+
             try {
-                const headers = {
-                    'apikey': appState.supabase.anonKey,
-                    'Authorization': `Bearer ${appState.supabase.anonKey}`
-                };
-                const res = await fetch(`${baseUrl}/rest/v1/site_settings?id=eq.1&select=config`, { headers });
-                if (!res.ok) throw new Error(`Supabase ${res.status}`);
-                const data = await res.json();
-                if (data && data[0] && data[0].config) {
-                    appState = normalizeCloudConfig(data[0].config);
+                const { data, error } = await client
+                    .from('site_settings')
+                    .select('config')
+                    .eq('id', 1)
+                    .maybeSingle();
+
+                if (error) throw error;
+                if (data && data.config) {
+                    appState = normalizeCloudConfig(data.config);
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
                     applyAllStateToDOM();
                     setCloudStatus('Данные получены из Supabase');
@@ -5615,6 +5680,17 @@
             initCategoryDragAndDrop();
             restoreAdminSession();
             fetchCloudStateIfConfigured();
+
+            const authClient = getSupabaseClient();
+            if (authClient) {
+                authClient.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_OUT') {
+                        setAdminMode(false);
+                    } else if (session && session.user && session.user.app_metadata && session.user.app_metadata.role === 'admin') {
+                        setAdminAccountEmail(session.user.email);
+                    }
+                });
+            }
 
             const params = new URLSearchParams(window.location.search);
             if (params.get('admin') === '1' && !isAdminMode) {
