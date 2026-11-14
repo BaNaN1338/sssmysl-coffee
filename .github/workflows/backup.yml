@@ -1,0 +1,58 @@
+name: Backup Supabase data
+
+on:
+  schedule:
+    - cron: "30 23 * * *"
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check secrets
+        id: check
+        env:
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$SERVICE_KEY" ] || [ -z "$PASSPHRASE" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Backup secrets are not set; skipping."
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Export data
+        if: steps.check.outputs.enabled == 'true'
+        env:
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          mkdir -p backup
+          curl -sS -f "https://jbsjtvpkgofiwiazqczz.supabase.co/rest/v1/site_settings?select=*" \
+            -H "apikey: $SERVICE_KEY" \
+            -H "Authorization: Bearer $SERVICE_KEY" \
+            -o backup/site_settings.json
+          curl -sS -f "https://jbsjtvpkgofiwiazqczz.supabase.co/rest/v1/orders?select=*&order=id.asc" \
+            -H "apikey: $SERVICE_KEY" \
+            -H "Authorization: Bearer $SERVICE_KEY" \
+            -o backup/orders.json
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > backup/created_at.txt
+          tar -czf backup.tar.gz backup
+
+      - name: Encrypt backup
+        if: steps.check.outputs.enabled == 'true'
+        env:
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          gpg --batch --yes --passphrase "$PASSPHRASE" \
+            --symmetric --cipher-algo AES256 \
+            -o backup.tar.gz.gpg backup.tar.gz
+
+      - name: Upload encrypted backup
+        if: steps.check.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: smysl-backup-${{ github.run_id }}
+          path: backup.tar.gz.gpg
+          retention-days: 30
