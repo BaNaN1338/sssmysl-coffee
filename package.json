@@ -1,0 +1,15 @@
+{
+  "name": "smysl-coffee",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Сайт кофейни «Смысл»: меню, предзаказ, админка и интеграция с YTimes",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "http-server . -p 8080 -c-1",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "http-server": "^14.1.1"
+  }
+}
