@@ -1361,6 +1361,9 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         let orderStatusTimeout = null;
         let activeOrderGuid = null;
         let lastOrderStatus = '';
+        let orderRealtimeChannel = null;
+        const LAST_ORDER_KEY = 'smysl_last_order_v1';
+        const LAST_ORDER_TTL_MS = 2 * 60 * 60 * 1000;
 
         function createOrderGuid() {
             if (window.crypto && typeof window.crypto.randomUUID === 'function') {
@@ -1373,6 +1376,37 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             });
         }
 
+        function stopOrderRealtime() {
+            if (orderRealtimeChannel) {
+                try {
+                    orderRealtimeChannel.unsubscribe();
+                } catch (error) {
+                    // Подписка уже могла быть закрыта.
+                }
+                orderRealtimeChannel = null;
+            }
+        }
+
+        function subscribeOrderStatusRealtime(guid) {
+            stopOrderRealtime();
+            const client = getSupabaseClient();
+            if (!client || !guid) return;
+            try {
+                // Канал содержит секретный GUID заказа: чужие его не знают.
+                const channel = client.channel(`order:${guid}`, {
+                    config: { broadcast: { self: false } }
+                });
+                channel.on('broadcast', { event: 'status' }, message => {
+                    const payload = message && message.payload ? message.payload : null;
+                    if (payload) updateOrderStatusUI(payload);
+                });
+                channel.subscribe();
+                orderRealtimeChannel = channel;
+            } catch (error) {
+                console.warn('Realtime subscribe failed:', error);
+            }
+        }
+
         function stopOrderStatusPolling() {
             if (orderStatusTimer) clearInterval(orderStatusTimer);
             if (orderStatusTimeout) clearTimeout(orderStatusTimeout);
@@ -1380,6 +1414,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             orderStatusTimeout = null;
             activeOrderGuid = null;
             lastOrderStatus = '';
+            stopOrderRealtime();
         }
 
         function setOrderStatusText(message, tone) {
@@ -1442,12 +1477,59 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             stopOrderStatusPolling();
             if (!guid) return;
             activeOrderGuid = guid;
-            setOrderStatusText('Ожидает принятия кассиром', 'pending');
+            setOrderStatusText('Проверяем статус…', 'pending');
+            // Мгновенные обновления через Supabase Realtime.
+            subscribeOrderStatusRealtime(guid);
+            // Резервный опрос на случай, если Realtime недоступен.
             pollOrderStatus(guid);
             orderStatusTimer = setInterval(() => {
                 if (activeOrderGuid) pollOrderStatus(activeOrderGuid);
-            }, 5000);
-            orderStatusTimeout = setTimeout(stopOrderStatusPolling, 5 * 60 * 1000);
+            }, 30000);
+            orderStatusTimeout = setTimeout(stopOrderStatusPolling, 30 * 60 * 1000);
+        }
+
+        function saveLastOrder(result, shop) {
+            try {
+                if (!result || !result.orderGuid) return;
+                localStorage.setItem(LAST_ORDER_KEY, JSON.stringify({
+                    guid: result.orderGuid,
+                    orderNumber: result.orderNumber || '',
+                    total: Number(result.total) || 0,
+                    location: shop ? (shop.shortName || shop.address) : '',
+                    orderType: selectedOrderType,
+                    createdAt: Date.now()
+                }));
+            } catch (error) {
+                // localStorage может быть недоступен — это не критично.
+            }
+        }
+
+        function clearLastOrder() {
+            try {
+                localStorage.removeItem(LAST_ORDER_KEY);
+            } catch (error) {}
+        }
+
+        function restoreLastOrder() {
+            let saved = null;
+            try {
+                saved = JSON.parse(localStorage.getItem(LAST_ORDER_KEY) || 'null');
+            } catch (error) {
+                saved = null;
+            }
+            if (!saved || !saved.guid) return;
+            if (!saved.createdAt || Date.now() - saved.createdAt > LAST_ORDER_TTL_MS) {
+                clearLastOrder();
+                return;
+            }
+            const modal = document.getElementById('orderSuccessModal');
+            if (modal && !modal.classList.contains('hidden')) return;
+            document.getElementById('orderSuccessNumber').textContent = saved.orderNumber || '—';
+            document.getElementById('orderSuccessTotal').textContent = `${Number(saved.total) || 0} ₽`;
+            document.getElementById('orderSuccessLocation').textContent = saved.location || '';
+            document.getElementById('orderSuccessType').textContent = saved.orderType === 'IN' ? 'Здесь, в зале' : 'С собой';
+            openModal('orderSuccessModal');
+            startOrderStatusPolling(saved.guid);
         }
 
         function showOrderSuccess(result, shop) {
@@ -1456,6 +1538,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             document.getElementById('orderSuccessTotal').textContent = `${Number(result && result.total) || 0} ₽`;
             document.getElementById('orderSuccessLocation').textContent = shop.shortName || shop.address;
             document.getElementById('orderSuccessType').textContent = selectedOrderType === 'IN' ? 'Здесь, в зале' : 'С собой';
+            saveLastOrder(result, shop);
             openModal('orderSuccessModal');
             startOrderStatusPolling(result && result.orderGuid);
         }
@@ -1794,13 +1877,140 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         }
 
         function switchAdminTab(tabName) {
-            ['drinks', 'locations', 'stories', 'cloud'].forEach(t => {
+            ['drinks', 'locations', 'stories', 'orders', 'cloud'].forEach(t => {
                 document.getElementById(`adminTab-${t}`).classList.toggle('hidden', t !== tabName);
                 const btn = document.getElementById(`tabBtn-${t}`);
                 btn.className = t === tabName
                     ? 'admin-tab-btn pb-2.5 px-3 border-b-2 border-smysl-green text-smysl-greenDeep whitespace-nowrap'
                     : 'admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap';
             });
+            if (tabName === 'orders') {
+                loadAdminOrders();
+                startAdminOrdersAutoRefresh();
+            } else {
+                stopAdminOrdersAutoRefresh();
+            }
+        }
+
+        // ================= ЗАКАЗЫ В АДМИНКЕ =================
+        let adminOrdersTimer = null;
+
+        function startAdminOrdersAutoRefresh() {
+            stopAdminOrdersAutoRefresh();
+            adminOrdersTimer = setInterval(() => {
+                const modal = document.getElementById('adminModal');
+                if (isAdminMode && modal && !modal.classList.contains('hidden')) {
+                    loadAdminOrders();
+                } else {
+                    stopAdminOrdersAutoRefresh();
+                }
+            }, 20000);
+        }
+
+        function stopAdminOrdersAutoRefresh() {
+            if (adminOrdersTimer) clearInterval(adminOrdersTimer);
+            adminOrdersTimer = null;
+        }
+
+        function getOrderNumberFromComment(comment, fallbackId) {
+            const match = String(comment || '').match(/Номер заказа:\s*([0-9]+)/i);
+            return match ? match[1] : String(fallbackId || 0).padStart(4, '0');
+        }
+
+        function getOrderStatusMeta(status) {
+            switch (status) {
+                case 'accepted': return { label: 'Принят', cls: 'bg-smysl-greenSoft text-smysl-greenDark' };
+                case 'cancelled': return { label: 'Отклонён', cls: 'bg-red-50 text-red-700' };
+                case 'failed': return { label: 'Ошибка', cls: 'bg-red-50 text-red-700' };
+                case 'sending': return { label: 'Отправляется', cls: 'bg-amber-50 text-amber-700' };
+                case 'updated': return { label: 'Обновлён', cls: 'bg-blue-50 text-blue-700' };
+                default: return { label: 'Ожидает кассира', cls: 'bg-amber-50 text-amber-700' };
+            }
+        }
+
+        function formatOrderTime(value) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '';
+            return date.toLocaleString('ru-RU', {
+                timeZone: 'Europe/Moscow',
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function renderAdminOrders(orders) {
+            const list = document.getElementById('adminOrdersList');
+            if (!list) return;
+            if (!orders.length) {
+                list.innerHTML = '<div class="p-4 rounded-2xl bg-white border border-smysl-green/20 text-xs text-smysl-greenDeep/60">Заказов пока нет.</div>';
+                return;
+            }
+            list.innerHTML = orders.map(order => {
+                const number = getOrderNumberFromComment(order.comment, order.id);
+                const meta = getOrderStatusMeta(order.status);
+                const parts = String(order.comment || '').split(' • ');
+                const readPart = prefix => {
+                    const row = parts.find(part => part.startsWith(prefix));
+                    return row ? row.slice(prefix.length).trim() : '';
+                };
+                const guestComment = readPart('Комментарий гостя:');
+                const composition = readPart('Состав:');
+                const pickup = readPart('Время:');
+                return `
+                    <div class="p-3.5 rounded-2xl bg-white border border-smysl-green/20 space-y-2">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div class="font-display font-extrabold text-lg text-smysl-greenDeep">№${escapeHtml(number)}</div>
+                                <div class="text-[10px] text-smysl-greenDeep/50">${escapeHtml(formatOrderTime(order.created_at))} МСК</div>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${meta.cls}">${meta.label}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+                            <div><span class="text-smysl-greenDeep/50">Гость:</span> <span class="font-bold text-smysl-greenDeep">${escapeHtml(order.customer_name || '—')}</span></div>
+                            <div><span class="text-smysl-greenDeep/50">Телефон:</span> <span class="font-bold text-smysl-greenDeep">${escapeHtml(order.customer_phone || '—')}</span></div>
+                            <div><span class="text-smysl-greenDeep/50">Сумма:</span> <span class="font-bold text-smysl-greenDeep">${Number(order.total) || 0} ₽</span></div>
+                            <div><span class="text-smysl-greenDeep/50">Готовность:</span> <span class="font-bold text-smysl-greenDeep">${escapeHtml(pickup || '—')}</span></div>
+                        </div>
+                        ${guestComment ? `<div class="text-[11px] text-smysl-greenDeep/75"><span class="text-smysl-greenDeep/50">Комментарий гостя:</span> ${escapeHtml(guestComment)}</div>` : ''}
+                        ${composition ? `<div class="text-[10px] text-smysl-greenDeep/60 leading-relaxed">${escapeHtml(composition)}</div>` : ''}
+                        ${order.status_message ? `<div class="text-[10px] font-bold text-red-600">${escapeHtml(order.status_message)}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadAdminOrders() {
+            const list = document.getElementById('adminOrdersList');
+            const statusEl = document.getElementById('adminOrdersStatus');
+            if (!list) return;
+            const client = getSupabaseClient();
+            if (!client) {
+                list.innerHTML = '<div class="p-4 rounded-2xl bg-white border border-smysl-green/20 text-xs text-red-600">Supabase не настроен.</div>';
+                return;
+            }
+            try {
+                const { data: sessionData } = await client.auth.getSession();
+                if (!sessionData.session) {
+                    list.innerHTML = '<div class="p-4 rounded-2xl bg-white border border-smysl-green/20 text-xs text-red-600">Войдите в аккаунт владельца, чтобы видеть заказы.</div>';
+                    return;
+                }
+                const { data, error } = await client
+                    .from('orders')
+                    .select('id,created_at,customer_name,customer_phone,status,ytimes_status,status_message,total,comment')
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+                if (error) throw error;
+                renderAdminOrders(Array.isArray(data) ? data : []);
+                if (statusEl) {
+                    statusEl.textContent = `Заказов: ${Array.isArray(data) ? data.length : 0}. Обновлено в ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
+                }
+            } catch (error) {
+                console.error('Admin orders failed', error);
+                if (statusEl) statusEl.textContent = 'Не удалось загрузить заказы';
+                list.innerHTML = `<div class="p-4 rounded-2xl bg-white border border-smysl-green/20 text-xs text-red-600">${escapeHtml(error && error.message ? error.message : 'Ошибка загрузки заказов')}</div>`;
+            }
         }
 
         function renderAdminCategoryOrder() {
@@ -2527,6 +2737,15 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             initCategoryDragAndDrop();
             restoreAdminSession();
             fetchCloudStateIfConfigured();
+
+            // Вернуть окно последнего заказа, если страницу перезагрузили.
+            setTimeout(() => {
+                try {
+                    restoreLastOrder();
+                } catch (error) {
+                    console.warn('Restore last order failed:', error);
+                }
+            }, 700);
 
             const authClient = getSupabaseClient();
             if (authClient) {

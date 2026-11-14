@@ -2980,6 +2980,9 @@
                 <button onclick="switchAdminTab('stories')" id="tabBtn-stories" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
                     📸 Сторис
                 </button>
+                <button onclick="switchAdminTab('orders')" id="tabBtn-orders" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
+                    🧾 Заказы
+                </button>
                 <button onclick="switchAdminTab('cloud')" id="tabBtn-cloud" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
                     ☁️ Supabase и доступ
                 </button>
@@ -3494,6 +3497,22 @@
                 </div>
 
                 <!-- ВКЛАДКА 4: ОБЛАКО SUPABASE И ДОСТУП -->
+                <div id="adminTab-orders" class="hidden space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <div class="font-bold text-smysl-greenDeep">Заказы с сайта</div>
+                            <div class="text-[10px] text-smysl-greenDeep/50">Обновляется автоматически каждые 20 секунд</div>
+                        </div>
+                        <button onclick="loadAdminOrders()" class="px-3 py-2 rounded-xl bg-white border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold hover:border-smysl-green transition flex items-center gap-1">
+                            <i class="ph-bold ph-arrows-clockwise"></i> Обновить
+                        </button>
+                    </div>
+                    <div id="adminOrdersStatus" class="text-[10px] text-smysl-greenDeep/50"></div>
+                    <div id="adminOrdersList" class="space-y-2.5">
+                        <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 text-xs text-smysl-greenDeep/60">Загрузка заказов…</div>
+                    </div>
+                </div>
+
                 <div id="adminTab-cloud" class="hidden space-y-4">
                     <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
                         <div class="font-bold text-smysl-greenDeep">Синхронизация с базой Supabase (`site_settings`)</div>
