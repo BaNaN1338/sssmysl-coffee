@@ -22,6 +22,9 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         // Полное меню кофейни «Смысл»
         const defaultAppState = {
             schemaVersion: 2,
+            ytimesMap: null,
+            menuSyncedAt: null,
+            menuSyncSource: null,
             happyHourActive: true,
             discountPercent: 20,
             workingHours: '08:00 – 22:00',
@@ -2301,9 +2304,34 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                     return false;
                 }
 
+                // Карту YTimes и время синхронизации обновляет только серверная
+                // функция. Подхватываем их из облака, чтобы сохранение настроек
+                // из админки не стирало интеграцию.
+                let configToSave = appState;
+                try {
+                    const { data: currentRow } = await client
+                        .from('site_settings')
+                        .select('config')
+                        .eq('id', 1)
+                        .maybeSingle();
+                    const currentConfig = currentRow && currentRow.config ? currentRow.config : null;
+                    if (currentConfig) {
+                        configToSave = Object.assign({}, appState, {
+                            ytimesMap: currentConfig.ytimesMap || appState.ytimesMap || null,
+                            menuSyncedAt: currentConfig.menuSyncedAt || appState.menuSyncedAt || null,
+                            menuSyncSource: currentConfig.menuSyncSource || appState.menuSyncSource || null
+                        });
+                        appState.ytimesMap = configToSave.ytimesMap;
+                        appState.menuSyncedAt = configToSave.menuSyncedAt;
+                        appState.menuSyncSource = configToSave.menuSyncSource;
+                    }
+                } catch (mergeError) {
+                    console.warn('Supabase merge failed:', mergeError);
+                }
+
                 const { error } = await client
                     .from('site_settings')
-                    .upsert({ id: 1, config: appState, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+                    .upsert({ id: 1, config: configToSave, updated_at: new Date().toISOString() }, { onConflict: 'id' });
 
                 if (error) throw error;
                 setCloudStatus('Синхронизировано с Supabase');
