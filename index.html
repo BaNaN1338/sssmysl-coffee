@@ -3662,60 +3662,59 @@
             ],
             drinks: [
                 // 1. СЕЗОННОЕ МЕНЮ
-                { id: 's1', category: 'seasonal', title: 'Шоколадный какао с финиками', desc: 'Густой бархатный какао с карамельной сладостью натуральных фиников', basePrice: 260, defaultVol: '350 мл', kbzhu: '245 ккал', art: 'cocoa', stopped: false },
-                { id: 's2', category: 'seasonal', title: 'Какао-пунш с вишневой пенкой', desc: 'Согревающий пряный какао под воздушной шапкой вишневой крем-пены', basePrice: 280, defaultVol: '350 мл', kbzhu: '260 ккал', art: 'cherry', stopped: false },
-                { id: 's3', category: 'seasonal', title: 'Латте Яблочный пирог', desc: 'Нежный эспрессо с молоком, нотами печеного яблока, корицы и крамбла', basePrice: 290, defaultVol: '350 мл', kbzhu: '215 ккал', art: 'latte', stopped: false },
-                { id: 's4', category: 'seasonal', title: 'Чай апельсиновый ройбуш с карамелью', desc: 'Ароматный южноафриканский ройбуш со свежим апельсином и мягкой карамелью', basePrice: 250, defaultVol: '350 мл', kbzhu: '95 ккал', art: 'tea', stopped: false },
-                { id: 's5', category: 'seasonal', title: 'Фильтр рябина-лимон', desc: 'Яркий черный фильтр-кофе с терпкой сладостью красной рябины и цитрусом', basePrice: 230, defaultVol: '300 мл', kbzhu: '65 ккал', art: 'filter', stopped: false },
-                { id: 's6', category: 'seasonal', title: 'Пряная тыквенная матча', desc: 'Японский зеленый чай матча со специями, тыквенным пюре и шелковистым молоком', basePrice: 280, defaultVol: '350 мл', kbzhu: '190 ккал', art: 'matcha', stopped: false },
-                { id: 's7', category: 'seasonal', title: 'Шоколадная крем-матча с мятой', desc: 'Слоистый напиток на основе церемониальной матчи, шоколада и освежающей мяты', basePrice: 290, defaultVol: '350 мл', kbzhu: '220 ккал', art: 'matcha', stopped: false },
-                { id: 's8', category: 'seasonal', title: 'Жасминовая крем-матча с медом', desc: 'Цветочный аромат жасмина, взбитые сливки, матча и цветочный мёд', basePrice: 290, defaultVol: '350 мл', kbzhu: '210 ккал', art: 'matcha', stopped: false },
+                { id: 's1', category: 'seasonal', title: 'Шоколадный какао с финиками', desc: 'Густой бархатный какао с карамельной сладостью натуральных фиников', basePrice: 420, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 420 }], kbzhu: '245 ккал', art: 'cocoa', stopped: false },
+                { id: 's2', category: 'seasonal', title: 'Какао-пунш с вишневой пенкой', desc: 'Согревающий пряный какао под воздушной шапкой вишневой крем-пены', basePrice: 420, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 420 }], kbzhu: '260 ккал', art: 'cherry', stopped: false },
+                { id: 's3', category: 'seasonal', title: 'Латте Яблочный пирог', desc: 'Нежный эспрессо с молоком, нотами печеного яблока, корицы и крамбла', basePrice: 420, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 420 }], kbzhu: '215 ккал', art: 'latte', stopped: false },
+                { id: 's4', category: 'seasonal', title: 'Чай апельсиновый ройбуш с карамелью', desc: 'Ароматный южноафриканский ройбуш со свежим апельсином и мягкой карамелью', basePrice: 420, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 420 }], kbzhu: '95 ккал', art: 'tea', stopped: false },
+                { id: 's5', category: 'seasonal', title: 'Фильтр рябина-лимон', desc: 'Яркий черный фильтр-кофе с терпкой сладостью красной рябины и цитрусом', basePrice: 420, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 420 }], kbzhu: '65 ккал', art: 'filter', stopped: false },
+                { id: 's6', category: 'seasonal', title: 'Пряная тыквенная матча', desc: 'Японский зеленый чай матча со специями, тыквенным пюре и шелковистым молоком', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '190 ккал', art: 'matcha', stopped: false },
+                { id: 's7', category: 'seasonal', title: 'Шоколадная крем-матча с мятой', desc: 'Слоистый напиток на основе церемониальной матчи, шоколада и освежающей мяты', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '220 ккал', art: 'matcha', stopped: false },
+                { id: 's8', category: 'seasonal', title: 'Жасминовая крем-матча с медом', desc: 'Цветочный аромат жасмина, взбитые сливки, матча и цветочный мёд', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '210 ккал', art: 'matcha', stopped: false },
 
                 // 2. АВТОРСКИЕ НАПИТКИ
-                { id: 'a1', category: 'signature', title: 'Латте халва', desc: 'Фирменный сливочный латте с настоящей тахинной халвой и ореховым послевкусием', basePrice: 270, defaultVol: '350 мл', kbzhu: '240 ккал', art: 'latte', stopped: false },
-                { id: 'a2', category: 'signature', title: 'Латте бузина-малина', desc: 'Ягодно-цветочный авторский латте с сиропом бузины и спелой малиной', basePrice: 270, defaultVol: '350 мл', kbzhu: '195 ккал', art: 'cherry', stopped: false },
-                { id: 'a3', category: 'signature', title: 'Латте синнабон', desc: 'Вкус свежеиспеченной булочки с корицей и сливочным крем-чизом в чашке', basePrice: 280, defaultVol: '350 мл', kbzhu: '250 ккал', art: 'latte', stopped: false },
-                { id: 'a4', category: 'signature', title: 'Раф соленая карамель', desc: 'Взбитый эспрессо со сливками и тягучей домашней карамелью с морской солью', basePrice: 290, defaultVol: '350 мл', kbzhu: '285 ккал', art: 'cappuccino', stopped: false },
-                { id: 'a5', category: 'signature', title: 'Раф лаванда', desc: 'Воздушный сливочный кофе с натуральными цветами горной крымской лаванды', basePrice: 290, defaultVol: '350 мл', kbzhu: '270 ккал', art: 'cappuccino', stopped: false },
+                { id: 'a1', category: 'signature', title: 'Латте халва', desc: 'Фирменный сливочный латте с настоящей тахинной халвой и ореховым послевкусием', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '240 ккал', art: 'latte', stopped: false },
+                { id: 'a2', category: 'signature', title: 'Латте бузина-малина', desc: 'Ягодно-цветочный авторский латте с сиропом бузины и спелой малиной', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '195 ккал', art: 'cherry', stopped: false },
+                { id: 'a3', category: 'signature', title: 'Латте синнабон', desc: 'Вкус свежеиспеченной булочки с корицей и сливочным крем-чизом в чашке', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '250 ккал', art: 'latte', stopped: false },
+                { id: 'a4', category: 'signature', title: 'Раф соленая карамель', desc: 'Взбитый эспрессо со сливками и тягучей домашней карамелью с морской солью', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '285 ккал', art: 'cappuccino', stopped: false },
+                { id: 'a5', category: 'signature', title: 'Раф лаванда', desc: 'Воздушный сливочный кофе с натуральными цветами горной крымской лаванды', basePrice: 400, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 400 }], kbzhu: '270 ккал', art: 'cappuccino', stopped: false },
 
                 // 3. КЛАССИЧЕСКИЙ И АЛЬТЕРНАТИВНЫЙ КОФЕ
-                { id: 'c1', category: 'coffee', title: 'Эспрессо', desc: 'Плотный двойной шот из 100% спешелти арабики свежей обжарки', basePrice: 150, defaultVol: '60 мл', kbzhu: '10 ккал', art: 'americano', stopped: false },
-                { id: 'c2', category: 'coffee', title: 'Американо', desc: 'Чистый черный кофе на базе двойного эспрессо с мягким балансом', basePrice: 180, defaultVol: '250 мл', kbzhu: '15 ккал', art: 'americano', stopped: false },
-                { id: 'c3', category: 'coffee', title: 'Капучино', desc: 'Классика с выраженным вкусом эспрессо и глянцевой молочной микропеной', basePrice: 220, defaultVol: '250 мл', kbzhu: '140 ккал', art: 'cappuccino', stopped: false },
-                { id: 'c4', category: 'coffee', title: 'Флэт уайт', desc: 'Насыщенный кофейный вкус двойного эспрессо с тонким слоем бархатного молока', basePrice: 240, defaultVol: '250 мл', kbzhu: '130 ккал', art: 'cappuccino', stopped: false },
-                { id: 'c5', category: 'coffee', title: 'Латте', desc: 'Мягкий и нежный молочно-кофейный напиток с легкой воздушной пенкой', basePrice: 240, defaultVol: '350 мл', kbzhu: '175 ккал', art: 'latte', stopped: false },
-                { id: 'c6', category: 'coffee', title: 'Раф', desc: 'Кофе, взбитый паром вместе с нежными сливками и ванильным сахаром', basePrice: 260, defaultVol: '350 мл', kbzhu: '260 ккал', art: 'latte', stopped: false },
-                { id: 'c7', category: 'coffee', title: 'Фильтр', desc: 'Свежезаваренный черный кофе с яркими ягодно-фруктовыми дескрипторами зерна', basePrice: 200, defaultVol: '250 мл', kbzhu: '12 ккал', art: 'filter', stopped: false },
-                { id: 'c8', category: 'coffee', title: 'Пуровер (V60)', desc: 'Ручное заваривание через воронку Hario V60 для максимальной чистоты вкуса', basePrice: 260, defaultVol: '300 мл', kbzhu: '12 ккал', art: 'filter', stopped: false },
-                { id: 'c9', category: 'coffee', title: 'Аэропресс', desc: 'Плотный и сочный альтернативный кофе, заваренный под давлением воздуха', basePrice: 250, defaultVol: '250 мл', kbzhu: '12 ккал', art: 'filter', stopped: false },
+                { id: 'c1', category: 'coffee', title: 'Эспрессо', desc: 'Плотный двойной шот из 100% спешелти арабики свежей обжарки', basePrice: 240, defaultVol: 'Порция', volumeOptions: [{ label: 'Порция', price: 240 }], kbzhu: '10 ккал', art: 'americano', stopped: false },
+                { id: 'c2', category: 'coffee', title: 'Американо', desc: 'Чистый черный кофе на базе двойного эспрессо с мягким балансом', basePrice: 240, defaultVol: '200 мл', volumeOptions: [{ label: '200 мл', price: 240 }, { label: '350 мл', price: 290 }], kbzhu: '15 ккал', art: 'americano', stopped: false },
+                { id: 'c3', category: 'coffee', title: 'Капучино', desc: 'Классика с выраженным вкусом эспрессо и глянцевой молочной микропеной', basePrice: 320, defaultVol: '200 мл', volumeOptions: [{ label: '200 мл', price: 320 }, { label: '350 мл', price: 350 }], kbzhu: '140 ккал', art: 'cappuccino', stopped: false },
+                { id: 'c4', category: 'coffee', title: 'Флэт уайт', desc: 'Насыщенный кофейный вкус двойного эспрессо с тонким слоем бархатного молока', basePrice: 330, defaultVol: '200 мл', volumeOptions: [{ label: '200 мл', price: 330 }], kbzhu: '130 ккал', art: 'cappuccino', stopped: false },
+                { id: 'c5', category: 'coffee', title: 'Латте', desc: 'Мягкий и нежный молочно-кофейный напиток с легкой воздушной пенкой', basePrice: 350, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 350 }], kbzhu: '175 ккал', art: 'latte', stopped: false },
+                { id: 'c6', category: 'coffee', title: 'Раф', desc: 'Кофе, взбитый паром вместе с нежными сливками и ванильным сахаром', basePrice: 380, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 380 }], kbzhu: '260 ккал', art: 'latte', stopped: false },
+                { id: 'c7', category: 'coffee', title: 'Фильтр', desc: 'Свежезаваренный черный кофе с яркими ягодно-фруктовыми дескрипторами зерна', basePrice: 270, defaultVol: '200 мл', volumeOptions: [{ label: '200 мл', price: 270 }, { label: '350 мл', price: 340 }], kbzhu: '12 ккал', art: 'filter', stopped: false },
+                { id: 'c8', category: 'coffee', title: 'Пуровер (V60)', desc: 'Ручное заваривание через воронку Hario V60 для максимальной чистоты вкуса', basePrice: 340, defaultVol: '250 мл', volumeOptions: [{ label: '250 мл', price: 340 }], kbzhu: '12 ккал', art: 'filter', stopped: false },
+                { id: 'c9', category: 'coffee', title: 'Аэропресс', desc: 'Плотный и сочный альтернативный кофе, заваренный под давлением воздуха', basePrice: 340, defaultVol: '250 мл', volumeOptions: [{ label: '250 мл', price: 340 }], kbzhu: '12 ккал', art: 'filter', stopped: false },
 
                 // 4. НЕ КОФЕ
-                { id: 'n1', category: 'noncoffee', title: 'Какао', desc: 'Натуральный согревающий какао на молоке с насыщенным шоколадным вкусом', basePrice: 220, defaultVol: '350 мл', kbzhu: '210 ккал', art: 'cocoa', stopped: false },
-                { id: 'n2', category: 'noncoffee', title: 'Матча латте', desc: 'Японский пудровый зеленый чай Удзи, взбитый с теплым молоком', basePrice: 250, defaultVol: '350 мл', kbzhu: '155 ккал', art: 'matcha', stopped: false },
-                { id: 'n3', category: 'noncoffee', title: 'Пряный чай латте', desc: 'Согревающий индийский масала-чай с кардамоном, корицей, имбирем и молоком', basePrice: 240, defaultVol: '350 мл', kbzhu: '165 ккал', art: 'latte', stopped: false },
+                { id: 'n1', category: 'noncoffee', title: 'Какао', desc: 'Натуральный согревающий какао на молоке с насыщенным шоколадным вкусом', basePrice: 300, defaultVol: '200 мл', volumeOptions: [{ label: '200 мл', price: 300 }, { label: '350 мл', price: 330 }], kbzhu: '210 ккал', art: 'cocoa', stopped: false },
+                { id: 'n2', category: 'noncoffee', title: 'Матча латте', desc: 'Японский пудровый зеленый чай Удзи, взбитый с теплым молоком', basePrice: 300, defaultVol: '200 мл', volumeOptions: [{ label: '200 мл', price: 300 }, { label: '350 мл', price: 350 }], kbzhu: '155 ккал', art: 'matcha', stopped: false },
+                { id: 'n3', category: 'noncoffee', title: 'Пряный чай латте', desc: 'Согревающий индийский масала-чай с кардамоном, корицей, имбирем и молоком', basePrice: 370, defaultVol: '350 мл', volumeOptions: [{ label: '350 мл', price: 370 }], kbzhu: '165 ккал', art: 'latte', stopped: false },
 
                 // 5. ЧАЙ
-                { id: 't1', category: 'tea', title: 'Облепиховый чай', desc: 'Витаминный согревающий чай из протертой алтайской облепихи, апельсина и мёда', basePrice: 240, defaultVol: '350 мл', kbzhu: '115 ккал', art: 'tea', stopped: false },
-                { id: 't2', category: 'tea', title: 'Листовой чай (на выбор)', desc: 'Отборный крупнолистовой чай: Жасмин, Улун, Ромашка, Бергамот или Ассам', basePrice: 200, defaultVol: '400 мл', kbzhu: '5 ккал', art: 'tea', isLeafTea: true, stopped: false }
+                { id: 't1', category: 'tea', title: 'Облепиховый чай', desc: 'Витаминный согревающий чай из протертой алтайской облепихи, апельсина и мёда', basePrice: 300, defaultVol: '200 мл', volumeOptions: [{ label: '200 мл', price: 300 }, { label: '350 мл', price: 350 }], kbzhu: '115 ккал', art: 'tea', stopped: false },
+                { id: 't2', category: 'tea', title: 'Листовой чай (на выбор)', desc: 'Отборный крупнолистовой чай: Жасмин, Улун, Ромашка, Бергамот или Ассам', basePrice: 250, defaultVol: '400 мл', volumeOptions: [{ label: '400 мл', price: 250 }], kbzhu: '5 ккал', art: 'tea', isLeafTea: true, stopped: false }
             ],
             volumes: [
-                { label: '250 мл', addPrice: 0 },
-                { label: '350 мл', addPrice: 40 },
-                { label: '450 мл', addPrice: 80 }
+                { label: '200 мл', addPrice: 0 },
+                { label: '350 мл', addPrice: 50 }
             ],
             milks: [
                 { label: 'Классическое', addPrice: 0 },
-                { label: 'Кокосовое', addPrice: 70 },
-                { label: 'Банановое', addPrice: 70 },
-                { label: 'Миндальное', addPrice: 70 },
-                { label: 'Овсяное', addPrice: 60 }
+                { label: 'Кокосовое', addPrice: 100 },
+                { label: 'Банановое', addPrice: 100 },
+                { label: 'Миндальное', addPrice: 100 },
+                { label: 'Овсяное', addPrice: 100 }
             ],
             syrups: [
                 { label: 'Без сиропа', addPrice: 0 },
-                { label: 'Солёная карамель', addPrice: 40 },
-                { label: 'Ваниль', addPrice: 40 },
-                { label: 'Лесной орех', addPrice: 40 },
-                { label: 'Лаванда', addPrice: 40 }
+                { label: 'Солёная карамель', addPrice: 70 },
+                { label: 'Ваниль', addPrice: 70 },
+                { label: 'Лесной орех', addPrice: 70 },
+                { label: 'Лаванда', addPrice: 70 }
             ],
             teaVarieties: ['Жасмин', 'Улун', 'Ромашка', 'Бергамот', 'Ассам']
         };
@@ -3826,6 +3825,7 @@
                 applySupabaseCredentials(merged, parsed.supabase);
                 merged.categoryOrder = normalizeCategoryOrder(merged.categoryOrder);
                 if (!Array.isArray(merged.stories)) merged.stories = cloneDefaultState().stories;
+                merged.drinks = merged.drinks.map(drink => normalizeDrinkVolumeOptions(drink, merged.volumes));
                 return merged;
             } catch (e) {
                 return cloneDefaultState();
@@ -3857,6 +3857,7 @@
             if (!Array.isArray(merged.milks) || merged.milks.length === 0) merged.milks = cloneDefaultState().milks;
             if (!Array.isArray(merged.syrups) || merged.syrups.length === 0) merged.syrups = cloneDefaultState().syrups;
             if (!Array.isArray(merged.teaVarieties) || merged.teaVarieties.length === 0) merged.teaVarieties = cloneDefaultState().teaVarieties;
+            merged.drinks = merged.drinks.map(drink => normalizeDrinkVolumeOptions(drink, merged.volumes));
             merged.categoryOrder = normalizeCategoryOrder(merged.categoryOrder);
             if (!merged.locations.some(location => location.id === merged.selectedLocationId)) {
                 merged.selectedLocationId = merged.locations[0].id;
@@ -3896,6 +3897,53 @@
                 <ellipse cx="60" cy="36" rx="23" ry="5.5" fill="${p.top}"/>
                 <ellipse cx="60" cy="36" rx="17" ry="3" fill="${p.accent}" opacity="0.5"/>
             </svg>`;
+        }
+
+        // ================= ОБЪЁМЫ И ЦЕНЫ ПОЗИЦИЙ =================
+        function normalizeDrinkVolumeOptions(drink, fallbackVolumes) {
+            if (!drink || typeof drink !== 'object') return drink;
+
+            const volumes = (Array.isArray(fallbackVolumes) && fallbackVolumes.length)
+                ? fallbackVolumes
+                : defaultAppState.volumes;
+
+            if (!Array.isArray(drink.volumeOptions) || drink.volumeOptions.length === 0) {
+                const defaultDrink = defaultAppState.drinks.find(item => item.id === drink.id);
+                if (defaultDrink && Array.isArray(defaultDrink.volumeOptions) && defaultDrink.volumeOptions.length > 0) {
+                    drink.volumeOptions = defaultDrink.volumeOptions.map(v => ({ label: v.label, price: v.price }));
+                }
+            }
+
+            if (!Array.isArray(drink.volumeOptions) || drink.volumeOptions.length === 0) {
+                const base = Number(drink.basePrice) || 0;
+                drink.volumeOptions = volumes.map(v => ({
+                    label: String(v.label || 'Порция'),
+                    price: base + (Number(v.addPrice) || 0)
+                }));
+            } else {
+                drink.volumeOptions = drink.volumeOptions
+                    .map(v => ({
+                        label: String(v.label || '').trim() || 'Порция',
+                        price: Math.max(0, Number(v.price) || 0)
+                    }))
+                    .filter(v => v.label);
+            }
+
+            if (!drink.volumeOptions.length) {
+                drink.volumeOptions = [{
+                    label: drink.defaultVol || 'Порция',
+                    price: Math.max(0, Number(drink.basePrice) || 0)
+                }];
+            }
+
+            drink.basePrice = Number(drink.volumeOptions[0].price) || 0;
+            drink.defaultVol = drink.volumeOptions[0].label;
+            return drink;
+        }
+
+        function getDrinkVolumeOptions(drink) {
+            normalizeDrinkVolumeOptions(drink, appState.volumes);
+            return drink.volumeOptions;
         }
 
         function calculatePrice(basePrice, addPrice = 0) {
@@ -4016,7 +4064,9 @@
                 if (items.length === 0 && !isAdminMode) return;
 
                 const cardsHtml = items.map(drink => {
-                    const priceObj = calculatePrice(drink.basePrice, 0);
+                    const volumeOptions = getDrinkVolumeOptions(drink);
+                    const firstVolume = volumeOptions[0] || { label: drink.defaultVol || 'Порция', price: drink.basePrice || 0 };
+                    const priceObj = calculatePrice(firstVolume.price, 0);
                     const isStopped = !!drink.stopped;
                     const cardArt = drink.image
                         ? `<img src="${escapeHtml(drink.image)}" alt="${escapeHtml(drink.title)}" class="w-full h-full object-cover" loading="lazy">`
@@ -4037,7 +4087,7 @@
 
                                 <!-- Бейдж объёма в левом верхнем углу -->
                                 <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs text-smysl-greenDeep font-bold text-[10px] shadow-xs">
-                                    ${drink.defaultVol || '350 мл'}
+                                    ${firstVolume.label}
                                 </span>
 
                                 <!-- Бейдж скидки -20% в правом верхнем углу -->
@@ -4632,8 +4682,10 @@
             discountTag.textContent = `-${appState.discountPercent}% Будни`;
             discountTag.style.display = appState.happyHourActive ? 'inline-block' : 'none';
 
-            // Объёмы
-            document.getElementById('sheetVolumesGrid').innerHTML = appState.volumes.map((v, idx) => `
+            // Объёмы и цены конкретного напитка (как в YTimes)
+            const volumeOptions = getDrinkVolumeOptions(drink);
+            if (volIndex >= volumeOptions.length) volIndex = 0;
+            document.getElementById('sheetVolumesGrid').innerHTML = volumeOptions.map((v, idx) => `
                 <button type="button" onclick="setCustomizerOption('volIndex', ${idx})"
                     class="p-2.5 rounded-2xl border text-left transition ${
                         idx === volIndex
@@ -4641,7 +4693,7 @@
                             : 'bg-white text-smysl-greenDeep border-smysl-green/20'
                     }">
                     <div class="font-display font-bold text-xs">${v.label}</div>
-                    <div class="text-[10px] opacity-80">${v.addPrice === 0 ? 'Базовый' : '+' + v.addPrice + ' ₽'}</div>
+                    <div class="text-[10px] opacity-80">${v.price} ₽</div>
                 </button>
             `).join('');
 
@@ -4695,10 +4747,10 @@
                 `).join('');
             }
 
-            const vol = appState.volumes[volIndex];
+            const vol = volumeOptions[volIndex] || volumeOptions[0];
             const milkAdd = drink.isLeafTea ? 0 : appState.milks[milkIndex].addPrice;
             const syrupAdd = drink.isLeafTea ? 0 : appState.syrups[syrupIndex].addPrice;
-            const priceObj = calculatePrice(drink.basePrice, vol.addPrice + milkAdd + syrupAdd);
+            const priceObj = calculatePrice(vol.price, milkAdd + syrupAdd);
 
             document.getElementById('sheetFinalPrice').textContent = `${priceObj.finalPrice} ₽`;
             const oldEl = document.getElementById('sheetOldPrice');
@@ -4718,11 +4770,12 @@
         function confirmAddToCart() {
             const { drinkId, volIndex, milkIndex, syrupIndex, teaVariety } = activeCustomizer;
             const drink = appState.drinks.find(d => d.id === drinkId);
-            const vol = appState.volumes[volIndex];
+            const volumeOptions = getDrinkVolumeOptions(drink);
+            const vol = volumeOptions[volIndex] || volumeOptions[0];
             const milk = appState.milks[milkIndex];
             const syrup = appState.syrups[syrupIndex];
 
-            const addPrice = vol.addPrice + (drink.isLeafTea ? 0 : milk.addPrice + syrup.addPrice);
+            const addPrice = drink.isLeafTea ? 0 : milk.addPrice + syrup.addPrice;
             const optionsSummary = drink.isLeafTea
                 ? `Сорт: ${teaVariety}`
                 : `Молоко: ${milk.label} • ${syrup.label}`;
@@ -4735,7 +4788,7 @@
                 milkLabel: drink.isLeafTea ? teaVariety : milk.label,
                 syrupLabel: drink.isLeafTea ? 'Листовой' : syrup.label,
                 optionsSummary,
-                basePrice: drink.basePrice,
+                basePrice: vol.price,
                 addPrice,
                 qty: 1
             });
@@ -5454,41 +5507,67 @@
             categoryDragState = null;
         }
 
+        function updateDrinkVolumePrice(drinkIdx, volIdx, value) {
+            const drink = appState.drinks[drinkIdx];
+            if (!drink) return;
+            const volumeOptions = getDrinkVolumeOptions(drink);
+            const option = volumeOptions[volIdx];
+            if (!option) return;
+            option.price = Math.max(0, parseInt(value, 10) || 0);
+            if (volIdx === 0) {
+                drink.basePrice = option.price;
+                drink.defaultVol = option.label;
+            }
+        }
+
         function renderAdminModalInputs() {
             const drinksContainer = document.getElementById('adminDrinksList');
             renderAdminCategoryOrder();
-            drinksContainer.innerHTML = appState.drinks.map((d, idx) => `
-                <div class="p-3 rounded-2xl bg-white border border-smysl-green/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-                        <div class="w-14 h-14 rounded-xl overflow-hidden bg-smysl-greenSoft/40 border border-smysl-green/10 shrink-0">
-                            ${d.image
-                                ? `<img src="${escapeHtml(d.image)}" alt="${escapeHtml(d.title)}" class="w-full h-full object-cover">`
-                                : `<div class="w-full h-full flex items-center justify-center text-smysl-greenDark/50"><i class="ph-duotone ph-image text-xl"></i></div>`}
+            drinksContainer.innerHTML = appState.drinks.map((d, idx) => {
+                const volumeOptions = getDrinkVolumeOptions(d);
+                return `
+                <div class="p-3 rounded-2xl bg-white border border-smysl-green/20 flex flex-col gap-2.5">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                        <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                            <div class="w-14 h-14 rounded-xl overflow-hidden bg-smysl-greenSoft/40 border border-smysl-green/10 shrink-0">
+                                ${d.image
+                                    ? `<img src="${escapeHtml(d.image)}" alt="${escapeHtml(d.title)}" class="w-full h-full object-cover">`
+                                    : `<div class="w-full h-full flex items-center justify-center text-smysl-greenDark/50"><i class="ph-duotone ph-image text-xl"></i></div>`}
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream text-[10px] font-bold text-center transition">
+                                    ${d.image ? 'Заменить фото' : 'Добавить фото'}
+                                    <input type="file" accept="image/*" onchange="handleDrinkImageUpload(event, ${idx})" class="hidden">
+                                </label>
+                                ${d.image ? `<button onclick="removeDrinkImage(${idx})" class="px-2.5 py-1 rounded-lg bg-smysl-cream text-smysl-greenDeep border border-smysl-green/20 text-[10px] font-bold">Убрать фото</button>` : ''}
+                            </div>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream text-[10px] font-bold text-center transition">
-                                ${d.image ? 'Заменить фото' : 'Добавить фото'}
-                                <input type="file" accept="image/*" onchange="handleDrinkImageUpload(event, ${idx})" class="hidden">
+                        <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-4 gap-2">
+                            <input type="text" value="${escapeHtml(d.title)}" oninput="appState.drinks[${idx}].title = this.value" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs font-bold">
+                            <select onchange="appState.drinks[${idx}].category = this.value" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                                ${MENU_CATEGORIES.map(c => `<option value="${c.id}" ${d.category === c.id ? 'selected' : ''}>${c.icon} ${c.title}</option>`).join('')}
+                            </select>
+                            <input type="number" value="${volumeOptions[0].price}" oninput="updateDrinkVolumePrice(${idx}, 0, this.value)" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs font-extrabold" placeholder="Цена ₽" title="Цена базового объёма">
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="appState.drinks[${idx}].stopped = !appState.drinks[${idx}].stopped; renderAdminModalInputs(); renderMenuSections();"
+                                class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold ${d.stopped ? 'bg-red-100 text-red-700' : 'bg-smysl-greenSoft text-smysl-greenDark'}">
+                                ${d.stopped ? 'В стопе' : 'Активен'}
+                            </button>
+                            <button onclick="removeDrinkAdmin(${idx})" class="px-2 py-1.5 rounded-xl bg-gray-100 hover:bg-red-50 text-red-600 text-xs font-bold">✕</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                        ${volumeOptions.map((v, vi) => `
+                            <label class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-smysl-creamLight border border-smysl-green/20">
+                                <span class="text-[10px] font-bold text-smysl-greenDeep/70 whitespace-nowrap">${v.label}</span>
+                                <input type="number" value="${v.price}" oninput="updateDrinkVolumePrice(${idx}, ${vi}, this.value)" class="w-full min-w-0 bg-transparent text-xs font-extrabold outline-none" placeholder="₽">
                             </label>
-                            ${d.image ? `<button onclick="removeDrinkImage(${idx})" class="px-2.5 py-1 rounded-lg bg-smysl-cream text-smysl-greenDeep border border-smysl-green/20 text-[10px] font-bold">Убрать фото</button>` : ''}
-                        </div>
-                    </div>
-                    <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-4 gap-2">
-                        <input type="text" value="${d.title}" oninput="appState.drinks[${idx}].title = this.value" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs font-bold">
-                        <select onchange="appState.drinks[${idx}].category = this.value" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
-                            ${MENU_CATEGORIES.map(c => `<option value="${c.id}" ${d.category === c.id ? 'selected' : ''}>${c.icon} ${c.title}</option>`).join('')}
-                        </select>
-                        <input type="number" value="${d.basePrice}" oninput="appState.drinks[${idx}].basePrice = parseInt(this.value)||0" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs font-extrabold" placeholder="Цена ₽">
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="appState.drinks[${idx}].stopped = !appState.drinks[${idx}].stopped; renderAdminModalInputs(); renderMenuSections();"
-                            class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold ${d.stopped ? 'bg-red-100 text-red-700' : 'bg-smysl-greenSoft text-smysl-greenDark'}">
-                            ${d.stopped ? 'В стопе' : 'Активен'}
-                        </button>
-                        <button onclick="removeDrinkAdmin(${idx})" class="px-2 py-1.5 rounded-xl bg-gray-100 hover:bg-red-50 text-red-600 text-xs font-bold">✕</button>
+                        `).join('')}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
             document.getElementById('adminWorkingHoursInput').value = appState.workingHours;
             document.getElementById('adminDiscountPercentInput').value = appState.discountPercent;
@@ -5507,13 +5586,22 @@
         }
 
         function addNewDrinkAdmin(defaultCat = 'seasonal') {
+            const basePrice = 250;
+            const fallbackVolumes = (Array.isArray(appState.volumes) && appState.volumes.length)
+                ? appState.volumes
+                : defaultAppState.volumes;
+            const volumeOptions = fallbackVolumes.map(v => ({
+                label: v.label,
+                price: basePrice + (Number(v.addPrice) || 0)
+            }));
             appState.drinks.unshift({
                 id: 'd_' + Date.now(),
                 category: defaultCat,
                 title: 'Новый напиток «Смысл»',
                 desc: 'Описание вкуса и ингредиентов напитка',
-                basePrice: 250,
-                defaultVol: '350 мл',
+                basePrice,
+                defaultVol: volumeOptions[0].label,
+                volumeOptions,
                 kbzhu: '180 ккал',
                 art: 'latte',
                 image: '',
