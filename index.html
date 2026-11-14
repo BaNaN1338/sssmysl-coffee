@@ -2821,6 +2821,41 @@
     </div>
 
     <!-- ========================================================================= -->
+    <!-- BOTTOM-SHEET: ЗАКАЗ УСПЕШНО ОТПРАВЛЕН НА КАССУ                            -->
+    <!-- ========================================================================= -->
+    <div id="orderSuccessModal" onclick="handleBackdropClick(event, 'orderSuccessModal')" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-smysl-creamLight w-full max-w-[430px] rounded-t-[30px] sm:rounded-[30px] shadow-2xl overflow-hidden animate-sheet-up">
+            <div class="p-5 bg-smysl-greenDeep text-smysl-cream text-center">
+                <div class="w-12 h-12 mx-auto rounded-full bg-white/15 flex items-center justify-center mb-2">
+                    <i class="ph-fill ph-check-circle text-2xl"></i>
+                </div>
+                <h3 class="font-display font-bold text-lg">Заказ отправлен на кассу</h3>
+                <p id="orderSuccessType" class="text-xs text-smysl-cream/75 mt-1">С собой</p>
+            </div>
+            <div class="p-5 text-center space-y-4">
+                <div>
+                    <div class="text-[10px] font-extrabold uppercase tracking-wider text-smysl-greenDeep/50">Номер вашего заказа</div>
+                    <div id="orderSuccessNumber" class="font-display font-extrabold text-5xl text-smysl-greenDeep tracking-wider my-1">0000</div>
+                    <div class="text-[11px] text-smysl-greenDeep/65">Назовите этот номер на кассе, чтобы оплатить и получить заказ.</div>
+                </div>
+                <div class="p-3 rounded-2xl bg-white border border-smysl-green/15 text-left space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-smysl-greenDeep/60">К оплате на кассе</span>
+                        <span id="orderSuccessTotal" class="font-extrabold text-smysl-greenDeep">0 ₽</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-smysl-greenDeep/60">Кофейня</span>
+                        <span id="orderSuccessLocation" class="font-bold text-smysl-greenDeep">Рожда</span>
+                    </div>
+                </div>
+                <button onclick="closeModal('orderSuccessModal')" class="w-full py-3 rounded-2xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream font-display font-bold text-xs sm:text-sm transition">
+                    Понятно
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
     <!-- BOTTOM-SHEET 4: ВЫБОР КОФЕЙНИ («РОЖДА» / «ГОРЬКОГО»)                      -->
     <!-- ========================================================================= -->
     <div id="locationModal" onclick="handleBackdropClick(event, 'locationModal')" class="fixed inset-0 z-50 hidden bg-black/55 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -4980,6 +5015,15 @@
             });
         }
 
+        function showOrderSuccess(result, shop) {
+            const number = String((result && result.orderNumber) || '').trim() || '—';
+            document.getElementById('orderSuccessNumber').textContent = number;
+            document.getElementById('orderSuccessTotal').textContent = `${Number(result && result.total) || 0} ₽`;
+            document.getElementById('orderSuccessLocation').textContent = shop.shortName || shop.address;
+            document.getElementById('orderSuccessType').textContent = selectedOrderType === 'IN' ? 'Здесь, в зале' : 'С собой';
+            openModal('orderSuccessModal');
+        }
+
         async function submitQuickOrder() {
             if (orderSubmitting) return;
             if (cart.length === 0) {
@@ -5071,7 +5115,7 @@
                 saveStateToStorageAndCloud(true);
                 updateCartUI();
                 closeModal('cartModal');
-                showToast(result.message || `Заказ отправлен на кассу (${shop.shortName}). Оплатите на кассе.`);
+                showOrderSuccess(result, shop);
             } catch (error) {
                 console.warn('Order sending failed:', error);
                 showToast(error && error.message ? error.message : 'Не удалось отправить заказ. Попробуйте ещё раз или обратитесь к баристе.');
