@@ -88,6 +88,7 @@ Deno.serve(async (request) => {
       : rawStatus === "CANCELLED"
         ? "cancelled"
         : "updated";
+    const statusMessage = String(body.statusMessage || "").slice(0, 500);
     try {
       await supabaseFetch(`orders?ytimes_order_guid=eq.${encodeURIComponent(guid)}`, {
         method: "PATCH",
@@ -95,9 +96,37 @@ Deno.serve(async (request) => {
         body: JSON.stringify({
           status,
           ytimes_status: rawStatus,
-          status_message: String(body.statusMessage || "").slice(0, 500),
+          status_message: statusMessage,
         }),
       });
+
+      // Мгновенно отправляем статус открытой странице гостя через Realtime.
+      // Канал содержит GUID заказа, поэтому посторонние его не видят.
+      try {
+        const base = env("SUPABASE_URL");
+        const key = env("SUPABASE_SERVICE_ROLE_KEY");
+        if (base && key) {
+          await fetch(`${base}/realtime/v1/api/broadcast`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: key,
+              Authorization: `Bearer ${key}`,
+            },
+            body: JSON.stringify({
+              messages: [{
+                topic: `order:${guid}`,
+                event: "status",
+                payload: { status, ytimesStatus: rawStatus, message: statusMessage },
+              }],
+            }),
+          });
+        }
+      } catch (broadcastError) {
+        // Если Realtime недоступен, гость всё равно получит статус опросом.
+        console.error("Realtime broadcast failed", broadcastError);
+      }
+
       return text("OK");
     } catch (error) {
       console.error("Order webhook failed", error);
