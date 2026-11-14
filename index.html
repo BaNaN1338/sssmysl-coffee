@@ -2763,6 +2763,20 @@
 
                     <div>
                         <label class="block text-[11px] font-extrabold uppercase tracking-wider text-smysl-greenDeep/60 mb-1.5">
+                            Как будете пить?
+                        </label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" id="orderTypeInBtn" onclick="selectOrderType('IN')" class="py-2 px-3 rounded-xl text-xs font-bold border transition bg-white text-smysl-greenDeep border-smysl-green/20">
+                                ☕ Здесь
+                            </button>
+                            <button type="button" id="orderTypeTogoBtn" onclick="selectOrderType('TOGO')" class="py-2 px-3 rounded-xl text-xs font-bold border transition bg-smysl-green text-smysl-cream border-smysl-green">
+                                🥤 С собой
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-extrabold uppercase tracking-wider text-smysl-greenDeep/60 mb-1.5">
                             К какому времени приготовить?
                         </label>
                         <div class="grid grid-cols-3 gap-2">
@@ -2776,6 +2790,13 @@
                         <input id="guestNameInput" type="text" placeholder="Ваше имя" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-xs sm:text-sm focus:outline-none focus:border-smysl-green">
                         <input id="guestPhoneInput" type="tel" placeholder="Телефон" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-xs sm:text-sm focus:outline-none focus:border-smysl-green">
                     </div>
+
+                    <div>
+                        <label for="orderCommentInput" class="block text-[11px] font-extrabold uppercase tracking-wider text-smysl-greenDeep/60 mb-1.5">
+                            Комментарий к заказу
+                        </label>
+                        <textarea id="orderCommentInput" maxlength="300" rows="2" placeholder="Например: без сахара, погорячее, добавить ложку..." class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-smysl-green/25 text-xs sm:text-sm focus:outline-none focus:border-smysl-green resize-none"></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -2783,6 +2804,7 @@
                 <div class="flex items-center justify-between text-xs sm:text-sm">
                     <div>
                         <span class="text-smysl-greenDeep/70 font-medium block">Итого к оплате:</span>
+                        <span class="block text-[10px] text-smysl-greenDeep/50 mt-0.5">Оплата при получении на кассе</span>
                     </div>
                     <div class="flex items-baseline gap-2">
                         <span id="cartTotalAmount" class="font-display font-extrabold text-xl text-smysl-greenDeep">0 ₽</span>
@@ -3724,6 +3746,7 @@
         let activeCategoryFilter = 'all';
         let currentSearchQuery = '';
         let cart = [];
+        let selectedOrderType = 'TOGO';
         let activeCustomizer = {
             drinkId: 'c3',
             volIndex: 0,
@@ -4875,6 +4898,16 @@
             btnEl.className = 'pickup-time-btn py-2 px-2.5 rounded-xl text-xs font-bold bg-smysl-green text-smysl-cream';
         }
 
+        function selectOrderType(type) {
+            selectedOrderType = type === 'IN' ? 'IN' : 'TOGO';
+            const inBtn = document.getElementById('orderTypeInBtn');
+            const togoBtn = document.getElementById('orderTypeTogoBtn');
+            const activeClass = 'py-2 px-3 rounded-xl text-xs font-bold border transition bg-smysl-green text-smysl-cream border-smysl-green';
+            const inactiveClass = 'py-2 px-3 rounded-xl text-xs font-bold border transition bg-white text-smysl-greenDeep border-smysl-green/20';
+            if (inBtn) inBtn.className = selectedOrderType === 'IN' ? activeClass : inactiveClass;
+            if (togoBtn) togoBtn.className = selectedOrderType === 'TOGO' ? activeClass : inactiveClass;
+        }
+
         // ================= ЛОКАЦИИ («РОЖДА» И «ГОРЬКОГО») =================
         function renderLocations() {
             const currentShop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
@@ -4956,6 +4989,7 @@
 
             const name = document.getElementById('guestNameInput').value.trim() || 'Гость';
             const phone = document.getElementById('guestPhoneInput').value.trim() || '';
+            const orderComment = document.getElementById('orderCommentInput')?.value.trim() || '';
             const shop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
 
             let totalFinal = 0;
@@ -4985,6 +5019,8 @@
                 locationId: shop.id,
                 guestName: name,
                 guestPhone: phone,
+                orderType: selectedOrderType,
+                comment: orderComment,
                 pickupTime: appState.pickupTime,
                 total: totalFinal,
                 items: orderItems
@@ -5010,6 +5046,8 @@
                         guestName: name,
                         guestPhone: phone,
                         locationId: shop.id,
+                        orderType: selectedOrderType,
+                        comment: orderComment,
                         pickupTime: appState.pickupTime,
                         total: totalFinal,
                         items: orderItems
@@ -5028,6 +5066,8 @@
                 pendingOrderGuid = null;
                 pendingOrderSignature = '';
                 cart = [];
+                const commentInput = document.getElementById('orderCommentInput');
+                if (commentInput) commentInput.value = '';
                 saveStateToStorageAndCloud(true);
                 updateCartUI();
                 closeModal('cartModal');
