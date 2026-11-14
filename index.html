@@ -4729,6 +4729,7 @@
 
             cart.push({
                 uid: Date.now() + Math.random(),
+                drinkId: drink.id,
                 title: drink.title,
                 volumeLabel: vol.label,
                 milkLabel: drink.isLeafTea ? teaVariety : milk.label,
@@ -4877,16 +4878,32 @@
             if (loc) showToast(`Выбрана точка: ${loc.shortName || loc.address}`);
         }
 
-        // ================= ОТПРАВКА ЗАКАЗА НА VERCEL (/api) =================
+        // ================= ОТПРАВКА ЗАКАЗА В SUPABASE EDGE FUNCTION =================
+        let orderSubmitting = false;
+        let pendingOrderGuid = null;
+        let pendingOrderSignature = '';
+
+        function createOrderGuid() {
+            if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+                return window.crypto.randomUUID();
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
         async function submitQuickOrder() {
+            if (orderSubmitting) return;
             if (cart.length === 0) {
                 showToast('Добавьте хотя бы один напиток в заказ');
                 return;
             }
+
             const name = document.getElementById('guestNameInput').value.trim() || 'Гость';
-            const phone = document.getElementById('guestPhoneInput').value.trim() || 'Не указан';
+            const phone = document.getElementById('guestPhoneInput').value.trim() || '';
             const shop = appState.locations.find(l => l.id === appState.selectedLocationId) || appState.locations[0];
-            const orderNum = Math.floor(100 + Math.random() * 900);
 
             let totalFinal = 0;
             cart.forEach(item => {
@@ -4894,28 +4911,85 @@
                 totalFinal += p.finalPrice * item.qty;
             });
 
+            const submitBtn = document.querySelector('#cartModal button[onclick="submitQuickOrder()"]');
+            const submitLabel = submitBtn ? submitBtn.querySelector('span') : null;
+            const originalLabel = submitLabel ? submitLabel.textContent : '';
+
+            orderSubmitting = true;
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-60', 'cursor-wait');
+            }
+            const orderItems = cart.map(item => ({
+                drinkId: item.drinkId,
+                title: item.title,
+                volumeLabel: item.volumeLabel,
+                milkLabel: item.milkLabel,
+                syrupLabel: item.syrupLabel,
+                qty: item.qty
+            }));
+            const orderSignature = JSON.stringify({
+                locationId: shop.id,
+                guestName: name,
+                guestPhone: phone,
+                pickupTime: appState.pickupTime,
+                total: totalFinal,
+                items: orderItems
+            });
+            if (!pendingOrderGuid || pendingOrderSignature !== orderSignature) {
+                pendingOrderGuid = createOrderGuid();
+                pendingOrderSignature = orderSignature;
+            }
+
+            if (submitLabel) submitLabel.textContent = 'Отправляем на кассу…';
+
+            const endpoint = `${getSupabaseBaseUrl(appState.supabase.url)}/functions/v1/create-order`;
             try {
-                await fetch('/api', {
+                const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': appState.supabase.anonKey,
+                        'Authorization': `Bearer ${appState.supabase.anonKey}`
+                    },
                     body: JSON.stringify({
-                        action: 'create_order',
-                        orderNum,
+                        orderGuid: pendingOrderGuid,
                         guestName: name,
                         guestPhone: phone,
-                        location: shop.address,
+                        locationId: shop.id,
                         pickupTime: appState.pickupTime,
                         total: totalFinal,
-                        items: cart
+                        items: orderItems
                     })
                 });
-            } catch (e) {}
 
-            cart = [];
-            saveStateToStorageAndCloud(true);
-            updateCartUI();
-            closeModal('cartModal');
-            showToast(`Заказ №${orderNum} отправлен (${shop.shortName})!`);
+                let result = null;
+                try {
+                    result = await response.json();
+                } catch (e) {}
+
+                if (!response.ok || !result || result.success === false) {
+                    throw new Error((result && result.message) || `Не удалось отправить заказ (${response.status}).`);
+                }
+
+                pendingOrderGuid = null;
+                pendingOrderSignature = '';
+                cart = [];
+                saveStateToStorageAndCloud(true);
+                updateCartUI();
+                closeModal('cartModal');
+                showToast(result.message || `Заказ отправлен на кассу (${shop.shortName}). Оплатите на кассе.`);
+            } catch (error) {
+                console.warn('Order sending failed:', error);
+                showToast(error && error.message ? error.message : 'Не удалось отправить заказ. Попробуйте ещё раз или обратитесь к баристе.');
+            } finally {
+                orderSubmitting = false;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-60', 'cursor-wait');
+                }
+                if (submitLabel) submitLabel.textContent = originalLabel || 'Отправить на кассу';
+            }
         }
 
         // ================= СЧАСТЛИВЫЕ ЧАСЫ (-20%) =================
