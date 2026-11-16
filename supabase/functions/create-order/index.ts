@@ -80,6 +80,11 @@ function pickMenuType(
   fallback: MenuTypePair | string,
   orderType: string,
 ): string {
+  // Точное совпадение названия объёма важно для вариантов
+  // «350 мл горячий» и «350 мл холодный» у одного напитка.
+  if (types[volumeLabel]) {
+    return resolveMenuType(types[volumeLabel], orderType);
+  }
   const requested = Number(String(volumeLabel).replace(/[^\d]/g, ""));
   let chosen: MenuTypePair | string | undefined = fallback;
   if (Number.isFinite(requested)) {
