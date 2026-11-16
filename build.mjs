@@ -1,6 +1,14 @@
 import { existsSync, readFileSync } from "node:fs";
 
-const required = ["index.html", "site.css", "app.js", "privacy.html", "terms.html"];
+const required = [
+  "index.html",
+  "site.css",
+  "app.js",
+  "sw.js",
+  "manifest.json",
+  "privacy.html",
+  "terms.html",
+];
 for (const file of required) {
   if (!existsSync(file)) {
     throw new Error(`Не найден обязательный файл: ${file}`);

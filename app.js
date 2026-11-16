@@ -23,6 +23,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         const defaultAppState = {
             schemaVersion: 2,
             ytimesMap: null,
+            ytimesIgnored: [],
             menuSyncedAt: null,
             menuSyncSource: null,
             happyHourActive: true,
@@ -1364,6 +1365,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         let orderRealtimeChannel = null;
         const LAST_ORDER_KEY = 'smysl_last_order_v1';
         const LAST_ORDER_TTL_MS = 2 * 60 * 60 * 1000;
+        // Публичный VAPID-ключ web-push. Заполняется после генерации ключей.
+        const WEB_PUSH_PUBLIC_KEY = 'BEF60gaQfwclJ_cSeLozfaPmbyVm2fuUGC_miuAzbH0QmHo-jy4KQo5EpeP92qYJYF51dyvCoxk9gAQAX65i2dk';
 
         function createOrderGuid() {
             if (window.crypto && typeof window.crypto.randomUUID === 'function') {
@@ -1454,6 +1457,134 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             }
         }
 
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const raw = atob(base64);
+            return Uint8Array.from([...raw].map(char => char.charCodeAt(0)));
+        }
+
+        function isWebPushSupported() {
+            return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+        }
+
+        function getSavedOrderGuid() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(LAST_ORDER_KEY) || 'null');
+                return saved && saved.guid ? saved.guid : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        async function updateOrderPushButton() {
+            const button = document.getElementById('orderPushBtn');
+            const label = document.getElementById('orderPushBtnText');
+            const hint = document.getElementById('orderPushHint');
+            if (!button || !label) return;
+
+            if (!isWebPushSupported() || !WEB_PUSH_PUBLIC_KEY) {
+                button.classList.add('hidden');
+                if (hint) hint.classList.add('hidden');
+                return;
+            }
+
+            button.classList.remove('hidden');
+            button.disabled = false;
+            button.classList.remove('opacity-60');
+            if (hint) hint.classList.add('hidden');
+
+            if (Notification.permission === 'denied') {
+                button.disabled = true;
+                button.classList.add('opacity-60');
+                label.textContent = 'Уведомления запрещены в браузере';
+                return;
+            }
+
+            if (Notification.permission === 'granted') {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    const subscription = registration ? await registration.pushManager.getSubscription() : null;
+                    if (subscription) {
+                        button.disabled = true;
+                        button.classList.add('opacity-60');
+                        label.textContent = 'Уведомления включены';
+                        return;
+                    }
+                } catch (error) {
+                    // Покажем кнопку включения.
+                }
+            }
+
+            label.textContent = 'Уведомить, когда заказ примут';
+        }
+
+        async function ensureOrderPushSubscription(guid, interactive) {
+            if (!guid || !isWebPushSupported() || !WEB_PUSH_PUBLIC_KEY) {
+                return { ok: false, reason: 'unsupported' };
+            }
+            try {
+                if (Notification.permission !== 'granted') {
+                    if (!interactive) return { ok: false, reason: 'permission' };
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') return { ok: false, reason: 'denied' };
+                }
+
+                const registration = await navigator.serviceWorker.register('sw.js');
+                await navigator.serviceWorker.ready;
+
+                let subscription = await registration.pushManager.getSubscription();
+                if (!subscription) {
+                    subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(WEB_PUSH_PUBLIC_KEY)
+                    });
+                }
+
+                const response = await fetch(`${getSupabaseBaseUrl(appState.supabase.url)}/functions/v1/push-subscribe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': appState.supabase.anonKey,
+                        'Authorization': `Bearer ${appState.supabase.anonKey}`
+                    },
+                    body: JSON.stringify({ orderGuid: guid, subscription: subscription.toJSON() })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'Не удалось включить уведомления');
+                }
+                return { ok: true };
+            } catch (error) {
+                console.warn('Push subscribe failed:', error);
+                return { ok: false, reason: 'error', error };
+            }
+        }
+
+        async function enableOrderPush() {
+            const guid = activeOrderGuid || getSavedOrderGuid();
+            if (!guid) {
+                showToast('Сначала оформите заказ');
+                return;
+            }
+            const button = document.getElementById('orderPushBtn');
+            const label = document.getElementById('orderPushBtnText');
+            if (button) button.disabled = true;
+            if (label) label.textContent = 'Подключаем…';
+
+            const result = await ensureOrderPushSubscription(guid, true);
+            if (result.ok) {
+                showToast('Уведомления включены');
+            } else if (result.reason === 'denied') {
+                showToast('Разрешение на уведомления не выдано');
+            } else if (result.reason === 'unsupported') {
+                showToast('Браузер не поддерживает уведомления');
+            } else {
+                showToast('Не удалось включить уведомления');
+            }
+            updateOrderPushButton();
+        }
+
         async function pollOrderStatus(guid) {
             if (!guid) return;
             try {
@@ -1480,6 +1611,9 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             setOrderStatusText('Проверяем статус…', 'pending');
             // Мгновенные обновления через Supabase Realtime.
             subscribeOrderStatusRealtime(guid);
+            // Кнопка push и автопривязка подписки к новому заказу.
+            updateOrderPushButton();
+            ensureOrderPushSubscription(guid, false);
             // Резервный опрос на случай, если Realtime недоступен.
             pollOrderStatus(guid);
             orderStatusTimer = setInterval(() => {
@@ -2309,7 +2443,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 await fetchCloudStateIfConfigured();
                 applyAllStateToDOM();
                 renderAdminModalInputs();
-                const msg = `Синхронизировано: ${result.updatedDrinks ?? 0} позиций, стоп: ${result.stoppedDrinks ?? 0}, частично: ${result.partialStops ?? 0}`;
+                const added = Number(result.addedDrinks) || 0;
+                const msg = `Синхронизировано: ${result.updatedDrinks ?? 0} позиций${added ? `, добавлено новых: ${added}` : ''}, стоп: ${result.stoppedDrinks ?? 0}, частично: ${result.partialStops ?? 0}`;
                 if (statusEl) {
                     statusEl.textContent = result.syncedAt
                         ? `${msg}. ${new Date(result.syncedAt).toLocaleString('ru-RU')}`
@@ -2444,9 +2579,41 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
 
         function removeDrinkAdmin(idx) {
             if (appState.drinks.length <= 1) return;
+            const removed = appState.drinks[idx];
+            if (!removed) return;
+            const mapping = appState.ytimesMap ? appState.ytimesMap[removed.id] : null;
+            if (mapping && mapping.item) {
+                if (!Array.isArray(appState.ytimesIgnored)) appState.ytimesIgnored = [];
+                if (!appState.ytimesIgnored.includes(mapping.item)) {
+                    appState.ytimesIgnored.push(mapping.item);
+                }
+                try {
+                    delete appState.ytimesMap[removed.id];
+                } catch (error) {
+                    // Маппинг мог быть уже удалён.
+                }
+            }
             appState.drinks.splice(idx, 1);
             renderAdminModalInputs();
             renderMenuSections();
+            saveStateToStorageAndCloud(true);
+            showToast('Позиция удалена и не вернётся при синхронизации');
+        }
+
+        async function restoreIgnoredYTimesDrinks() {
+            if (!isAdminMode) {
+                requestAdminLogin();
+                return;
+            }
+            const ignored = Array.isArray(appState.ytimesIgnored) ? appState.ytimesIgnored : [];
+            if (!ignored.length) {
+                showToast('Скрытых позиций YTimes нет');
+                return;
+            }
+            appState.ytimesIgnored = [];
+            await saveStateToStorageAndCloud(true);
+            showToast('Возвращаю позиции из YTimes…');
+            await syncYTimesMenu();
         }
 
         function addNewLocationAdmin() {
@@ -2526,12 +2693,32 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                         .maybeSingle();
                     const currentConfig = currentRow && currentRow.config ? currentRow.config : null;
                     if (currentConfig) {
+                        const localMap = appState.ytimesMap && typeof appState.ytimesMap === 'object'
+                            ? appState.ytimesMap
+                            : null;
+                        let mergedMap = localMap ? Object.assign({}, localMap) : (currentConfig.ytimesMap || null);
+
+                        if (localMap && currentConfig.ytimesMap && typeof currentConfig.ytimesMap === 'object') {
+                            const drinkIds = new Set(appState.drinks.map(drink => String(drink.id)));
+                            Object.keys(currentConfig.ytimesMap).forEach(id => {
+                                // Не возвращаем маппинг удалённых позиций, но
+                                // подхватываем новые позиции, добавленные синхронизацией.
+                                if (!mergedMap[id] && drinkIds.has(String(id))) {
+                                    mergedMap[id] = currentConfig.ytimesMap[id];
+                                }
+                            });
+                        }
+
                         configToSave = Object.assign({}, appState, {
-                            ytimesMap: currentConfig.ytimesMap || appState.ytimesMap || null,
+                            ytimesMap: mergedMap,
+                            ytimesIgnored: Array.isArray(appState.ytimesIgnored)
+                                ? appState.ytimesIgnored
+                                : (Array.isArray(currentConfig.ytimesIgnored) ? currentConfig.ytimesIgnored : []),
                             menuSyncedAt: currentConfig.menuSyncedAt || appState.menuSyncedAt || null,
                             menuSyncSource: currentConfig.menuSyncSource || appState.menuSyncSource || null
                         });
                         appState.ytimesMap = configToSave.ytimesMap;
+                        appState.ytimesIgnored = configToSave.ytimesIgnored;
                         appState.menuSyncedAt = configToSave.menuSyncedAt;
                         appState.menuSyncSource = configToSave.menuSyncSource;
                     }

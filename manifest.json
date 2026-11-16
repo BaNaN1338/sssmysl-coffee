@@ -2,15 +2,15 @@
   "name": "Кофейня «Смысл»",
   "short_name": "Смысл",
   "description": "Кофейня «Смысл» — меню, предзаказ кофе и истории кофейни",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FAF9F3",
   "theme_color": "#7B9244",
   "icons": [
     {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

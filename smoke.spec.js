@@ -25,6 +25,13 @@ test("главная страница, меню и корзина работаю
   await expect(page.locator("#orderTypeInBtn")).toBeAttached();
   await expect(page.locator("#orderCommentInput")).toBeAttached();
   await expect(page.locator("#personalDataConsent")).toBeAttached();
+  await expect(page.locator("#orderPushBtn")).toBeAttached();
+});
+
+test("service worker и manifest доступны", async ({ page, request }) => {
+  await openSite(page);
+  expect((await request.get("/sw.js")).ok()).toBe(true);
+  expect((await request.get("/manifest.json")).ok()).toBe(true);
 });
 
 test("после 20:00 МСК онлайн-заказ закрыт", async ({ page }) => {
