@@ -143,6 +143,50 @@ Deno.serve(async (request) => {
     return json({ success: false, message: "Заказ не найден." }, 404);
   }
 
+  if (body?.action === "selftest") {
+    const bearer = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "").trim();
+    const jwt = decodeJwtPayload(bearer);
+    if (jwt?.app_metadata?.role !== "admin") {
+      return json({ success: false, message: "Тест доступен только администратору." }, 403);
+    }
+    try {
+      if (!configureWebPush()) {
+        return json({ success: false, message: "Не настроены VAPID-ключи." }, 500);
+      }
+      const ecdh = await crypto.subtle.generateKey(
+        { name: "ECDH", namedCurve: "P-256" },
+        true,
+        ["deriveBits"],
+      );
+      const raw = new Uint8Array(await crypto.subtle.exportKey("raw", ecdh.publicKey));
+      const authBytes = new Uint8Array(16);
+      crypto.getRandomValues(authBytes);
+      const b64url = (bytes: Uint8Array) =>
+        btoa(String.fromCharCode(...bytes))
+          .replace(/\+/g, "-")
+          .replace(/\//g, "_")
+          .replace(/=+$/g, "");
+      const details: any = webpush.generateRequestDetails(
+        {
+          endpoint: "https://example.com/push",
+          keys: { p256dh: b64url(raw), auth: b64url(authBytes) },
+        },
+        JSON.stringify({ title: "test" }),
+      );
+      return json({
+        success: true,
+        hasAuthorization: !!details?.headers?.Authorization,
+        bodyLength: String(details?.body || "").length,
+      });
+    } catch (error) {
+      console.error("push selftest failed", error);
+      return json({
+        success: false,
+        message: error instanceof Error ? error.message : String(error),
+      }, 500);
+    }
+  }
+
   if (body?.action === "test") {
     const bearer = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "").trim();
     const jwt = decodeJwtPayload(bearer);
