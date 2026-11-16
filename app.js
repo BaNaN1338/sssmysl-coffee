@@ -2934,6 +2934,15 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 }
             }, 700);
 
+            // Клик по push-уведомлению открывает окно последнего заказа.
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('message', event => {
+                    if (event.data && event.data.type === 'order-push-click') {
+                        restoreLastOrder();
+                    }
+                });
+            }
+
             const authClient = getSupabaseClient();
             if (authClient) {
                 authClient.auth.onAuthStateChange((event, session) => {

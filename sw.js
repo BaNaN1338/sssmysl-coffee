@@ -44,6 +44,11 @@ self.addEventListener('notificationclick', event => {
         const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
         for (const client of clients) {
             if ('focus' in client) {
+                try {
+                    client.postMessage({ type: 'order-push-click' });
+                } catch (error) {
+                    // Сообщение не критично: страница откроется как есть.
+                }
                 await client.focus();
                 return;
             }
