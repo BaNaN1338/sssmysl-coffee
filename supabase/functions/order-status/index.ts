@@ -3,6 +3,9 @@
 // 2) Вебхук YTimes: POST { eventId, guid, status, statusMessage }?secret=...
 // Для вебхука функцию нужно задеплоить с выключенной проверкой JWT.
 
+// @ts-ignore — npm-пакет web-push работает в Supabase Edge Runtime.
+import webpush from "npm:web-push@3.6.7";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-webhook-secret",
@@ -55,6 +58,78 @@ async function supabaseFetch(path: string, options: RequestInit = {}): Promise<a
   return data;
 }
 
+function orderNumberFromRow(order: any): string {
+  const match = String(order?.comment || "").match(/Номер заказа:\s*([0-9]+)/i);
+  return match ? match[1] : String(order?.id || 0).padStart(4, "0");
+}
+
+async function sendOrderPush(
+  guid: string,
+  status: string,
+  statusMessage: string,
+): Promise<void> {
+  const publicKey = env("VAPID_PUBLIC_KEY");
+  const privateKey = env("VAPID_PRIVATE_KEY");
+  const subject = env("VAPID_SUBJECT") || "mailto:admin@smysl.coffee";
+  if (!publicKey || !privateKey) return;
+
+  const orderRows = await supabaseFetch(
+    `orders?ytimes_order_guid=eq.${encodeURIComponent(guid)}&select=id,comment&limit=1`,
+  );
+  const order = Array.isArray(orderRows) ? orderRows[0] : null;
+  if (!order) return;
+
+  const subscriptions = await supabaseFetch(
+    `push_subscriptions?order_guid=eq.${encodeURIComponent(guid)}&select=endpoint,p256dh,auth`,
+  );
+  if (!Array.isArray(subscriptions) || subscriptions.length === 0) return;
+
+  const number = orderNumberFromRow(order);
+  const title = status === "accepted"
+    ? `Заказ №${number} принят`
+    : status === "cancelled"
+      ? `Заказ №${number} отклонён`
+      : `Заказ №${number}: новый статус`;
+  const body = status === "accepted"
+    ? "Можно оплачивать на кассе."
+    : status === "cancelled"
+      ? (statusMessage || "Кассир отклонил заказ.")
+      : (statusMessage || "Статус заказа обновился.");
+
+  webpush.setVapidDetails(subject, publicKey, privateKey);
+
+  await Promise.allSettled(subscriptions.map(async (subscription: any) => {
+    try {
+      await webpush.sendNotification(
+        {
+          endpoint: subscription.endpoint,
+          keys: { p256dh: subscription.p256dh, auth: subscription.auth },
+        },
+        JSON.stringify({
+          title,
+          body,
+          tag: `order-${guid}`,
+          url: "./",
+          force: false,
+        }),
+      );
+    } catch (error: any) {
+      if (error?.statusCode === 404 || error?.statusCode === 410) {
+        try {
+          await supabaseFetch(
+            `push_subscriptions?endpoint=eq.${encodeURIComponent(subscription.endpoint)}`,
+            { method: "DELETE" },
+          );
+        } catch {
+          // Подписка уже удалена.
+        }
+      } else {
+        console.error("push send failed", error?.statusCode || error);
+      }
+    }
+  }));
+}
+
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -89,6 +164,7 @@ Deno.serve(async (request) => {
         ? "cancelled"
         : "updated";
     const statusMessage = String(body.statusMessage || "").slice(0, 500);
+
     try {
       await supabaseFetch(`orders?ytimes_order_guid=eq.${encodeURIComponent(guid)}`, {
         method: "PATCH",
@@ -125,6 +201,14 @@ Deno.serve(async (request) => {
       } catch (broadcastError) {
         // Если Realtime недоступен, гость всё равно получит статус опросом.
         console.error("Realtime broadcast failed", broadcastError);
+      }
+
+      // Push-уведомление, если гость его включил.
+      try {
+        await sendOrderPush(guid, status, statusMessage);
+      } catch (pushError) {
+        // Push не должен ломать обработку вебхука.
+        console.error("Order push failed", pushError);
       }
 
       return text("OK");
