@@ -49,6 +49,27 @@ jobs:
             --symmetric --cipher-algo AES256 \
             -o backup.tar.gz.gpg backup.tar.gz
 
+      - name: Verify restore
+        if: steps.check.outputs.enabled == 'true'
+        env:
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          gpg --batch --yes --passphrase "$PASSPHRASE" --decrypt backup.tar.gz.gpg > restored.tar.gz
+          mkdir -p restored
+          tar -xzf restored.tar.gz -C restored
+          test -s restored/backup/site_settings.json
+          test -s restored/backup/orders.json
+          diff <(tar -tzf backup.tar.gz | sort) <(tar -tzf restored.tar.gz | sort)
+          python3 - <<'PY'
+          import json
+          cfg = json.load(open('restored/backup/site_settings.json'))[0]['config']
+          orders = json.load(open('restored/backup/orders.json'))
+          assert isinstance(cfg.get('drinks'), list) and cfg['drinks'], 'no drinks'
+          assert isinstance(orders, list), 'orders is not a list'
+          print(f"restore OK: drinks={len(cfg['drinks'])}, orders={len(orders)}")
+          PY
+          sha256sum backup.tar.gz.gpg
+
       - name: Upload encrypted backup
         if: steps.check.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4

@@ -1,8 +1,10 @@
 name: Sync YTimes menu
 
 on:
+  # Основная синхронизация — Supabase Cron каждые 15 минут.
+  # GitHub остаётся резервным запуском раз в 6 часов и для ручного запуска.
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
