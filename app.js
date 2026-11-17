@@ -2046,9 +2046,11 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             adminOrdersTimer = null;
         }
 
-        function getOrderNumberFromComment(comment, fallbackId) {
-            const match = String(comment || '').match(/Номер заказа:\s*([0-9]+)/i);
-            return match ? match[1] : String(fallbackId || 0).padStart(4, '0');
+        function getOrderNumber(order) {
+            const stored = String((order && order.order_number) || '').trim();
+            if (stored) return stored;
+            const match = String((order && order.comment) || '').match(/Номер заказа:\s*([0-9]+)/i);
+            return match ? match[1] : String((order && order.id) || 0).padStart(4, '0');
         }
 
         function getOrderStatusMeta(status) {
@@ -2082,7 +2084,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 return;
             }
             list.innerHTML = orders.map(order => {
-                const number = getOrderNumberFromComment(order.comment, order.id);
+                const number = getOrderNumber(order);
                 const meta = getOrderStatusMeta(order.status);
                 const parts = String(order.comment || '').split(' • ');
                 const readPart = prefix => {
@@ -2132,7 +2134,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 }
                 const { data, error } = await client
                     .from('orders')
-                    .select('id,created_at,customer_name,customer_phone,status,ytimes_status,status_message,total,comment')
+                    .select('id,created_at,customer_name,customer_phone,status,ytimes_status,status_message,total,order_number,comment')
                     .order('created_at', { ascending: false })
                     .limit(50);
                 if (error) throw error;
