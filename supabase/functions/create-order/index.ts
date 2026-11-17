@@ -373,7 +373,7 @@ async function handleRequest(request: Request): Promise<Response> {
       if (milkLabel) options.push(`молоко: ${milkLabel}`);
       if (syrupLabel) options.push(`сироп: ${syrupLabel}`);
     }
-    commentLines.push(`${index + 1}) ${drink.title}${options.length ? ` (${options.join(", ")})` : ""} × ${quantity} = ${unitPrice * quantity} ₽`);
+    commentLines.push(`${index + 1}) ${drink.title}${options.length ? ` (${options.join(", ")})` : ""} × ${quantity}`);
   }
 
   const clientTotal = Number(body.total);
@@ -397,12 +397,14 @@ async function handleRequest(request: Request): Promise<Response> {
     try {
       // При повторной отправке используем тот же номер заказа.
       const existing = await supabaseFetch(
-        `orders?ytimes_order_guid=eq.${encodeURIComponent(orderGuid)}&select=id,comment&limit=1`,
+        `orders?ytimes_order_guid=eq.${encodeURIComponent(orderGuid)}&select=id,comment,order_number&limit=1`,
       );
       if (Array.isArray(existing) && existing[0]?.id) {
         orderRowId = existing[0].id;
+        const storedNumber = String(existing[0].order_number || "").trim();
         const match = String(existing[0].comment || "").match(/Номер заказа:\s*([0-9]+)/i);
-        if (match) existingOrderNumber = match[1];
+        if (storedNumber) existingOrderNumber = storedNumber;
+        else if (match) existingOrderNumber = match[1];
       }
     } catch (error) {
       console.error("Failed to find existing order", error);
@@ -427,6 +429,7 @@ async function handleRequest(request: Request): Promise<Response> {
             customer_phone: phone.display,
             consent: true,
             consent_at: new Date().toISOString(),
+            order_number: dailyOrderNumber || null,
             comment: "",
             total: computedTotal,
             items: itemList,
@@ -453,14 +456,13 @@ async function handleRequest(request: Request): Promise<Response> {
     }
   }
 
-  const guestInfo = [name, phone.display].filter(Boolean).join(", ");
+  // На чеке YTimes печатается именно comment, поэтому оставляем только
+  // состав, время и комментарий гостя. Номер заказа, гость, телефон и итог
+  // хранятся в orders и в карточке заказа YTimes.
   const comment = [
-    `Номер заказа: ${orderNumber}`,
-    `Гость: ${guestInfo}`,
+    `Состав: ${commentLines.join("; ")}`,
     `Время: ${pickupTimeComment}`,
     guestComment ? `Комментарий гостя: ${guestComment}` : "",
-    `Состав: ${commentLines.join("; ")}`,
-    `Итого: ${computedTotal} ₽. Оплата на кассе.`,
   ].filter(Boolean).join(" • ").slice(0, 2000);
 
   const ytimesPayload = {
@@ -495,6 +497,7 @@ async function handleRequest(request: Request): Promise<Response> {
 
   await updateOrder(orderRowId, {
     comment,
+    order_number: orderNumber,
     raw_request: ytimesPayload,
   });
 
@@ -543,6 +546,7 @@ async function handleRequest(request: Request): Promise<Response> {
   await updateOrder(orderRowId, {
     status: "created",
     ytimes_status: ytimesStatus,
+    order_number: orderNumber,
     raw_response: ytimesData,
   });
 
