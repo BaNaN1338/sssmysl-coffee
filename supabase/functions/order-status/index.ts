@@ -59,6 +59,8 @@ async function supabaseFetch(path: string, options: RequestInit = {}): Promise<a
 }
 
 function orderNumberFromRow(order: any): string {
+  const stored = String(order?.order_number || "").trim();
+  if (stored) return stored;
   const match = String(order?.comment || "").match(/Номер заказа:\s*([0-9]+)/i);
   return match ? match[1] : String(order?.id || 0).padStart(4, "0");
 }
@@ -74,7 +76,7 @@ async function sendOrderPush(
   if (!publicKey || !privateKey) return;
 
   const orderRows = await supabaseFetch(
-    `orders?ytimes_order_guid=eq.${encodeURIComponent(guid)}&select=id,comment&limit=1`,
+    `orders?ytimes_order_guid=eq.${encodeURIComponent(guid)}&select=id,comment,order_number&limit=1`,
   );
   const order = Array.isArray(orderRows) ? orderRows[0] : null;
   if (!order) return;
