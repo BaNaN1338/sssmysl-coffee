@@ -111,6 +111,8 @@ async function sendToOrder(orderGuid: string, payload: Record<string, unknown>):
 }
 
 function orderNumberFromRow(order: any): string {
+  const stored = String(order?.order_number || "").trim();
+  if (stored) return stored;
   const match = String(order?.comment || "").match(/Номер заказа:\s*([0-9]+)/i);
   return match ? match[1] : String(order?.id || 0).padStart(4, "0");
 }
@@ -136,7 +138,7 @@ Deno.serve(async (request) => {
   }
 
   const rows = await supabaseFetch(
-    `orders?ytimes_order_guid=eq.${encodeURIComponent(orderGuid)}&select=id,comment&limit=1`,
+    `orders?ytimes_order_guid=eq.${encodeURIComponent(orderGuid)}&select=id,comment,order_number&limit=1`,
   );
   const order = Array.isArray(rows) ? rows[0] : null;
   if (!order) {
