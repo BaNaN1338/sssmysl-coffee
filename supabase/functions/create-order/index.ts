@@ -456,10 +456,11 @@ async function handleRequest(request: Request): Promise<Response> {
     }
   }
 
-  // На чеке YTimes печатается именно comment, поэтому оставляем только
-  // состав, время и комментарий гостя. Номер заказа, гость, телефон и итог
-  // хранятся в orders и в карточке заказа YTimes.
+  // На чеке YTimes печатается именно comment, поэтому оставляем номер заказа,
+  // состав, время и комментарий гостя. Имя, телефон и итог в комментарий
+  // не дублируем — они есть в карточке заказа и в orders.
   const comment = [
+    `Номер заказа: ${orderNumber}`,
     `Состав: ${commentLines.join("; ")}`,
     `Время: ${pickupTimeComment}`,
     guestComment ? `Комментарий гостя: ${guestComment}` : "",
