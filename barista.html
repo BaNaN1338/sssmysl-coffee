@@ -376,7 +376,6 @@
         ['localhost', '127.0.0.1'].includes(location.hostname);
 
     const DEMO_STORAGE_KEY = 'smysl_barista_demo_v1';
-    const IDLE_LIMIT_MS = 12 * 60 * 60 * 1000;
     const REFRESH_MS = 10 * 1000;
 
     const demoOrders = [
@@ -436,8 +435,6 @@
     let soundOn = true;
     let knownOrderIds = new Set();
     let refreshTimer = null;
-    let idleTimer = null;
-    let lastActivity = Date.now();
     let audioContext = null;
     let toastTimer = null;
 
@@ -733,7 +730,6 @@
         setConnection(true, '');
         await loadOrders();
         startRefresh();
-        lastActivity = Date.now();
     }
 
     async function submitLogin(event) {
@@ -862,18 +858,6 @@
         loadOrders().then(() => showToast('Обновлено'));
     }
 
-    function initIdleTimer() {
-        ['click', 'keydown', 'touchstart'].forEach(name => {
-            document.addEventListener(name, () => { lastActivity = Date.now(); }, { passive: true });
-        });
-        idleTimer = setInterval(() => {
-            if (IS_PREVIEW || !session) return;
-            if (Date.now() - lastActivity > IDLE_LIMIT_MS) {
-                signOut('Сессия закрыта из-за бездействия. Войдите снова.');
-            }
-        }, 60 * 1000);
-    }
-
     function initPreview() {
         document.getElementById('authScreen').classList.add('hidden');
         showBoard();
@@ -885,7 +869,6 @@
     async function init() {
         tickClock();
         setInterval(tickClock, 30 * 1000);
-        initIdleTimer();
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && !IS_PREVIEW) loadOrders();
         });
