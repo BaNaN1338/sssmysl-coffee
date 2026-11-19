@@ -431,6 +431,8 @@ async function handleRequest(request: Request): Promise<Response> {
             consent_at: new Date().toISOString(),
             order_number: dailyOrderNumber || null,
             comment: "",
+            guest_comment: guestComment,
+            items_summary: commentLines.join("; ").slice(0, 2000),
             total: computedTotal,
             items: itemList,
             payment_status: "unpaid",
@@ -498,6 +500,8 @@ async function handleRequest(request: Request): Promise<Response> {
 
   await updateOrder(orderRowId, {
     comment,
+    guest_comment: guestComment,
+    items_summary: commentLines.join("; ").slice(0, 2000),
     order_number: orderNumber,
     raw_request: ytimesPayload,
   });

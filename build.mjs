@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 
 const required = [
   "index.html",
+  "barista.html",
   "site.css",
   "app.js",
   "sw.js",

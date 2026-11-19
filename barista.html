@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Экран бариста — Смысл</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --green: #7B9244;
+            --green-dark: #2F3A25;
+            --green-deep: #252E13;
+            --cream: #F7F3E8;
+            --cream-light: #FAF9F3;
+            --amber: #D48C46;
+            --red: #B3261E;
+            --teal: #3E7C6A;
+            --line: rgba(123, 146, 68, .22);
+            --muted: rgba(47, 58, 37, .55);
+        }
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body {
+            margin: 0;
+            font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--cream);
+            color: var(--green-deep);
+        }
+        button, input { font: inherit; }
+        .hidden { display: none !important; }
+        .app { min-height: 100vh; display: flex; flex-direction: column; }
+
+        .topbar {
+            background: var(--green-dark);
+            color: var(--cream);
+            padding: 18px 26px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .brand { display: flex; align-items: center; gap: 14px; }
+        .brand-mark {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--green); color: var(--cream);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 18px; letter-spacing: .5px;
+        }
+        .brand h1 {
+            margin: 0; font-size: 24px; line-height: 1.1;
+            font-weight: 800; letter-spacing: -.02em;
+        }
+        .brand p { margin: 4px 0 0; font-size: 12px; color: rgba(247,243,232,.6); }
+        .top-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .live {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: 12px; font-weight: 700; color: rgba(247,243,232,.8);
+        }
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #7ED957; box-shadow: 0 0 0 4px rgba(126,217,87,.15);
+        }
+        .live.offline .live-dot { background: #E06A5E; box-shadow: 0 0 0 4px rgba(224,106,94,.16); }
+        .clock { font-size: 13px; font-weight: 700; color: rgba(247,243,232,.75); font-variant-numeric: tabular-nums; }
+        .sound-btn, .user-btn {
+            border: 1px solid rgba(247,243,232,.22);
+            background: rgba(255,255,255,.08);
+            color: var(--cream);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .sound-btn.off { opacity: .55; }
+        .user-chip {
+            display: inline-flex; align-items: center; gap: 8px;
+            max-width: 260px; font-size: 12px; color: rgba(247,243,232,.78);
+        }
+        .user-chip span {
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .preview-badge {
+            background: var(--amber);
+            color: #fff;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .auth {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 18px;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 26px;
+            padding: 26px;
+            box-shadow: 0 18px 50px rgba(37,46,19,.08);
+        }
+        .auth-kicker {
+            font-size: 10px; font-weight: 800; letter-spacing: .12em;
+            text-transform: uppercase; color: var(--green);
+        }
+        .auth-card h2 {
+            margin: 8px 0 0; font-size: 26px; line-height: 1.1;
+            font-weight: 800; letter-spacing: -.03em;
+        }
+        .auth-card p { margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+        .field { display: block; margin-top: 16px; }
+        .field span { display: block; font-size: 11px; font-weight: 800; margin-bottom: 6px; }
+        .field input {
+            width: 100%;
+            border: 1px solid var(--line);
+            background: var(--cream-light);
+            border-radius: 13px;
+            padding: 12px 13px;
+            color: var(--green-deep);
+            outline: none;
+        }
+        .field input:focus { border-color: var(--green); background: #fff; }
+        .btn-primary {
+            width: 100%;
+            margin-top: 18px;
+            border: none;
+            border-radius: 13px;
+            padding: 13px 16px;
+            background: var(--green);
+            color: var(--cream);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .btn-primary:disabled { opacity: .6; cursor: wait; }
+        .auth-error {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 11px;
+            background: #FBE7E5;
+            color: #9E2B24;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .auth-note { margin-top: 14px !important; font-size: 11px !important; }
+
+        .board-wrap { flex: 1; display: flex; flex-direction: column; }
+        .toolbar {
+            padding: 18px 26px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tab {
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .tab.active { background: var(--green-dark); border-color: var(--green-dark); color: var(--cream); }
+        .toolbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .toolbar-note { font-size: 12px; color: var(--muted); }
+
+        .board {
+            flex: 1;
+            padding: 18px 26px 26px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            align-items: start;
+        }
+        .column {
+            background: rgba(255,255,255,.45);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 14px;
+            min-height: 240px;
+        }
+        .column-head {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 8px; padding: 2px 4px 10px;
+        }
+        .column-title { font-size: 13px; font-weight: 800; letter-spacing: .02em; }
+        .column-hint { font-size: 10px; color: var(--muted); margin-top: 2px; }
+        .column-count {
+            min-width: 24px; height: 24px; padding: 0 8px;
+            border-radius: 999px; background: #fff; border: 1px solid var(--line);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 800; color: var(--muted);
+        }
+        .cards { display: flex; flex-direction: column; gap: 10px; }
+        .card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-left: 5px solid var(--line);
+            border-radius: 18px;
+            padding: 13px 14px;
+            box-shadow: 0 4px 14px rgba(37,46,19,.05);
+        }
+        .card.new { border-left-color: var(--amber); }
+        .card.accepted { border-left-color: var(--green); }
+        .card.ready { border-left-color: var(--teal); }
+        .card.done { border-left-color: #B9B9B9; opacity: .82; }
+        .card.cancelled { border-left-color: var(--red); opacity: .78; }
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .order-number { font-size: 22px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+        .order-time { font-size: 11px; color: var(--muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
+        .chip {
+            border-radius: 999px; padding: 5px 9px; font-size: 9px; font-weight: 800;
+            letter-spacing: .04em; text-transform: uppercase; white-space: nowrap;
+        }
+        .chip.new { background: #FFF1DE; color: #9A5A18; }
+        .chip.accepted { background: #E9EFE0; color: #4E6030; }
+        .chip.ready { background: #E2F1EC; color: #2E6656; }
+        .chip.done { background: #EFEFEF; color: #777; }
+        .chip.cancelled { background: #FBE7E5; color: #9E2B24; }
+        .guest { font-size: 13px; font-weight: 800; margin-top: 10px; }
+        .items { font-size: 12px; color: var(--muted); line-height: 1.45; margin-top: 4px; }
+        .comment {
+            margin-top: 7px; font-size: 11px; color: #7A5A2E;
+            background: #FFF9EE; border-radius: 9px; padding: 6px 8px;
+        }
+        .card-bottom {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; margin-top: 11px; padding-top: 10px; border-top: 1px dashed var(--line);
+        }
+        .total { font-size: 15px; font-weight: 800; }
+        .payment { font-size: 10px; color: var(--muted); margin-top: 2px; }
+        .payment.unpaid { color: #9E2B24; font-weight: 700; }
+        .action {
+            border: none; border-radius: 11px; padding: 10px 16px;
+            font-size: 13px; font-weight: 800; cursor: pointer;
+            background: var(--green); color: var(--cream);
+        }
+        .action:active { transform: scale(.97); }
+        .action:disabled { opacity: .55; cursor: wait; }
+        .waiting { font-size: 10px; font-weight: 700; color: #9A5A18; text-align: right; line-height: 1.3; }
+        .empty {
+            border: 1px dashed var(--line); border-radius: 16px; padding: 20px 12px;
+            text-align: center; font-size: 12px; color: var(--muted);
+        }
+        .footer {
+            padding: 0 26px 20px; font-size: 11px; color: var(--muted);
+            display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+        }
+        .footer strong { color: var(--green-dark); }
+        .link-btn {
+            border: none; background: none; padding: 0;
+            color: var(--green-dark); font: inherit; font-weight: 800;
+            text-decoration: underline; cursor: pointer;
+        }
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            background: var(--green-deep);
+            color: var(--cream);
+            border-radius: 999px;
+            padding: 11px 18px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(37,46,19,.25);
+            z-index: 50;
+        }
+        .banner {
+            margin: 14px 26px 0;
+            border-radius: 12px;
+            padding: 10px 13px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .banner.error { background: #FBE7E5; color: #9E2B24; }
+        .banner.info { background: #FFF9EE; color: #7A5A2E; }
+
+        .app.tablet-mode { width: 1100px; min-height: 760px; }
+        .app.tablet-mode .board { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        @media (max-width: 900px) {
+            .app:not(.tablet-mode) .board { grid-template-columns: 1fr; }
+            .app:not(.tablet-mode) .topbar { padding: 14px 16px; }
+            .app:not(.tablet-mode) .toolbar,
+            .app:not(.tablet-mode) .board,
+            .app:not(.tablet-mode) .footer,
+            .app:not(.tablet-mode) .banner { margin-left: 16px; margin-right: 16px; padding-left: 0; padding-right: 0; }
+            .app:not(.tablet-mode) .toolbar { padding-top: 14px; }
+            .app:not(.tablet-mode) .brand h1 { font-size: 20px; }
+            .app:not(.tablet-mode) .board { padding-top: 16px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app" id="app">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark">С</div>
+            <div>
+                <h1>Онлайн-заказы</h1>
+                <p id="brandSubtitle">Экран бариста · принятие и оплата в YTimes</p>
+            </div>
+        </div>
+        <div class="top-actions">
+            <span class="preview-badge hidden" id="previewBadge">Демо</span>
+            <span class="live hidden" id="liveBadge"><span class="live-dot"></span><span id="liveText">Онлайн</span></span>
+            <span class="clock" id="clock">--:--</span>
+            <button class="sound-btn hidden" id="soundBtn" onclick="toggleSound()">🔔 Звук вкл</button>
+            <span class="user-chip hidden" id="userChip"><span id="userEmail"></span></span>
+            <button class="user-btn hidden" id="logoutBtn" onclick="signOut()">Выйти</button>
+        </div>
+    </header>
+
+    <section class="auth" id="authScreen">
+        <div class="auth-card">
+            <div class="auth-kicker">Смысл · экран бариста</div>
+            <h2>Вход для сотрудников</h2>
+            <p>Доступ только у бариста и владельца. Гостевые данные на экране не показываются.</p>
+            <form id="loginForm" novalidate>
+                <label class="field">
+                    <span>Email</span>
+                    <input id="loginEmail" type="email" autocomplete="username" placeholder="barista@smysl.coffee" required>
+                </label>
+                <label class="field">
+                    <span>Пароль</span>
+                    <input id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••••" required>
+                </label>
+                <div class="auth-error hidden" id="loginError"></div>
+                <button class="btn-primary" id="loginBtn" type="submit">Войти</button>
+            </form>
+            <p class="auth-note">Нет доступа? Напишите владельцу — он добавит вашу учётную запись.</p>
+        </div>
+    </section>
+
+    <div class="board-wrap hidden" id="boardScreen">
+        <div class="banner error hidden" id="serverBanner"></div>
+        <div class="toolbar">
+            <div class="tabs">
+                <button class="tab active" id="tabActive" onclick="setTab('active')">Активные</button>
+                <button class="tab" id="tabDone" onclick="setTab('done')">Выданные</button>
+            </div>
+            <div class="toolbar-right">
+                <div class="toolbar-note">Онлайн-оплата → YTimes. «Готово» и «Выдан» отмечаются здесь.</div>
+            </div>
+        </div>
+        <main class="board" id="board"></main>
+        <footer class="footer">
+            <span><strong>Смысл</strong> · только заказы с сайта · <span id="dataMode">данные Supabase</span></span>
+            <span id="footerRight">Обновление каждые 10 секунд · <button class="link-btn" onclick="reloadNow()">Обновить</button></span>
+        </footer>
+    </div>
+</div>
+<div class="toast hidden" id="toast"></div>
+
+<script>
+    const SUPABASE_URL = 'https://jbsjtvpkgofiwiazqczz.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2p0dnBrZ29maXdpYXpxY3p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MzY3OTUsImV4cCI6MjEwOTMxMjc5NX0.6rjCKrYI5r7zY8stG5CAA0L9Vrpz68IQ_XFM_RBSpSs';
+
+    const IS_PREVIEW = new URLSearchParams(location.search).has('preview') ||
+        location.protocol === 'file:' ||
+        ['localhost', '127.0.0.1'].includes(location.hostname);
+
+    const DEMO_STORAGE_KEY = 'smysl_barista_demo_v1';
+    const IDLE_LIMIT_MS = 30 * 60 * 1000;
+    const REFRESH_MS = 10 * 1000;
+
+    const demoOrders = [
+        {
+            id: '0127', time: '14:42', guest: 'Дая', total: 320,
+            items_summary: 'Капучино 350 мл × 1', comment: 'Без сахара',
+            column: 'new', payment_status: 'paid', payment_label: 'Оплачен онлайн · 14:41'
+        },
+        {
+            id: '0126', time: '14:38', guest: 'Даня', total: 420,
+            items_summary: 'Раф солёная карамель × 1', comment: '',
+            column: 'accepted', payment_status: 'paid', payment_label: 'Оплачен онлайн · 14:37'
+        },
+        {
+            id: '0125', time: '14:31', guest: 'Анна', total: 280,
+            items_summary: 'Латте 200 мл × 1', comment: 'Погорячее',
+            column: 'accepted', payment_status: 'paid', payment_label: 'Оплачен онлайн · 14:30'
+        },
+        {
+            id: '0124', time: '14:27', guest: 'Игорь', total: 520,
+            items_summary: 'Капучино 350 мл × 1, Круассан × 1', comment: '',
+            column: 'ready', payment_status: 'paid', payment_label: 'Оплачен онлайн · 14:29'
+        },
+        {
+            id: '0123', time: '14:20', guest: 'Дая', total: 320,
+            items_summary: 'Капучино 200 мл × 1', comment: '',
+            column: 'done', payment_status: 'paid', payment_label: 'Оплачен онлайн · выдан'
+        },
+        {
+            id: '0122', time: '14:15', guest: 'Оля', total: 420,
+            items_summary: 'Раф лаванда × 1', comment: '',
+            column: 'done', payment_status: 'paid', payment_label: 'Оплачен онлайн · выдан'
+        },
+        {
+            id: '0121', time: '14:10', guest: 'Максим', total: 300,
+            items_summary: 'Американо 350 мл × 1', comment: 'Возврат оформлен',
+            column: 'cancelled', payment_status: 'refunded', payment_label: 'Отменён · возврат'
+        }
+    ];
+
+    const columns = {
+        active: [
+            { key: 'new', title: 'Новые', hint: 'Оплачен, ждёт принятия в YTimes' },
+            { key: 'accepted', title: 'Приняты', hint: 'Можно готовить' },
+            { key: 'ready', title: 'Готовы', hint: 'Ждут выдачи' }
+        ],
+        done: [
+            { key: 'done', title: 'Выданные', hint: 'Завершённые заказы' },
+            { key: 'cancelled', title: 'Отменённые', hint: 'Возврат или отмена' }
+        ]
+    };
+
+    let supabaseClient = null;
+    let session = null;
+    let orders = [];
+    let activeTab = 'active';
+    let soundOn = true;
+    let knownOrderIds = new Set();
+    let refreshTimer = null;
+    let idleTimer = null;
+    let lastActivity = Date.now();
+    let audioContext = null;
+    let toastTimer = null;
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[ch]));
+    }
+
+    function maskEmail(email) {
+        const value = String(email || '');
+        const at = value.indexOf('@');
+        if (at < 1) return value;
+        return value.slice(0, Math.min(3, at)) + '···' + value.slice(at);
+    }
+
+    function firstName(name) {
+        const value = String(name || '').trim();
+        if (!value) return 'Гость';
+        return value.split(/\s+/)[0].slice(0, 24);
+    }
+
+    function formatTime(value) {
+        if (!value) return '--:--';
+        const date = value instanceof Date ? value : new Date(value);
+        if (Number.isNaN(date.getTime())) return '--:--';
+        return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function orderNumber(order) {
+        const value = String(order.order_number || order.id || '').trim();
+        return value ? value.padStart(4, '0') : '—';
+    }
+
+    function columnFor(order) {
+        if (order.column) return order.column;
+        if (order.status === 'cancelled') return 'cancelled';
+        if (order.barista_status === 'handed') return 'done';
+        if (order.barista_status === 'ready') return 'ready';
+        if (order.status === 'accepted') return 'accepted';
+        return 'new';
+    }
+
+    function statusMeta(column) {
+        switch (column) {
+            case 'new': return { label: 'Новый', cls: 'new' };
+            case 'accepted': return { label: 'Принят', cls: 'accepted' };
+            case 'ready': return { label: 'Готов', cls: 'ready' };
+            case 'done': return { label: 'Выдан', cls: 'done' };
+            case 'cancelled': return { label: 'Отменён', cls: 'cancelled' };
+            default: return { label: column, cls: 'done' };
+        }
+    }
+
+    function paymentLabel(order) {
+        if (order.payment_label) return order.payment_label;
+        if (order.payment_status === 'paid') return 'Оплачен онлайн';
+        if (order.payment_status === 'refunded') return 'Возврат';
+        return 'Не оплачен';
+    }
+
+    function normalizeOrder(row) {
+        return {
+            id: row.id,
+            order_number: row.order_number || String(row.id || '').padStart(4, '0'),
+            created_at: row.created_at,
+            time: formatTime(row.created_at),
+            guest: firstName(row.customer_name),
+            total: Number(row.total) || 0,
+            items_summary: row.items_summary || '',
+            comment: row.comment || '',
+            status: row.status || 'created',
+            payment_status: row.payment_status || 'unpaid',
+            barista_status: row.barista_status || null,
+            column: columnFor(row)
+        };
+    }
+
+    function loadDemoOrders() {
+        let saved = {};
+        try {
+            saved = JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY) || '{}');
+        } catch (e) {
+            saved = {};
+        }
+        return demoOrders.map(order => {
+            const copy = { ...order };
+            if (saved[copy.id] && saved[copy.id].column) {
+                copy.column = saved[copy.id].column;
+            }
+            return copy;
+        });
+    }
+
+    function persistDemoOrders() {
+        const state = {};
+        orders.forEach(order => {
+            state[order.id] = { column: order.column };
+        });
+        try {
+            localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+    }
+
+    function resetDemo() {
+        try {
+            localStorage.removeItem(DEMO_STORAGE_KEY);
+        } catch (e) {}
+        orders = loadDemoOrders();
+        render();
+        showToast('Демо сброшено');
+    }
+
+    function cardHtml(order) {
+        const column = columnFor(order);
+        const meta = statusMeta(column);
+        const paid = order.payment_status === 'paid';
+        const action = column === 'accepted'
+            ? `<button class="action" data-id="${escapeHtml(order.id)}" data-action="ready">Готово</button>`
+            : column === 'ready'
+                ? `<button class="action" data-id="${escapeHtml(order.id)}" data-action="handed">Выдан</button>`
+                : column === 'new'
+                    ? `<div class="waiting">Оплачен · ждёт<br>принятия в YTimes</div>`
+                    : '';
+
+        return `
+            <article class="card ${column}">
+                <div class="card-top">
+                    <div>
+                        <div class="order-number">№${escapeHtml(orderNumber(order))}</div>
+                        <div class="order-time">${escapeHtml(order.time || formatTime(order.created_at))} · сегодня</div>
+                    </div>
+                    <span class="chip ${meta.cls}">${meta.label}</span>
+                </div>
+                <div class="guest">${escapeHtml(order.guest || firstName(order.customer_name))}</div>
+                <div class="items">${escapeHtml(order.items_summary || (Array.isArray(order.items) ? order.items.length + ' поз.' : 'Состав в YTimes'))}</div>
+                ${order.comment ? `<div class="comment">${escapeHtml(order.comment)}</div>` : ''}
+                <div class="card-bottom">
+                    <div>
+                        <div class="total">${Number(order.total || 0).toLocaleString('ru-RU')} ₽</div>
+                        <div class="payment ${paid ? '' : 'unpaid'}">${escapeHtml(paymentLabel(order))}</div>
+                    </div>
+                    ${action}
+                </div>
+            </article>
+        `;
+    }
+
+    function render() {
+        const board = document.getElementById('board');
+        if (!board) return;
+        const cols = columns[activeTab] || columns.active;
+        board.innerHTML = cols.map(col => {
+            const items = orders.filter(order => columnFor(order) === col.key);
+            return `
+                <section class="column">
+                    <div class="column-head">
+                        <div>
+                            <div class="column-title">${col.title}</div>
+                            <div class="column-hint">${col.hint}</div>
+                        </div>
+                        <span class="column-count">${items.length}</span>
+                    </div>
+                    <div class="cards">
+                        ${items.length ? items.map(cardHtml).join('') : '<div class="empty">Пока пусто</div>'}
+                    </div>
+                </section>
+            `;
+        }).join('');
+    }
+
+    function setTab(tab) {
+        activeTab = tab;
+        document.getElementById('tabActive').classList.toggle('active', tab === 'active');
+        document.getElementById('tabDone').classList.toggle('active', tab === 'done');
+        render();
+    }
+
+    function setConnection(online, message) {
+        const badge = document.getElementById('liveBadge');
+        const text = document.getElementById('liveText');
+        if (!badge || !text) return;
+        badge.classList.remove('hidden');
+        badge.classList.toggle('offline', !online);
+        text.textContent = online ? 'Онлайн' : 'Нет связи';
+        const banner = document.getElementById('serverBanner');
+        if (banner) {
+            const show = !online && message;
+            banner.classList.toggle('hidden', !show);
+            banner.textContent = show ? message : '';
+        }
+    }
+
+    function setServerBanner(message) {
+        const banner = document.getElementById('serverBanner');
+        if (!banner) return;
+        banner.classList.toggle('hidden', !message);
+        banner.textContent = message || '';
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.remove('hidden');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.add('hidden'), 2600);
+    }
+
+    function beep() {
+        if (!soundOn) return;
+        try {
+            audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 880;
+            gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.12, audioContext.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.22);
+            osc.connect(gain).connect(audioContext.destination);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.24);
+        } catch (e) {}
+    }
+
+    function toggleSound() {
+        soundOn = !soundOn;
+        const btn = document.getElementById('soundBtn');
+        if (!btn) return;
+        btn.classList.toggle('off', !soundOn);
+        btn.textContent = soundOn ? '🔔 Звук вкл' : '🔕 Звук выкл';
+    }
+
+    function tickClock() {
+        const el = document.getElementById('clock');
+        if (!el) return;
+        el.textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function showAuth(message) {
+        document.getElementById('authScreen').classList.remove('hidden');
+        document.getElementById('boardScreen').classList.add('hidden');
+        document.getElementById('userChip').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.add('hidden');
+        document.getElementById('soundBtn').classList.add('hidden');
+        document.getElementById('liveBadge').classList.add('hidden');
+        document.getElementById('previewBadge').classList.add('hidden');
+        const error = document.getElementById('loginError');
+        if (error) {
+            error.classList.toggle('hidden', !message);
+            error.textContent = message || '';
+        }
+        if (refreshTimer) {
+            clearInterval(refreshTimer);
+            refreshTimer = null;
+        }
+    }
+
+    function showBoard() {
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('boardScreen').classList.remove('hidden');
+        document.getElementById('soundBtn').classList.remove('hidden');
+        if (session && session.user) {
+            document.getElementById('userChip').classList.remove('hidden');
+            document.getElementById('userEmail').textContent = maskEmail(session.user.email);
+            document.getElementById('logoutBtn').classList.remove('hidden');
+        } else {
+            document.getElementById('userChip').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+        }
+        if (IS_PREVIEW) {
+            document.getElementById('previewBadge').classList.remove('hidden');
+            document.getElementById('liveBadge').classList.remove('hidden');
+            document.getElementById('liveText').textContent = 'Демо';
+            document.getElementById('dataMode').textContent = 'демонстрационные данные';
+            document.getElementById('footerRight').innerHTML = 'Новые заказы появляются автоматически · <button class="link-btn" onclick="resetDemo()">Сбросить демо</button>';
+            document.getElementById('brandSubtitle').textContent = 'Предпросмотр · принятие и оплата в YTimes';
+        }
+    }
+
+    async function handleSession(nextSession) {
+        const role = nextSession && nextSession.user && nextSession.user.app_metadata
+            ? nextSession.user.app_metadata.role
+            : '';
+        if (!['barista', 'admin'].includes(role)) {
+            try { await supabaseClient.auth.signOut(); } catch (e) {}
+            showAuth('Нет доступа. Обратитесь к владельцу.');
+            return;
+        }
+        session = nextSession;
+        showBoard();
+        setConnection(true, '');
+        await loadOrders();
+        startRefresh();
+        lastActivity = Date.now();
+    }
+
+    async function submitLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const button = document.getElementById('loginBtn');
+        const error = document.getElementById('loginError');
+        if (!email || !password) {
+            error.textContent = 'Введите email и пароль.';
+            error.classList.remove('hidden');
+            return;
+        }
+        if (!supabaseClient) {
+            error.textContent = 'Сервер входа не загрузился. Обновите страницу.';
+            error.classList.remove('hidden');
+            return;
+        }
+        error.classList.add('hidden');
+        button.disabled = true;
+        button.textContent = 'Входим…';
+        try {
+            const { data, error: authError } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (authError) throw authError;
+            document.getElementById('loginPassword').value = '';
+            await handleSession(data.session);
+        } catch (authError) {
+            const message = String(authError && authError.message || '');
+            const text = /invalid login/i.test(message)
+                ? 'Неверный email или пароль.'
+                : /email not confirmed/i.test(message)
+                    ? 'Email не подтверждён. Напишите владельцу.'
+                    : 'Не удалось войти. Проверьте связь и попробуйте ещё раз.';
+            error.textContent = text;
+            error.classList.remove('hidden');
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Войти';
+        }
+    }
+
+    async function signOut(message) {
+        if (IS_PREVIEW) {
+            resetDemo();
+            return;
+        }
+        try { await supabaseClient.auth.signOut(); } catch (e) {}
+        session = null;
+        orders = [];
+        showAuth(message || '');
+    }
+
+    async function loadOrders() {
+        if (IS_PREVIEW) {
+            orders = loadDemoOrders();
+            render();
+            return;
+        }
+        if (!supabaseClient || !session) return;
+        try {
+            const { data, error } = await supabaseClient.rpc('barista_orders');
+            if (error) throw error;
+            const rows = Array.isArray(data) ? data : [];
+            const nextIds = new Set(rows.map(row => String(row.id)));
+            const hasNew = knownOrderIds.size > 0 && [...nextIds].some(id => !knownOrderIds.has(id));
+            knownOrderIds = nextIds;
+            orders = rows.map(normalizeOrder);
+            render();
+            setConnection(true, '');
+            if (hasNew) beep();
+        } catch (error) {
+            console.error('barista_orders failed', error);
+            const message = String(error && (error.message || error.details) || '');
+            const missing = /does not exist|schema cache|PGRST202/i.test(message);
+            setConnection(false, missing
+                ? 'Серверная часть ещё не установлена: примените SQL-миграцию и задеплойте функцию.'
+                : 'Не удалось обновить заказы. Показываем последние загруженные.');
+        }
+    }
+
+    async function markOrder(id, action) {
+        if (IS_PREVIEW) {
+            const order = orders.find(row => String(row.id) === String(id));
+            if (!order) return;
+            order.column = action === 'ready' ? 'ready' : 'done';
+            persistDemoOrders();
+            render();
+            return;
+        }
+        const button = document.querySelector(`[data-id="${CSS.escape(String(id))}"][data-action="${action}"]`);
+        if (button) {
+            button.disabled = true;
+            button.textContent = '…';
+        }
+        try {
+            const { error } = await supabaseClient.rpc('barista_mark_order', {
+                p_order_id: Number(id),
+                p_action: action
+            });
+            if (error) throw error;
+            await loadOrders();
+        } catch (error) {
+            console.error('barista_mark_order failed', error);
+            showToast('Не удалось сохранить. Попробуйте ещё раз.');
+            if (button) {
+                button.disabled = false;
+                button.textContent = action === 'ready' ? 'Готово' : 'Выдан';
+            }
+        }
+    }
+
+    function startRefresh() {
+        if (refreshTimer) clearInterval(refreshTimer);
+        refreshTimer = setInterval(() => {
+            if (!document.hidden) loadOrders();
+        }, REFRESH_MS);
+    }
+
+    function reloadNow() {
+        if (IS_PREVIEW) {
+            orders = loadDemoOrders();
+            render();
+            showToast('Обновлено');
+            return;
+        }
+        loadOrders().then(() => showToast('Обновлено'));
+    }
+
+    function initIdleTimer() {
+        ['click', 'keydown', 'touchstart'].forEach(name => {
+            document.addEventListener(name, () => { lastActivity = Date.now(); }, { passive: true });
+        });
+        idleTimer = setInterval(() => {
+            if (IS_PREVIEW || !session) return;
+            if (Date.now() - lastActivity > IDLE_LIMIT_MS) {
+                signOut('Сессия закрыта из-за бездействия. Войдите снова.');
+            }
+        }, 60 * 1000);
+    }
+
+    function initPreview() {
+        document.getElementById('authScreen').classList.add('hidden');
+        showBoard();
+        orders = loadDemoOrders();
+        render();
+        document.getElementById('app').classList.add('tablet-mode');
+    }
+
+    async function init() {
+        tickClock();
+        setInterval(tickClock, 30 * 1000);
+        initIdleTimer();
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !IS_PREVIEW) loadOrders();
+        });
+        window.addEventListener('online', () => setConnection(true, ''));
+        window.addEventListener('offline', () => setConnection(false, 'Нет интернета. Показываем последние загруженные заказы.'));
+
+        const board = document.getElementById('board');
+        board.addEventListener('click', event => {
+            const button = event.target.closest('[data-action]');
+            if (!button) return;
+            markOrder(button.dataset.id, button.dataset.action);
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', submitLogin);
+
+        if (IS_PREVIEW) {
+            initPreview();
+            return;
+        }
+
+        if (!window.supabase) {
+            showAuth('Не загрузилась библиотека Supabase. Проверьте интернет и обновите страницу.');
+            return;
+        }
+
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: false
+            }
+        });
+
+        try {
+            const { data } = await supabaseClient.auth.getSession();
+            if (data && data.session) await handleSession(data.session);
+            else showAuth('');
+        } catch (error) {
+            showAuth('Не удалось проверить сессию. Обновите страницу.');
+        }
+
+        supabaseClient.auth.onAuthStateChange((event, nextSession) => {
+            if (event === 'SIGNED_OUT') {
+                session = null;
+                showAuth('');
+            }
+        });
+    }
+
+    init();
+</script>
+</body>
+</html>
