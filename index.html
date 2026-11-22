@@ -135,14 +135,24 @@
 
         <!-- 2. СТОРИС КОФЕЙНИ (РЕДАКТИРУЮТСЯ В КОНСТРУКТОРЕ) -->
         <div id="storiesSection" class="mt-4 px-3.5">
-            <div class="flex items-center justify-between mb-1 px-0.5">
-                <h2 class="font-display font-bold text-sm text-smysl-greenDeep">Истории</h2>
-                <button id="storiesAdminAddBtn" onclick="openAdminTab('stories')" class="hidden text-[11px] font-bold text-smysl-greenDark items-center gap-1">
-                    <i class="ph-bold ph-plus"></i>
-                    <span>Добавить</span>
-                </button>
+            <div class="stories-shell">
+                <div class="flex items-center justify-between gap-3 px-0 pt-3">
+                    <h2 class="font-display font-bold text-base text-smysl-greenDeep">Новинки</h2>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button id="storiesAdminAddBtn" onclick="openAdminTab('stories')" class="hidden text-[11px] font-bold text-smysl-greenDark/75 hover:text-smysl-greenDark items-center gap-1 px-2 py-1.5 rounded-full border border-smysl-green/20 bg-white/70">
+                            <i class="ph-bold ph-plus"></i>
+                            <span class="hidden sm:inline">Добавить</span>
+                        </button>
+                        <button id="storiesPrevBtn" type="button" class="stories-arrow" onclick="scrollStories(-1)" aria-label="Предыдущая новинка">
+                            <i class="ph-bold ph-arrow-left text-sm"></i>
+                        </button>
+                        <button id="storiesNextBtn" type="button" class="stories-arrow" onclick="scrollStories(1)" aria-label="Следующая новинка">
+                            <i class="ph-bold ph-arrow-right text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="storiesTrack" class="stories-track no-scrollbar" aria-label="Новинки кофейни"></div>
             </div>
-            <div id="storiesTrack" class="flex items-start gap-4 overflow-x-auto no-scrollbar py-1"></div>
         </div>
 
         <!-- 4. ЛИПКАЯ НАВИГАЦИЯ ПО КАТЕГОРИЯМ + ПОИСК (STICKY BAR В СТИЛЕ QRBOOSTER) -->
@@ -2933,7 +2943,7 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <button id="storyAdminEditBtn" onclick="editCurrentStory()" class="hidden w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white items-center justify-center backdrop-blur-sm" title="Редактировать историю">
+                        <button id="storyAdminEditBtn" onclick="editCurrentStory()" class="hidden w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white items-center justify-center backdrop-blur-sm" title="Редактировать новинку">
                             <i class="ph-bold ph-pencil-simple text-sm"></i>
                         </button>
                         <button onclick="closeStoryViewer()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-sm" title="Закрыть">
@@ -2969,7 +2979,7 @@
             <div class="p-4 sm:p-5 bg-smysl-greenDeep text-smysl-cream flex items-center justify-between">
                 <div>
                     <span class="text-[10px] uppercase tracking-wider text-smysl-cream/70 font-bold block">Внутренний визуальный конструктор</span>
-                    <h3 class="font-display font-bold text-base sm:text-lg">Меню, сторис и настройки кофейни «Смысл»</h3>
+                    <h3 class="font-display font-bold text-base sm:text-lg">Меню, новинки и настройки кофейни «Смысл»</h3>
                 </div>
                 <button onclick="closeModal('adminModal')" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-smysl-cream flex items-center justify-center">
                     <i class="ph-bold ph-x"></i>
@@ -2985,7 +2995,7 @@
                     📍 Рожда / Горького и Скидка
                 </button>
                 <button onclick="switchAdminTab('stories')" id="tabBtn-stories" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
-                    📸 Сторис
+                    📸 Новинки
                 </button>
                 <button onclick="switchAdminTab('orders')" id="tabBtn-orders" class="admin-tab-btn pb-2.5 px-3 border-b-2 border-transparent text-smysl-greenDeep/60 whitespace-nowrap">
                     🧾 Заказы
@@ -3496,11 +3506,11 @@
                 <div id="adminTab-stories" class="hidden space-y-4">
                     <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <div class="font-bold text-smysl-greenDeep">Истории на главной</div>
-                            <p class="text-[11px] text-smysl-greenDeep/65 mt-0.5">Меняйте фото, заголовки и ссылки. Новые истории сразу появляются в ленте.</p>
+                            <div class="font-bold text-smysl-greenDeep">Новинки на главной</div>
+                            <p class="text-[11px] text-smysl-greenDeep/65 mt-0.5">Меняйте фото, заголовки и ссылки. Лучше вертикальное фото 4:5 — 900×1125 px. Новые карточки сразу появляются в ленте.</p>
                         </div>
                         <button onclick="addStoryAdmin()" class="px-3.5 py-2 rounded-xl bg-smysl-green hover:bg-smysl-greenDark text-smysl-cream text-xs font-bold transition flex items-center gap-1 shrink-0">
-                            <i class="ph-bold ph-plus"></i> Добавить историю
+                            <i class="ph-bold ph-plus"></i> Добавить новинку
                         </button>
                     </div>
                     <div id="adminStoriesList" class="space-y-3"></div>
