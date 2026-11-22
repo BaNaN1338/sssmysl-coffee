@@ -625,42 +625,85 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             const addBtn = document.getElementById('storiesAdminAddBtn');
             if (!track || !section) return;
 
+            const previousScroll = track.scrollLeft;
             const stories = getActiveStories();
             let html = stories.map(story => {
                 const theme = getStoryTheme(story);
                 const viewed = viewedStories.has(story.id);
-                const preview = story.image
-                    ? `<span class="block w-full h-full bg-cover bg-center" style="background-image:url('${escapeHtml(story.image)}')"></span>`
-                    : `<span class="w-full h-full flex items-center justify-center" style="background:${theme.gradient}"><i class="${theme.icon} text-2xl text-white/85"></i></span>`;
+                const hasCta = story.action && story.action !== 'none';
+                const ctaLabel = story.ctaLabel || (story.action === 'install' ? 'Установить' : 'Подробнее');
+                const media = story.image
+                    ? `<img class="story-card-img" src="${escapeHtml(story.image)}" alt="" loading="lazy" decoding="async" draggable="false">`
+                    : `<span class="story-card-fallback" style="background:${theme.gradient}"><i class="${theme.icon} text-[84px] text-white/25"></i></span>`;
                 return `
-                    <button type="button" onclick="openStoryViewer('${escapeHtml(story.id)}')" class="shrink-0 w-[78px] flex flex-col items-center gap-1.5 group">
-                        <span class="block w-[74px] h-[74px] rounded-full p-[4px] ${viewed ? 'bg-smysl-green/25' : 'story-ring-unviewed bg-gradient-to-tr from-[#DDE8C3] to-[#7B9244]'} transition group-active:scale-95">
-                            <span class="block w-full h-full rounded-full p-[2px] bg-smysl-creamLight">
-                                <span class="block w-full h-full rounded-full overflow-hidden relative">${preview}</span>
-                            </span>
+                    <article class="story-card${viewed ? ' is-viewed' : ''}" role="button" tabindex="0" data-story-id="${escapeHtml(story.id)}" aria-label="Открыть новинку: ${escapeHtml(story.title)}">
+                        ${media}
+                        <span class="story-card-shade"></span>
+                        ${story.badge ? `<span class="story-card-badge">${escapeHtml(story.badge)}</span>` : ''}
+                        ${isAdminMode ? `<button type="button" class="story-card-edit" data-story-edit="${escapeHtml(story.id)}" aria-label="Редактировать новинку" title="Редактировать"><i class="ph-bold ph-pencil-simple text-xs"></i></button>` : ''}
+                        ${!isAdminMode && viewed ? `<span class="story-card-viewed" aria-label="Просмотрено" title="Просмотрено">✓</span>` : ''}
+                        <span class="story-card-body">
+                            <span class="story-card-title">${escapeHtml(story.title)}</span>
+                            ${story.subtitle ? `<span class="story-card-subtitle">${escapeHtml(story.subtitle)}</span>` : ''}
+                            ${hasCta ? `<span class="story-card-cta">${escapeHtml(ctaLabel)} <i class="ph-bold ph-arrow-right text-[10px]"></i></span>` : ''}
                         </span>
-                        <span class="w-[78px] text-center text-[10px] font-bold text-smysl-greenDeep leading-tight line-clamp-2">${escapeHtml(story.title)}</span>
-                    </button>
+                    </article>
                 `;
             }).join('');
 
             if (isAdminMode) {
                 html += `
-                    <button type="button" onclick="openAdminTab('stories')" class="shrink-0 w-[78px] flex flex-col items-center gap-1.5 group">
-                        <span class="block w-[74px] h-[74px] rounded-full border-2 border-dashed border-smysl-green/40 bg-white flex items-center justify-center text-smysl-greenDark group-hover:border-smysl-green transition">
-                            <i class="ph-bold ph-plus text-xl"></i>
-                        </span>
-                        <span class="w-[78px] text-center text-[10px] font-bold text-smysl-greenDeep leading-tight">Добавить</span>
+                    <button type="button" class="story-card story-card-add" onclick="openAdminTab('stories')">
+                        <span class="w-10 h-10 rounded-full border border-white/25 flex items-center justify-center"><i class="ph-bold ph-plus text-lg"></i></span>
+                        <span class="text-[11px] font-bold">Добавить новинку</span>
                     </button>
                 `;
             }
 
-            track.innerHTML = html || `<div class="text-[11px] text-smysl-greenDeep/55 py-4">Пока нет активных историй.</div>`;
+            track.innerHTML = html || `<div class="w-full text-[11px] text-smysl-cream/60 py-8 text-center">Пока нет новинок.</div>`;
+            if (previousScroll > 0) track.scrollLeft = previousScroll;
             section.classList.toggle('hidden', stories.length === 0 && !isAdminMode);
             if (addBtn) {
                 addBtn.classList.toggle('hidden', !isAdminMode);
                 addBtn.classList.toggle('flex', isAdminMode);
             }
+            updateStoriesProgress();
+        }
+
+        function scrollStories(direction) {
+            const track = document.getElementById('storiesTrack');
+            if (!track) return;
+            const card = track.querySelector('.story-card');
+            const gap = parseFloat(getComputedStyle(track).columnGap) || 10;
+            const step = card ? card.getBoundingClientRect().width + gap : Math.max(240, track.clientWidth * 0.8);
+            track.scrollBy({ left: direction * step, behavior: 'smooth' });
+        }
+
+        function updateStoriesProgress() {
+            const track = document.getElementById('storiesTrack');
+            const wrapper = document.getElementById('storiesProgress');
+            const bar = document.getElementById('storiesProgressBar');
+            const prev = document.getElementById('storiesPrevBtn');
+            const next = document.getElementById('storiesNextBtn');
+            if (!track) return;
+
+            const max = track.scrollWidth - track.clientWidth;
+            const hasScroll = max > 4;
+            if (wrapper) wrapper.classList.toggle('hidden', !hasScroll);
+            if (prev) prev.disabled = !hasScroll || track.scrollLeft <= 2;
+            if (next) next.disabled = !hasScroll || track.scrollLeft >= max - 2;
+            if (bar) {
+                const ratio = hasScroll ? Math.min(1, Math.max(0, track.scrollLeft / max)) : 1;
+                bar.style.width = `${ratio * 100}%`;
+            }
+        }
+
+        function editStoryFromFeed(storyId) {
+            openAdminTab('stories');
+            setTimeout(() => {
+                const card = document.getElementById(`adminStoryCard-${storyId}`);
+                if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 180);
         }
 
         function openStoryViewer(storyId) {
@@ -819,12 +862,15 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 return;
             }
             if (story.action === 'link' && story.link) {
-                if (story.link.startsWith('#')) {
+                const link = String(story.link).trim();
+                if (link.startsWith('#')) {
                     closeStoryViewer();
-                    const target = document.querySelector(story.link);
+                    const target = document.querySelector(link);
                     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else if (/^(https?:\/\/|mailto:|tel:|\/|\.\/)/i.test(link)) {
+                    window.open(link, '_blank', 'noopener,noreferrer');
                 } else {
-                    window.open(story.link, '_blank', 'noopener,noreferrer');
+                    showToast('Ссылка должна начинаться с https://, mailto:, tel: или /');
                 }
             }
         }
@@ -833,11 +879,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             const story = getActiveStories()[activeStoryIndex];
             if (!story) return;
             closeStoryViewer();
-            openAdminTab('stories');
-            setTimeout(() => {
-                const card = document.getElementById(`adminStoryCard-${story.id}`);
-                if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 180);
+            editStoryFromFeed(story.id);
         }
 
         // ================= РЕДАКТОР СТОРИС В АДМИНКЕ =================
@@ -849,8 +891,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 container.innerHTML = `
                     <div class="text-center py-8 px-4 rounded-2xl bg-white border border-dashed border-smysl-green/25">
                         <i class="ph-duotone ph-images text-3xl text-smysl-green mb-1"></i>
-                        <div class="font-bold text-smysl-greenDeep">Историй пока нет</div>
-                        <p class="text-[11px] text-smysl-greenDeep/60 mt-1">Добавьте первую историю и загрузите картинку.</p>
+                        <div class="font-bold text-smysl-greenDeep">Новинок пока нет</div>
+                        <p class="text-[11px] text-smysl-greenDeep/60 mt-1">Добавьте первую новинку и загрузите картинку.</p>
                     </div>
                 `;
                 return;
@@ -873,10 +915,10 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 return `
                     <div id="adminStoryCard-${escapeHtml(story.id)}" class="p-3.5 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
                         <div class="flex gap-3">
-                            <div class="w-16 h-24 rounded-2xl overflow-hidden shrink-0 border border-smysl-green/10">${preview}</div>
+                            <div class="w-16 h-20 rounded-2xl overflow-hidden shrink-0 border border-smysl-green/10">${preview}</div>
                             <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
                                 <input type="text" value="${escapeHtml(story.title)}" oninput="updateStoryField(${index}, 'title', this.value)" placeholder="Заголовок" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs font-bold">
-                                <input type="text" value="${escapeHtml(story.subtitle)}" oninput="updateStoryField(${index}, 'subtitle', this.value)" placeholder="Текст истории" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
+                                <input type="text" value="${escapeHtml(story.subtitle)}" oninput="updateStoryField(${index}, 'subtitle', this.value)" placeholder="Описание новинки" class="sm:col-span-2 px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
                                 <input type="text" value="${escapeHtml(story.badge)}" oninput="updateStoryField(${index}, 'badge', this.value)" placeholder="Плашка (например, Новинки)" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
                                 <input type="text" value="${escapeHtml(story.ctaLabel)}" oninput="updateStoryField(${index}, 'ctaLabel', this.value)" placeholder="Текст кнопки" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
                                 <select onchange="updateStoryField(${index}, 'action', this.value)" class="px-2.5 py-1.5 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-xs">
@@ -903,8 +945,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                                 <input type="checkbox" ${story.active !== false ? 'checked' : ''} onchange="updateStoryField(${index}, 'active', this.checked)" class="accent-smysl-green">
                                 <span>Показывать</span>
                             </label>
-                            <button onclick="moveStory(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="w-7 h-7 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold disabled:opacity-30">↑</button>
-                            <button onclick="moveStory(${index}, 1)" ${index === appState.stories.length - 1 ? 'disabled' : ''} class="w-7 h-7 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold disabled:opacity-30">↓</button>
+                            <button onclick="moveStory(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Переместить левее" class="w-7 h-7 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold disabled:opacity-30">←</button>
+                            <button onclick="moveStory(${index}, 1)" ${index === appState.stories.length - 1 ? 'disabled' : ''} title="Переместить правее" class="w-7 h-7 rounded-xl bg-smysl-creamLight border border-smysl-green/20 text-smysl-greenDeep text-xs font-bold disabled:opacity-30">→</button>
                             <button onclick="removeStory(${index})" class="ml-auto px-2.5 py-1.5 rounded-xl bg-red-50 text-red-600 text-[11px] font-bold">Удалить</button>
                         </div>
                     </div>
@@ -915,7 +957,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         function updateStoryField(index, field, value) {
             if (!appState.stories[index]) return;
             appState.stories[index][field] = value;
-            if (field === 'title' || field === 'active' || field === 'theme') renderStories();
+            renderStories();
             if (field === 'theme') renderAdminStories();
             queueStorySave();
         }
@@ -923,7 +965,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         function addStoryAdmin() {
             appState.stories.push({
                 id: 'story-' + Date.now(),
-                title: 'Новая история',
+                title: 'Новая карточка',
                 subtitle: 'Добавьте текст и загрузите фотографию',
                 badge: 'Новое',
                 theme: 'green',
@@ -936,7 +978,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             renderAdminStories();
             renderStories();
             saveStateToStorageAndCloud(true);
-            showToast('История добавлена. Загрузите фото и заполните текст.');
+            showToast('Новинка добавлена. Загрузите фото и заполните текст.');
         }
 
         function removeStory(index) {
@@ -945,7 +987,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             renderAdminStories();
             renderStories();
             saveStateToStorageAndCloud(true);
-            showToast('История удалена');
+            showToast('Новинка удалена');
         }
 
         function moveStory(index, direction) {
@@ -980,7 +1022,9 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         }
 
         function compressStoryImage(file, callback) {
-            compressImageFile(file, 1200, 0.82, callback);
+            // Карточки в ленте вертикальные: 1000 px достаточно для 2x-экрана
+            // и заметно меньше нагружает localStorage и site_settings.
+            compressImageFile(file, 1000, 0.8, callback);
         }
 
         function compressDrinkImage(file, callback) {
@@ -1029,7 +1073,7 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 renderAdminStories();
                 renderStories();
                 saveStateToStorageAndCloud(true);
-                showToast('Фото истории обновлено');
+                showToast('Фото новинки обновлено');
             });
         }
 
@@ -2923,6 +2967,31 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
         window.addEventListener('DOMContentLoaded', () => {
             applyAppModeUI();
             applyAllStateToDOM();
+
+            const storiesTrack = document.getElementById('storiesTrack');
+            if (storiesTrack) {
+                storiesTrack.addEventListener('click', event => {
+                    const edit = event.target.closest('[data-story-edit]');
+                    if (edit) {
+                        event.stopPropagation();
+                        editStoryFromFeed(edit.dataset.storyEdit);
+                        return;
+                    }
+                    const card = event.target.closest('[data-story-id]');
+                    if (card) openStoryViewer(card.dataset.storyId);
+                });
+                storiesTrack.addEventListener('keydown', event => {
+                    if (event.key !== 'Enter' && event.key !== ' ') return;
+                    if (event.target.closest('[data-story-edit]')) return;
+                    const card = event.target.closest('[data-story-id]');
+                    if (!card) return;
+                    event.preventDefault();
+                    openStoryViewer(card.dataset.storyId);
+                });
+                storiesTrack.addEventListener('scroll', updateStoriesProgress, { passive: true });
+            }
+            window.addEventListener('resize', updateStoriesProgress);
+
             initCategoryDragAndDrop();
             restoreAdminSession();
             fetchCloudStateIfConfigured();
