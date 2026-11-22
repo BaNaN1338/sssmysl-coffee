@@ -26,8 +26,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             ytimesIgnored: [],
             menuSyncedAt: null,
             menuSyncSource: null,
-            happyHourActive: true,
-            discountPercent: 20,
+            happyHourActive: false,
+            discountPercent: 0,
             workingHours: '08:00 – 22:00',
             categoryOrder: ['seasonal', 'signature', 'coffee', 'noncoffee', 'tea'],
             stories: [
@@ -212,6 +212,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
                 merged.categoryOrder = normalizeCategoryOrder(merged.categoryOrder);
                 if (!Array.isArray(merged.stories)) merged.stories = cloneDefaultState().stories;
                 merged.drinks = merged.drinks.map(drink => normalizeDrinkVolumeOptions(drink, merged.volumes));
+                merged.happyHourActive = false;
+                merged.discountPercent = 0;
                 return merged;
             } catch (e) {
                 return cloneDefaultState();
@@ -248,6 +250,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             if (!merged.locations.some(location => location.id === merged.selectedLocationId)) {
                 merged.selectedLocationId = merged.locations[0].id;
             }
+            merged.happyHourActive = false;
+            merged.discountPercent = 0;
             return merged;
         }
 
@@ -2573,7 +2577,6 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             }).join('');
 
             document.getElementById('adminWorkingHoursInput').value = appState.workingHours;
-            document.getElementById('adminDiscountPercentInput').value = appState.discountPercent;
 
             document.getElementById('adminLocationsList').innerHTML = appState.locations.map((loc, idx) => `
                 <div class="p-3 rounded-2xl bg-white border border-smysl-green/20 flex flex-col sm:flex-row gap-2">
@@ -2682,7 +2685,8 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
 
         async function saveAdminSettings() {
             appState.workingHours = document.getElementById('adminWorkingHoursInput').value.trim() || '08:00 – 22:00';
-            appState.discountPercent = parseInt(document.getElementById('adminDiscountPercentInput').value, 10) || 20;
+            appState.happyHourActive = false;
+            appState.discountPercent = 0;
             appState.supabase.url = getSupabaseBaseUrl(document.getElementById('adminSupabaseUrl').value) || defaultAppState.supabase.url;
             appState.supabase.anonKey = document.getElementById('adminSupabaseKey').value.trim() || defaultAppState.supabase.anonKey;
 
