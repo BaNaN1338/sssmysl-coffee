@@ -54,7 +54,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="site.css?v=20261123-1">
+    <link rel="stylesheet" href="site.css?v=20261123-2">
 </head>
 <body class="selection:bg-smysl-green selection:text-smysl-cream">
 
@@ -82,12 +82,6 @@
                         <span class="hidden sm:inline">Широкий</span>
                     </button>
                 </div>
-
-                <!-- Быстрый переключатель акции Счастливые часы -20% -->
-                <button id="topHappyHourBtn" onclick="toggleHappyHourDemo()" class="px-2.5 py-1 rounded-xl font-semibold transition flex items-center gap-1 bg-white/15 text-smysl-cream">
-                    <i class="ph-fill ph-percent"></i>
-                    <span id="topHappyHourText">-20%: ВЫКЛ</span>
-                </button>
 
                 <button onclick="openAdminPanel()" class="px-2.5 py-1 rounded-xl font-bold bg-smysl-green text-smysl-cream transition flex items-center gap-1">
                     <i class="ph-bold ph-sliders-horizontal"></i>
@@ -205,16 +199,6 @@
                     <button onclick="clearMenuSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-smysl-greenDeep/50 hover:text-smysl-greenDeep">
                         <i class="ph-bold ph-x text-sm"></i>
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ПЛАШКА АКТИВНОЙ БУДНИЧНОЙ СКИДКИ 20% -->
-        <div class="px-3.5 pt-3">
-            <div id="happyHourNoticeBanner" class="rounded-2xl bg-smysl-greenSoft/90 border border-smysl-green/25 px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-smysl-green pulse-dot shrink-0"></span>
-                    <span id="happyHourBannerText" class="text-smysl-greenDeep font-medium">В будни 12:00–16:00 действует <strong>скидка -20%</strong> на напитки</span>
                 </div>
             </div>
         </div>
@@ -2833,10 +2817,6 @@
                     <span class="text-smysl-greenDeep/70">Режим работы:</span>
                     <span class="font-bold text-smysl-greenDeep">Ежедневно 08:00 – 22:00</span>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-smysl-greenDeep/70">Счастливые часы:</span>
-                    <span class="font-bold text-smysl-caramel">Пн–Пт 12:00 – 16:00 (-20%)</span>
-                </div>
             </div>
 
             <button onclick="closeModal('venueInfoModal')" class="w-full py-3 rounded-2xl bg-smysl-green text-smysl-cream font-bold text-xs">
@@ -3465,19 +3445,13 @@
             </div>
                 </div>
 
-                <!-- ВКЛАДКА 2: ТОЧКИ И АКЦИЯ -20% -->
+                <!-- ВКЛАДКА 2: ТОЧКИ И РЕЖИМ РАБОТЫ -->
                 <div id="adminTab-locations" class="hidden space-y-4">
                     <div class="p-4 rounded-2xl bg-white border border-smysl-green/20 space-y-3">
-                        <div class="font-bold text-smysl-greenDeep">Режим работы и Счастливые часы</div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-smysl-greenDeep/70 mb-1">Часы работы:</label>
-                                <input id="adminWorkingHoursInput" type="text" class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs font-bold">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-smysl-greenDeep/70 mb-1">Скидка в счастливые часы (%):</label>
-                                <input id="adminDiscountPercentInput" type="number" class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs font-bold">
-                            </div>
+                        <div class="font-bold text-smysl-greenDeep">Режим работы</div>
+                        <div>
+                            <label class="block text-xs font-semibold text-smysl-greenDeep/70 mb-1">Часы работы:</label>
+                            <input id="adminWorkingHoursInput" type="text" class="w-full px-3 py-2 rounded-xl bg-smysl-creamLight border border-smysl-green/25 text-xs font-bold">
                         </div>
                     </div>
 
@@ -3595,6 +3569,6 @@
     </div>
 
     <!-- ================= JAVASCRIPT ЯДРО QR-МЕНЮ «СМЫСЛ» ================= -->
-    <script src="app.js?v=20261123-1"></script>
+    <script src="app.js?v=20261123-2"></script>
 
 </body></html>
