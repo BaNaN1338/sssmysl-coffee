@@ -357,6 +357,62 @@ body {
             background: #7B9244;
             transition: width 0.15s ease;
         }
+        /* Компактная лента на телефоне: карточки-баннеры, чтобы меню начиналось выше */
+        @media (max-width: 639px) {
+            .stories-track {
+                padding: 6px 0;
+            }
+            .story-card {
+                width: clamp(150px, 48vw, 190px);
+                height: 84px;
+                aspect-ratio: auto;
+                border-radius: 16px;
+            }
+            .story-card::before {
+                display: none;
+            }
+            .story-card-body {
+                padding: 8px 10px;
+            }
+            .story-card-title {
+                font-size: 14px;
+                line-height: 1.12;
+            }
+            .story-card-subtitle,
+            .story-card-cta {
+                display: none;
+            }
+            .story-card-badge {
+                top: 8px;
+                left: 8px;
+                padding: 3px 7px;
+                font-size: 7px;
+            }
+            .story-card-edit {
+                top: 8px;
+                right: 8px;
+                width: 24px;
+                height: 24px;
+            }
+            .story-card-viewed {
+                top: 8px;
+                right: 8px;
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+            .story-card-add {
+                padding: 10px;
+                gap: 4px;
+            }
+            .story-card-add > span:first-child {
+                width: 34px;
+                height: 34px;
+            }
+            .story-card-add > span:last-child {
+                font-size: 10px;
+            }
+        }
         @media (prefers-reduced-motion: reduce) {
             .story-card,
             .story-card-img {
