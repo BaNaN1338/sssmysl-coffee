@@ -2975,9 +2975,10 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             layer.innerHTML = '';
 
             const colors = ['#57E1E6', '#FF4B4B', '#FFA23A', '#B45CFF', '#61E28C', '#FF3D3D', '#FF9A3C', '#56D6DB', '#50DEB2', '#FF9A2E', '#FF4B4B'];
-            const count = colors.length;
+            const isMobile = window.innerWidth < 640;
+            const count = isMobile ? 8 : colors.length;
             const duration = 2.5;
-            const delayStep = 0.15;
+            const delayStep = isMobile ? 0.2 : 0.15;
             const total = path.getTotalLength();
             const box = path.getBBox();
             const viewBox = path.ownerSVGElement.viewBox.baseVal;
