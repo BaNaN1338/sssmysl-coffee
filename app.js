@@ -2974,10 +2974,10 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             if (!path || !layer) return;
             layer.innerHTML = '';
 
-            const colors = ['#FF4B4B', '#FF3D3D', '#57E1E6', '#56D6DB', '#FFA23A', '#FF9A2E', '#B45CFF', '#FF4B4B', '#61E28C', '#50DEB2', '#FF9A3C'];
+            const colors = ['#57E1E6', '#FF4B4B', '#FFA23A', '#B45CFF', '#61E28C', '#FF3D3D', '#FF9A3C', '#56D6DB', '#50DEB2', '#FF9A2E', '#FF4B4B'];
             const count = colors.length;
-            const duration = 3.6;
-            const delayStep = 0.2;
+            const duration = 2.5;
+            const delayStep = 0.15;
             const total = path.getTotalLength();
             const box = path.getBBox();
             const viewBox = path.ownerSVGElement.viewBox.baseVal;

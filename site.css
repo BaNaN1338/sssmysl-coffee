@@ -103,8 +103,8 @@ body {
                 0 0 7px var(--color),
                 0 0 20px var(--color),
                 0 0 40px var(--color);
-            opacity: 0.6;
-            animation: garlandGlow var(--duration, 3.6s) ease-in-out infinite;
+            opacity: 0.42;
+            animation: garlandGlow var(--duration, 2.5s) ease-in-out infinite;
             animation-delay: var(--delay, 0s);
         }
         .glow-bulb::before {
@@ -130,9 +130,9 @@ body {
             background: rgba(255, 255, 255, 0.85);
         }
         @keyframes garlandGlow {
-            0%, 100% { opacity: 0.6; }
-            20% { opacity: 1; }
-            48% { opacity: 0.62; }
+            0%, 100% { opacity: 0.42; filter: brightness(0.92); }
+            18% { opacity: 1; filter: brightness(1.14); }
+            44% { opacity: 0.48; filter: brightness(0.95); }
         }
         @media (prefers-reduced-motion: reduce) {
             .glow-bulb {
