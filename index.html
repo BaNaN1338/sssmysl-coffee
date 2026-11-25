@@ -99,9 +99,18 @@
     <div id="qrbAppShell" class="qrb-app-shell pb-28 wide-mode">
 
         <!-- 1. ВЕРХНЯЯ ОБЛОЖКА ЗАВЕДЕНИЯ (HERO COVER) -->
-        <div class="relative h-40 sm:h-48 w-full cover-pattern overflow-hidden rounded-b-[32px] shadow-sm">
+        <div class="relative h-[180px] sm:h-[220px] w-full cover-pattern overflow-hidden rounded-b-[32px] shadow-sm">
             <img id="customCoverBanner" src="" alt="" class="hidden w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/45"></div>
+
+            <!-- Гирлянда с винтажными лампами -->
+            <div class="glow-garland" aria-hidden="true">
+                <svg class="glow-garland-wire" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <path id="glowGarlandWire" d="M 0 8 C 8 56, 26 67, 50 67 C 74 67, 92 56, 100 8" />
+                </svg>
+                <div id="glowGarlandBulbs" class="glow-garland-bulbs"></div>
+            </div>
+            <div id="snowLayer" class="snow-layer" aria-hidden="true"></div>
 
             <!-- Верхние быстрые кнопки поверх обложки (как в QRBooster) -->
             <div class="absolute top-3.5 left-4 right-4 flex items-center justify-between z-10">
@@ -122,7 +131,7 @@
             </div>
 
             <!-- Крупная каллиграфия «Смысл» в центре обложки -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-10 pb-4">
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-20 pb-4 z-10">
                 <img src="smysl-wordmark.png" alt="Смысл" draggable="false" class="w-52 sm:w-72 h-auto drop-shadow-md select-none">
             </div>
         </div>

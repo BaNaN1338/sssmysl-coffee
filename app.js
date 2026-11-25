@@ -2968,7 +2968,66 @@ const STORAGE_KEY = 'smysl_qrb_menu_v3';
             reportClientError(reason && reason.message ? reason.message : String(reason || 'Unhandled rejection'), reason && reason.stack ? reason.stack : '');
         });
 
+        function initGlowGarland() {
+            const path = document.getElementById('glowGarlandWire');
+            const layer = document.getElementById('glowGarlandBulbs');
+            if (!path || !layer) return;
+            layer.innerHTML = '';
+
+            const colors = ['#FF4B4B', '#FF3D3D', '#57E1E6', '#56D6DB', '#FFA23A', '#FF9A2E', '#B45CFF', '#FF4B4B', '#61E28C', '#50DEB2', '#FF9A3C'];
+            const count = colors.length;
+            const duration = 3.6;
+            const delayStep = 0.2;
+            const total = path.getTotalLength();
+            const box = path.getBBox();
+            const viewBox = path.ownerSVGElement.viewBox.baseVal;
+            const viewWidth = viewBox.width || 100;
+            const viewHeight = viewBox.height || 100;
+            const samples = [];
+            for (let step = 0; step <= 600; step += 1) {
+                samples.push(path.getPointAtLength(total * (step / 600)));
+            }
+
+            for (let index = 0; index < count; index += 1) {
+                const targetX = box.x + box.width * (0.08 + (index / (count - 1)) * 0.84);
+                let best = samples[0];
+                samples.forEach(point => {
+                    if (Math.abs(point.x - targetX) < Math.abs(best.x - targetX)) best = point;
+                });
+
+                const bulb = document.createElement('div');
+                bulb.className = 'glow-bulb';
+                bulb.style.left = `${(best.x / viewWidth) * 100}%`;
+                bulb.style.top = `${(best.y / viewHeight) * 100}%`;
+                bulb.style.setProperty('--color', colors[index]);
+                bulb.style.setProperty('--duration', `${duration}s`);
+                bulb.style.setProperty('--delay', `${(index * delayStep).toFixed(2)}s`);
+                layer.appendChild(bulb);
+            }
+        }
+
+        function initSnow() {
+            const layer = document.getElementById('snowLayer');
+            if (!layer) return;
+            layer.innerHTML = '';
+            const count = window.innerWidth < 640 ? 18 : 28;
+            for (let index = 0; index < count; index += 1) {
+                const flake = document.createElement('span');
+                flake.className = 'snowflake';
+                flake.style.left = `${(Math.random() * 100).toFixed(2)}%`;
+                const size = 2 + Math.floor(Math.random() * 3);
+                flake.style.setProperty('--size', `${size}px`);
+                flake.style.setProperty('--opacity', (0.35 + Math.random() * 0.5).toFixed(2));
+                flake.style.setProperty('--duration', `${(4 + Math.random() * 5).toFixed(2)}s`);
+                flake.style.setProperty('--delay', `${(-Math.random() * 8).toFixed(2)}s`);
+                flake.style.setProperty('--drift', `${(Math.random() * 36 - 18).toFixed(1)}px`);
+                layer.appendChild(flake);
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            initGlowGarland();
+            initSnow();
             applyAppModeUI();
             applyAllStateToDOM();
 
